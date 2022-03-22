@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart' as LatLng;
+import 'marker.dart';
 
 void main() {
   runApp(const MyApp());
@@ -54,16 +55,24 @@ class _MyHomePageState extends State<MyHomePage> {
         MarkerLayerOptions(
           markers: [
             Marker(
-              width: 80.0,
-              height: 80.0,
-              point: LatLng.LatLng(51.5, -0.09),
-              builder: (ctx) => Container(
-                child: FlutterLogo(),
-              ),
+              point: LatLng.LatLng(51.506584, -0.171870),
+              builder: (ctx) => MyMarker(icon: Icons.music_note),
+            ),
+            Marker(
+              point: LatLng.LatLng(51.506584, -0.171),
+              builder: (ctx) => MyMarker(icon: Icons.restaurant),
+            ),
+            Marker(
+              point: LatLng.LatLng(51.506, -0.171),
+              builder: (ctx) => MyMarker(icon: Icons.developer_board),
             ),
           ],
         ),
       ],
     );
   }
+
 }
+
+
+
