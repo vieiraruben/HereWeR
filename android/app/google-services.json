@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "1042849521769",
+    "project_id": "herewer-a1d7b",
+    "storage_bucket": "herewer-a1d7b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1042849521769:android:43b8d36818af53527f82f8",
+        "android_client_info": {
+          "package_name": "com.example.here_we_are"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1042849521769-s3tcogkhqlqo6bqp4o8qq9jbe6kcs5dv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbwsGq5D5JjFDXHmm0A0jwh9mcHQ7GeaE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1042849521769-s3tcogkhqlqo6bqp4o8qq9jbe6kcs5dv.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1042849521769-f74hr2m9r6kej6chdekt51hvm5pl20su.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.codingfactory.herewer"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1042849521769:android:72adb326178683e47f82f8",
+        "android_client_info": {
+          "package_name": "com.example.mapview"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1042849521769-s3tcogkhqlqo6bqp4o8qq9jbe6kcs5dv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbwsGq5D5JjFDXHmm0A0jwh9mcHQ7GeaE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1042849521769-s3tcogkhqlqo6bqp4o8qq9jbe6kcs5dv.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1042849521769-f74hr2m9r6kej6chdekt51hvm5pl20su.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.codingfactory.herewer"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
