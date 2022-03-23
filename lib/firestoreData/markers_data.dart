@@ -1,24 +1,30 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:ffi';
+import 'dart:math';
 
-import '../marker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:mapview/marker.dart';
+import 'package:latlong2/latlong.dart' as LatLng;
+
+
 
 FirebaseFirestore FS = FirebaseFirestore.instance;
-CollectionReference markersCollectionReference = FS.collection('markers');
+CollectionReference markersRef = FS.collection('markers');
 
-Future<void> addWorker({required MyMarker marker,}) async
-{
-DocumentReference documentReference = markersCollectionReference.doc();
-Map<String, dynamic> data = <String, dynamic>{
-  "position": marker.coor,
-  "type": marker.icon,
-};
+List<MyMarker> markers = [];
 
-await documentReference
-    .set(data)
-.whenComplete(() => print("Marker added to the firestore"))
-.catchError((e) => print(e));
+  getMarkers()  {
+  markersRef.get().then((QuerySnapshot querySnapshot) {
+    for (var doc in querySnapshot.docs) {
+      String type = doc.get("type");
+      GeoPoint geoPoint = doc.get("position");
+      double lat = geoPoint.latitude;
+      double lng = geoPoint.longitude;
+      LatLng.LatLng latLng = LatLng.LatLng(lat, lng);
+
+      MyMarker marker = MyMarker(type : type, coor: latLng);
+      markers.add(marker);
+    }
+  });
 }
 
-Stream<QuerySnapshot> getMarkers() {
-return markersCollectionReference.snapshots();
-}

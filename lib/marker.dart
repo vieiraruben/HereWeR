@@ -1,6 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart' as LatLng;
@@ -8,10 +5,12 @@ import 'package:latlong2/latlong.dart' as LatLng;
 
 
 
+
 class MyMarker extends StatefulWidget {
-  IconData icon;
+  String type;
   LatLng.LatLng coor;
-  MyMarker({Key? key, required this.icon, required this.coor}) : super(key:key);
+  IconData icon = Icons.restaurant;
+  MyMarker({Key? key, required this.type, required this.coor}) : super(key:key);
 
   @override
   State<MyMarker> createState() => _MyMarkerState();
@@ -48,9 +47,8 @@ class MyMarkers {
         point: markers.elementAt(i).coor,
         builder: (ctx) => markers.elementAt(i),
       );
-      print(marker.runtimeType);
       list.add(marker);
-      print(marker.toString());
+      print(marker);
     }
     return MarkerLayerOptions(
         markers: [
@@ -58,8 +56,4 @@ class MyMarkers {
         ]
     );
   }
-}
-
-Function additionneur(num n) {
-  return (num i) => n + i;
 }

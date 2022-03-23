@@ -32,7 +32,7 @@
 /build/
 
 # Web related
-lib/generated_plugin_registrant.dart
+lib/firestoreData/firestoreConfig/generated_plugin_registrant.dart
 
 # Symbolication related
 app.*.symbols
@@ -97,7 +97,7 @@ analysis_benchmark.json
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
-**/generated_plugin_registrant.dart
+lib/firestoreData/firestoreConfig/generated_plugin_registrant.dart
 .packages
 .pub-cache/
 .pub/

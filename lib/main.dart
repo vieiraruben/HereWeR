@@ -10,43 +10,39 @@ import 'marker.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await getMarkers();
+  print(markers);
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatelessWidget{
   const MyApp({Key? key}) : super(key: key);
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    print(getMarkers().length);
-    List<MyMarker> markersList = [MyMarker(icon: Icons.restaurant,coor: LatLng.LatLng(51.506584, -0.171870)),
-    MyMarker(icon: Icons.music_note,coor: LatLng.LatLng(51.506100, -0.171870)),
-    MyMarker(icon: Icons.safety_divider,coor: LatLng.LatLng(51.506300, -0.171870))];
-    MyMarkers markersToDisplay = MyMarkers(markersList);
     return MaterialApp(
       title: 'Flutter Demo!!!!',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
 
-      home: MyHomePage(title: 'Flutter Demo Home Page!!!!', markersToDisplay: markersToDisplay),
+      home: MyHomePage(title: 'Flutter Demo Home Page!!!!'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title, required this.markersToDisplay}) : super(key: key);
+  MyHomePage({Key? key, required this.title}) : super(key: key);
   final String title;
-  final MyMarkers markersToDisplay;
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-
+class _MyHomePageState extends State<MyHomePage>{
+  MyMarkers markersToDisplay = MyMarkers(markers);
   @override
   Widget build(BuildContext context) {
-
+    getMarkers();
     return FlutterMap(
       options: MapOptions(
         center: LatLng.LatLng(51.506584, -0.171870),
@@ -63,8 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
             return Text("HereWeR");
           },
         ),
-        widget.markersToDisplay.displayMarkers(),
-
+        markersToDisplay.displayMarkers(),
       ],
     );
   }
