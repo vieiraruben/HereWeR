@@ -11,7 +11,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await getMarkers();
-  print(markers);
   runApp(const MyApp());
 }
 
@@ -46,7 +45,7 @@ class _MyHomePageState extends State<MyHomePage>{
     return FlutterMap(
       options: MapOptions(
         center: LatLng.LatLng(51.506584, -0.171870),
-        zoom: 17.0,
+        zoom: 16.7,
         allowPanning: true,
         nePanBoundary: LatLng.LatLng(51.511976, -0.155764),
         swPanBoundary: LatLng.LatLng(51.49, -0.187530),
@@ -59,12 +58,38 @@ class _MyHomePageState extends State<MyHomePage>{
             return Text("HereWeR");
           },
         ),
+        OverlayImageLayerOptions(
+
+            overlayImages: [OverlayImage(
+                bounds: LatLngBounds(LatLng.LatLng(51.50885, -0.1684),
+                    LatLng.LatLng(51.50485, -0.175)),
+                opacity: 1,
+                imageProvider: const NetworkImage(
+                    'https://i.pinimg.com/564x/16/98/40/169840717d863e92c4c0ffc3cacd4c55.jpg'))
+            ]
+        ),
+        CircleLayerOptions(
+            circles:[ CircleMarker( //radius marker
+                point: LatLng.LatLng(51.50685, -0.171870),
+                color: Colors.blue.withOpacity(0),
+                borderStrokeWidth: 3.0,
+                borderColor: Colors.blue,
+                useRadiusInMeter: true,
+                radius: 220 //radius
+            )
+            ]
+        ),
         markersToDisplay.displayMarkers(),
+
+
+
+
       ],
     );
   }
 
 }
+
 
 
 
