@@ -7,6 +7,7 @@ import 'package:mapview/firestoreData/markers_data.dart';
 import 'marker.dart';
 
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -80,7 +81,6 @@ class _MyHomePageState extends State<MyHomePage>{
             ]
         ),
         markersToDisplay.displayMarkers(),
-
 
 
 

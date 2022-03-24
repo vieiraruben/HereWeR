@@ -41,6 +41,7 @@ dependencies:
   cloud_firestore: ^3.1.10
   firebase_analytics: ^9.1.2
   location: ^4.3.0
+  flutter_map_location_marker: any
 
 
 dev_dependencies:
