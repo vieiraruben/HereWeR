@@ -46,7 +46,7 @@ class _MapViewState extends State<MapView> {
               //radius marker
 
                 point: LatLng.LatLng(51.50654, -0.173330),
-                color: Color.fromARGB(255, 21, 76, 210),
+                color: Color.fromARGB(255, 12, 130, 232),
                 borderStrokeWidth: 3.0,
                 borderColor: Colors.blue,
                 useRadiusInMeter: true,
