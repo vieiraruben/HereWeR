@@ -92,6 +92,7 @@ class _WelcomeState extends State<Welcome> {
         .toList();
 
     return Scaffold(
+            resizeToAvoidBottomInset: false,
       body: Center(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
@@ -172,7 +173,7 @@ class _WelcomeState extends State<Welcome> {
           child: Container(
             height: 50,
             child: GestureDetector(
-                child: Text("Powered by HereWeR © 2022"), onTap: () async {
+                child: const Text("Powered by HereWeR © 2022"), onTap: () async {
                     await getMarkers("wc");
                     Navigator.of(context).popAndPushNamed('/mapview/');
                   },),
