@@ -1,18 +1,23 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_map/plugin_api.dart';
-import 'package:latlong2/latlong.dart' as LatLng;
 import 'package:mapview/firestoreData/firestoreConfig/firebase_options.dart';
 import 'package:mapview/firestoreData/markers_data.dart';
-import 'package:geolocator/geolocator.dart' as geo;
-import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
-import'geolocation/user_location.dart';
+import 'package:mapview/views/mapview.dart';
+import 'package:flutter/services.dart';
+import 'views/welcome.dart';
+import 'views/login_view.dart';
+import 'views/signup.dart';
+import 'marker.dart';
 
 void main() async {
+  // final settingsController = SettingsController(SettingsService());
+  // await settingsController.loadSettings();
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   if (Platform.isIOS) {
          await Firebase.initializeApp(
           options: DefaultFirebaseOptions.currentPlatform,
@@ -20,103 +25,74 @@ void main() async {
            } else {
              await Firebase.initializeApp();
              }
-
-  await getMarkers("toilettes");
-  await getUserLocationPermission();
-  runApp(const MyApp());
+  runApp(
+    MaterialApp(
+        debugShowCheckedModeBanner:false,
+        title: 'Hyde Park Fest',
+        theme: ThemeData(primarySwatch: Colors.indigo),
+        home: const HomePage(),
+        routes: {
+          '/login/': (context) => const LoginView(),
+          '/signup/': (context) => const SignUpView(),
+          '/mapview/':(context) => const MapView(),
+        }),
+  );
 }
 
-class MyApp extends StatelessWidget{
-  const MyApp({Key? key}) : super(key: key);
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo!!!!',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page!!!!', markers: markers),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title, required this.markers}) : super(key: key);
-  final String title;
-  final List<Marker> markers;
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
+class HomePage extends StatelessWidget{
+  const HomePage({Key? key}) : super(key: key);
   
-
   @override
   Widget build(BuildContext context) {
-    return FlutterMap(
-      options: MapOptions(
-        center: LatLng.LatLng(51.506584, -0.171870),
-        zoom: 16.7,
-        allowPanning: true,
-        nePanBoundary: LatLng.LatLng(51.511976, -0.155764),
-        swPanBoundary: LatLng.LatLng(51.49, -0.187530),
-        plugins: [
-          const LocationMarkerPlugin(), // <-- add plugin here
-        ],
-      ),
-      layers: [
-        TileLayerOptions(
-          urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-          subdomains: ['a', 'b', 'c'],
-          attributionBuilder: (_) {
-            return Text("HereWeR");
-          },
-        ),
-        OverlayImageLayerOptions(overlayImages: [
-          OverlayImage(
-              bounds: LatLngBounds(LatLng.LatLng(51.50885, -0.1684),
-                  LatLng.LatLng(51.50485, -0.175)),
-              opacity: 1,
-              imageProvider: const NetworkImage(
-                  'https://i.pinimg.com/564x/16/98/40/169840717d863e92c4c0ffc3cacd4c55.jpg'))
-        ]),
-        CircleLayerOptions(circles: [
-          CircleMarker(
-              //radius marker
-              point: LatLng.LatLng(51.50685, -0.171870),
-              color: Colors.blue.withOpacity(0),
-              borderStrokeWidth: 3.0,
-              borderColor: Colors.blue,
-              useRadiusInMeter: true,
-              radius: 220 //radius
-              )
-        ]),
-
-        LocationMarkerLayerOptions(
-          positionStream:
-          const LocationMarkerDataStreamFactory().geolocatorPositionStream(
-            stream: geo.Geolocator.getPositionStream(
-              locationSettings: const geo.LocationSettings(
-                accuracy: geo.LocationAccuracy.high,
-                distanceFilter: 5,
-              ),
+    return Scaffold(
+        body: FutureBuilder(
+            future: Firebase.initializeApp(
+              options: DefaultFirebaseOptions.currentPlatform,
             ),
-          ),
-          marker: const DefaultLocationMarker(
-            color: Colors.blue,
-          ),
-        ),
-
-        MarkerLayerOptions(
-          markers: [
-            ... markers
-          ]
-        ),
-
-
-
-      ],
-    );
+            builder: (context, snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.done:
+                  final user = FirebaseAuth.instance.currentUser;
+                  if (true) {
+                  // if (user?.isAnonymous ?? false) {
+                    return const Welcome();
+                  }
+                  if (user?.emailVerified ?? false) {
+                    return const LoginView();
+                  } else {
+                    return const VerifyEmailView();
+                  }
+                default:
+                  return const Text("Loading...");
+              }
+            }));
   }
 }
+
+class VerifyEmailView extends StatefulWidget {
+  const VerifyEmailView({Key? key}) : super(key: key);
+
+  @override
+  State<VerifyEmailView> createState() => _VerifyEmailViewState();
+}
+
+class _VerifyEmailViewState extends State<VerifyEmailView> {
+  @override
+  Widget build(BuildContext context) {
+    String email = FirebaseAuth.instance.currentUser?.email ?? "";
+    print(FirebaseAuth.instance.currentUser);
+    return Column(children: [
+      Text("We will send you an email to " + email),
+      const Text(
+          "Click the link on your email to validate your address and start enjoying the app."),
+      TextButton(
+          onPressed: () async {
+            final user = FirebaseAuth.instance.currentUser;
+            await user?.sendEmailVerification();
+          },
+          child: const Text("Send verification email"))
+    ]);
+  }
+}
+
+
