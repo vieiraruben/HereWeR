@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart' as LatLng;
-import '../firestoreData/markers_data.dart';
 import 'package:geolocator/geolocator.dart' as geo;
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
+
 
 List<Marker> mapMarkers = [];
 
@@ -22,11 +22,13 @@ class _MapViewState extends State<MapView> {
     return Scaffold(
       body: FlutterMap(
         options: MapOptions(
-          center: LatLng.LatLng(51.506584, -0.171870),
+          center: LatLng.LatLng(51.50654, -0.173030),
           zoom: 16.7,
+          minZoom: 16.0,
+          maxZoom: 17.8,
           allowPanning: true,
-          nePanBoundary: LatLng.LatLng(51.511976, -0.155764),
-          swPanBoundary: LatLng.LatLng(51.49, -0.187530),
+          nePanBoundary: LatLng.LatLng(51.520, -0.1713),
+          swPanBoundary: LatLng.LatLng(51.503, -0.17457),
           plugins: [
             const LocationMarkerPlugin(), // <-- add plugin here
           ],
@@ -39,28 +41,29 @@ class _MapViewState extends State<MapView> {
               return const Text("HereWeR");
             },
           )),
-          OverlayImageLayerWidget(options: OverlayImageLayerOptions(overlayImages: [
-            OverlayImage(
-                bounds: LatLngBounds(LatLng.LatLng(51.50885, -0.1684),
-                    LatLng.LatLng(51.50485, -0.175)),
-                opacity: 1,
-                imageProvider: const NetworkImage(
-                    'https://i.pinimg.com/564x/16/98/40/169840717d863e92c4c0ffc3cacd4c55.jpg'))
-            ]
-          )),
           CircleLayerWidget(options: CircleLayerOptions(circles: [
             CircleMarker(
-                //radius marker
-                point: LatLng.LatLng(51.50685, -0.171870),
-                color: Colors.blue.withOpacity(0),
+              //radius marker
+
+                point: LatLng.LatLng(51.50654, -0.173330),
+                color: Color.fromARGB(255, 21, 76, 210),
                 borderStrokeWidth: 3.0,
                 borderColor: Colors.blue,
                 useRadiusInMeter: true,
-                radius: 220 //radius
-                )
-              ]
+                radius: 600 //radius
             )
+          ]
+          )
           ),
+          OverlayImageLayerWidget(options: OverlayImageLayerOptions(overlayImages: [
+            OverlayImage(
+                bounds: LatLngBounds(LatLng.LatLng(51.50885, -0.166),
+                    LatLng.LatLng(51.504, -0.177)),
+                opacity: 1,
+                imageProvider:const NetworkImage("https://www.nicepng.com/png/full/471-4710932_love-box-festival-map.png"))
+            ]
+          )),
+
           LocationMarkerLayerWidget(options: LocationMarkerLayerOptions(
             positionStream: const LocationMarkerDataStreamFactory()
                 .geolocatorPositionStream(
