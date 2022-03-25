@@ -43,6 +43,7 @@ dependencies:
   location: ^4.3.0
   flutter_map_location_marker: any
   carousel_slider: ^4.0.0
+  image_picker: ^0.8.4+11
 
 
 dev_dependencies:

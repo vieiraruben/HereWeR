@@ -35,6 +35,7 @@ void main() async {
           '/login/': (context) => const LoginView(),
           '/signup/': (context) => const SignUpView(),
           '/mapview/':(context) => MapView(),
+          '/newprofile/':(context) => NewProfileView(),
         }),
   );
 }

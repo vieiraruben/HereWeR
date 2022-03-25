@@ -25,7 +25,11 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Geolocation permission</string>
+	<string>HereWeR uses your location to show your position on the map.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>HereWeR needs access to your library if you wish to upload photos.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>HereWeR needs your camera if you wish to upload photos.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
