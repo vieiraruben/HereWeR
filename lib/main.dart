@@ -10,7 +10,7 @@ import 'package:flutter/services.dart';
 import 'views/welcome.dart';
 import 'views/login_view.dart';
 import 'views/signup.dart';
-import 'marker.dart';
+import 'models/marker.dart';
 
 void main() async {
   // final settingsController = SettingsController(SettingsService());
@@ -34,7 +34,7 @@ void main() async {
         routes: {
           '/login/': (context) => const LoginView(),
           '/signup/': (context) => const SignUpView(),
-          '/mapview/':(context) => const MapView(),
+          '/mapview/':(context) => MapView(),
         }),
   );
 }

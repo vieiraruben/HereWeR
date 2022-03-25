@@ -1,18 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:mapview/marker.dart';
+import 'package:mapview/views/mapview.dart';
+import '../models/marker.dart';
 import 'package:latlong2/latlong.dart' as LatLng;
 
 
 
-FirebaseFirestore FS = FirebaseFirestore.instance;
-CollectionReference markersRef = FS.collection('markers');
 
-List<Marker> markers = [];
 
-  getMarkers(String whichType)  {
-    markers = [];
-    markersRef.get().then((QuerySnapshot querySnapshot) {
+  getMarkers(String whichType) async{
+    mapMarkers = [];
+    CollectionReference markersRef = await FirebaseFirestore.instance.collection('markers');
+    QuerySnapshot querySnapshot = await markersRef.get();
     for (var doc in querySnapshot.docs) {
       if (doc.get("type") == whichType) {
           String type = doc.get("type");
@@ -26,9 +25,10 @@ List<Marker> markers = [];
             point: myMarker.coor,
             builder: (ctx) => myMarker,
           );
-          markers.add(marker);
+          mapMarkers.add(marker);
+
       }
     }
-  });
-}
+  }
+
 

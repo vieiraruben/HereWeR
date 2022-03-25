@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
+import '../firestoreData/markers_data.dart';
+
 class Welcome extends StatefulWidget {
   const Welcome({Key? key}) : super(key: key);
 
@@ -123,7 +125,8 @@ class _WelcomeState extends State<Welcome> {
                 '/login/',
               );
               }, child: const Text("I Already Have an Account")),
-              TextButton(onPressed: () {
+              TextButton(onPressed: () async{
+                await getMarkers("wc");
                 Navigator.of(context).popAndPushNamed('/mapview/');
               }, child: const Text("Map")),
           const SizedBox(height: 70), const Text("Powered by HereWeR © 2022"), SizedBox(height: 40)
