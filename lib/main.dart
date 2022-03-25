@@ -5,12 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart' as LatLng;
-import 'package:location/location.dart';
 import 'package:mapview/firestoreData/firestoreConfig/firebase_options.dart';
 import 'package:mapview/firestoreData/markers_data.dart';
-import 'marker.dart';
 import 'package:geolocator/geolocator.dart' as geo;
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
+import'geolocation/user_location.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,11 +21,12 @@ void main() async {
              await Firebase.initializeApp();
              }
 
-  await getMarkers();
+  await getMarkers("toilettes");
+  await getUserLocationPermission();
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatelessWidget{
   const MyApp({Key? key}) : super(key: key);
   // This widget is the root of your application.
   @override
@@ -36,52 +36,24 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page!!!!'),
+      home: MyHomePage(title: 'Flutter Demo Home Page!!!!', markers: markers),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({Key? key, required this.title, required this.markers}) : super(key: key);
   final String title;
+  final List<Marker> markers;
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  MyMarkers markersToDisplay = MyMarkers(markers);
-  late bool _serviceEnabled;
-  late PermissionStatus _permissionGranted;
-  LocationData? _userLocation;
-
-  Future<void> _getUserLocation() async {
-    Location location = Location();
-    // Check if location service is enable
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled) {
-        return;
-      }
-    }
-    // Check if permission is granted
-    _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
-        return;
-      }
-    }
-    final _locationData = await location.getLocation();
-    setState(() {
-      _userLocation = _locationData;
-    });
-  }
+  
 
   @override
   Widget build(BuildContext context) {
-    _getUserLocation();
-    getMarkers();
     return FlutterMap(
       options: MapOptions(
         center: LatLng.LatLng(51.506584, -0.171870),
@@ -90,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
         nePanBoundary: LatLng.LatLng(51.511976, -0.155764),
         swPanBoundary: LatLng.LatLng(51.49, -0.187530),
         plugins: [
-          LocationMarkerPlugin(), // <-- add plugin here
+          const LocationMarkerPlugin(), // <-- add plugin here
         ],
       ),
       layers: [
@@ -120,10 +92,10 @@ class _MyHomePageState extends State<MyHomePage> {
               radius: 220 //radius
               )
         ]),
-        markersToDisplay.displayMarkers(),
+
         LocationMarkerLayerOptions(
           positionStream:
-              const LocationMarkerDataStreamFactory().geolocatorPositionStream(
+          const LocationMarkerDataStreamFactory().geolocatorPositionStream(
             stream: geo.Geolocator.getPositionStream(
               locationSettings: const geo.LocationSettings(
                 accuracy: geo.LocationAccuracy.high,
@@ -134,7 +106,16 @@ class _MyHomePageState extends State<MyHomePage> {
           marker: const DefaultLocationMarker(
             color: Colors.blue,
           ),
-        )
+        ),
+
+        MarkerLayerOptions(
+          markers: [
+            ... markers
+          ]
+        ),
+
+
+
       ],
     );
   }
