@@ -44,6 +44,8 @@ dependencies:
   flutter_map_location_marker: any
   carousel_slider: ^4.0.0
   image_picker: ^0.8.4+11
+  android_intent_plus: ^3.1.1
+  url_launcher: ^6.0.20
 
 
 dev_dependencies:

@@ -1,9 +1,11 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:mapview/constants/routes.dart';
+import 'package:mapview/utilities/error_dialog.dart';
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-}
+// TODO: Add forgotten password option
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -15,6 +17,7 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
   late final TextEditingController _email;
   late final TextEditingController _password;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -30,63 +33,113 @@ class _LoginViewState extends State<LoginView> {
     super.dispose();
   }
 
+  void loginButton() async {
+    if (_formKey.currentState!.validate()) {
+      final email = _email.text;
+      final password = _password.text;
+      try {
+        await FirebaseAuth.instance
+            .signInWithEmailAndPassword(email: email, password: password);
+        if (FirebaseAuth.instance.currentUser?.emailVerified ?? false) {
+          Navigator.of(context).pushNamed(
+            mapRoute,
+          );
+        } else {
+          Navigator.of(context).pushNamed(
+            verifyEmailRoute,
+          );
+        }
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'user-not-found') {
+          await showErrorDialog(context, "Login Failed",
+              "We can't find an account with this email address. Please try again.");
+          log(e.code);
+        } else if (e.code == "wrong-password") {
+          log("Wrong password");
+          await showErrorDialog(context, "Incorrect Password",
+              "The password you entered is incorrect. Please try again.");
+        } else {
+          log(e.code);
+        }
+      } catch (e) {
+        log(e.toString());
+      }
+    }
+  }
+// IconButton (icon:Icon(Icons.arrow_back)
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Log In")),
-      body: Center(
+      body: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Column(
-        children: [
-            TextField(
-              controller: _email,
-              decoration: const InputDecoration(border: OutlineInputBorder(),
-                              hintText:"Enter your email address"),
-              enableSuggestions: false,
-              autocorrect: false,
-              keyboardType: TextInputType.emailAddress,
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: _password,
-              decoration: const InputDecoration(border: OutlineInputBorder(),
-                              hintText: "Enter your password"),
-              obscureText: true,
-              autocorrect: false,
-              enableSuggestions: false,
-            ),
-            ElevatedButton(
-                onPressed: () async {
-                  final email = _email.text;
-                  final password = _password.text;
-                  try {
-                    final userCredential = await FirebaseAuth.instance
-                        .signInWithEmailAndPassword(
-                            email: email, password: password);
-                    print(userCredential);
-                  } on FirebaseAuthException catch (e) {
-                    if (e.code == 'user-not-found') {
-                      print(e.code);
-                    } else if (e.code == "wrong-password") {
-                      print("Wrong password");
-                    } else {
-                      print(e.code);
+              children: [
+                const SizedBox(height: 50),
+                Stack(
+                  children: [
+                    CircleAvatar(
+                        radius: 75,
+                        backgroundColor:
+                            const Color.fromARGB(255, 192, 229, 228),
+                        foregroundImage:
+                            Image.asset('assets/images/defaultprofile.png')
+                                .image),
+                    Positioned(
+                      child: Image.asset("assets/images/profileborder.png"),
+                      width: 150,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 50),
+                TextFormField(
+                  autofocus: true,
+                  controller: _email,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  textInputAction: TextInputAction.next,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    label: Text("Email"),
+                  ),
+                  enableSuggestions: false,
+                  autocorrect: false,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your email address';
                     }
-                  }
-                },
-                child: const Text("Log In")),
-            TextButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed(
-                    '/signup/',
-                  );
-                },
-                child: const Text("Sign Up")),
-            const Text("Powered by HereWeR")
-        ],
+                    return null;
+                  },
+                  keyboardType: TextInputType.emailAddress,
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: _password,
+                  textInputAction: TextInputAction.done,
+                  onFieldSubmitted: (v) => loginButton(),
+                  autofillHints: const [AutofillHints.newPassword],
+                  decoration: const InputDecoration(
+                      border: OutlineInputBorder(), label: Text("Password")),
+                  obscureText: true,
+                  autocorrect: false,
+                  enableSuggestions: false,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your password';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 50),
+              ],
+            ),
+          ),
+        ),
       ),
-          )),
     );
   }
 }

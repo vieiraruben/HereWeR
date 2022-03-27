@@ -1,6 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:mapview/constants/routes.dart';
 import 'package:mapview/firestoreData/markers_data.dart';
 
 class Welcome extends StatefulWidget {
@@ -36,17 +36,16 @@ class _WelcomeState extends State<Welcome> {
 
   @override
   Widget build(BuildContext context) {
-    print(MediaQuery.of(context).size.width);
     double width = MediaQuery.of(context).size.width;
     var conditionalStyle = [1.0, 20.0];
     if (MediaQuery.of(context).size.width <= 320) {
       conditionalStyle[0] = 15;
       conditionalStyle[1] = 14.5;
     } else {
-      conditionalStyle[0] = 40.0;
+      conditionalStyle[0] = 27.0;
       conditionalStyle[1] = 17.0;
     }
-    double height = MediaQuery.of(context).size.height;
+    // double height = MediaQuery.of(context).size.height;
     final List<String> imgList = [
       'assets/images/map.png',
       'assets/images/chat.png',
@@ -55,7 +54,7 @@ class _WelcomeState extends State<Welcome> {
     ];
     final List<String> detailsList = [
       'Easily find your way\nthrough the crowd',
-      'Connect with your fellow festival goers',
+      'Connect with your\nfellow festival goers',
       'Check out showtimes for your most anticipated concerts',
       "Don't miss out on news throughout the event"
     ];
@@ -71,18 +70,15 @@ class _WelcomeState extends State<Welcome> {
                     fit: BoxFit.contain,
                     width: width / 1.5,
                   ),
-                  Container(
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: conditionalStyle[0]),
-                      child: Text(
-                        detailsList[imgList.indexOf(item)],
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: conditionalStyle[1],
-                          // fontSize: 17,
-                          fontWeight: FontWeight.bold,
-                        ),
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: conditionalStyle[0]),
+                    child: Text(
+                      detailsList[imgList.indexOf(item)],
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: conditionalStyle[1],
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
@@ -92,7 +88,7 @@ class _WelcomeState extends State<Welcome> {
         .toList();
 
     return Scaffold(
-            resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: false,
       body: Center(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
@@ -145,7 +141,7 @@ class _WelcomeState extends State<Welcome> {
               ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).pushNamed(
-                      '/signup/',
+                      signupRoute,
                     );
                   },
                   child: const Text(
@@ -159,24 +155,20 @@ class _WelcomeState extends State<Welcome> {
                     );
                   },
                   child: const Text("I Already Have an Account")),
-              // TextButton(
-              //     onPressed: () async {
-              //       await getMarkers("wc");
-              //       Navigator.of(context).popAndPushNamed('/mapview/');
-              //     },
-              //     child: const Text("Map")),
             ],
           ),
         ),
         Align(
           alignment: FractionalOffset.bottomCenter,
-          child: Container(
+          child: SizedBox(
             height: 50,
             child: GestureDetector(
-                child: const Text("Powered by HereWeR © 2022"), onTap: () async {
-                    await getMarkers("wc");
-                    Navigator.of(context).popAndPushNamed('/mapview/');
-                  },),
+              child: const Text("Powered by HereWeR © 2022"),
+              onTap: () async {
+                await getMarkers("wc");
+                Navigator.of(context).popAndPushNamed('/mapview/');
+              },
+            ),
           ),
         ),
       ])),
