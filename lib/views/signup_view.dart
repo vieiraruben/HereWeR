@@ -1,10 +1,12 @@
+import 'dart:io';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mapview/constants/routes.dart';
 import 'package:mapview/services/exceptions.dart';
 import 'package:mapview/services/auth/auth_service.dart';
-import 'dart:io';
+import 'package:mapview/services/firebase_storage.dart';
 import 'package:mapview/utilities/error_dialog.dart';
 
 // void main() {
@@ -148,14 +150,18 @@ class _NewProfileViewState extends State<NewProfileView> {
     final username = _username.text;
     if (_formKey.currentState!.validate()) {
       try {
-        // await AuthService.firebase().updateUsername(username: username);
-        Navigator.of(context).pushNamed(
-          '/verifyemail/',
-        );
+        final taken = await FirebaseCloudStorage().isUsernameTaken(username);
+        print(taken);
+        if (taken) {
+          await showErrorDialog(context, "Username Taken",
+              "This username has been choosen. Please try a different username.");
+        } else {
+          await AuthService.firebase().updateUsername(username: username);
+          Navigator.of(context).pushNamed(verifyEmailRoute);
+        }
       } on GenericAuthException {
-        await showErrorDialog(context, "Username Taken",
-            "This username has been choosen. Please try a different username.");
-        // TODO: Check "username taken" error;
+        await showErrorDialog(context, "Undefined Error",
+            "Something bad happened. Please check your connectivity and try again.");
       } catch (e) {
         log(e.toString());
       }

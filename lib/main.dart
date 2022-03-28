@@ -14,7 +14,8 @@ void main() async {
   // final settingsController = SettingsController(SettingsService());
   // await settingsController.loadSettings();
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(
     MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -30,7 +31,7 @@ void main() async {
           mapRoute: (context) => const MapView(),
           newProfileRoute: (context) => const NewProfileView(),
           verifyEmailRoute: (context) => const VerifyEmailView(),
-          chatRoute:(context) => const ChatManagerView(),
+          chatRoute: (context) => const ChatManagerView(),
         }),
   );
 }
@@ -47,14 +48,14 @@ class HomePage extends StatelessWidget {
             case ConnectionState.done:
               final user = AuthService.firebase().currentUser;
               if (user != null && user.isEmailVerified) {
-                return MapView();
+                return Welcome();
+                // return MapView();
               } else {
                 return const Welcome();
               }
             default:
               return const CircularProgressIndicator();
           }
-        }
-    );
+        });
   }
 }

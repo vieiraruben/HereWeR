@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:mapview/services/auth/auth_service.dart';
 import 'package:mapview/services/chat_message.dart';
 import 'package:mapview/services/firebase_storage.dart';
@@ -19,7 +18,7 @@ class ChatManagerView extends StatefulWidget {
 class _ChatManagerViewState extends State<ChatManagerView> {
   late final TextEditingController _send;
   late final FirebaseCloudStorage _chatService;
-  String get userId => AuthService.firebase().currentUser!.id;
+  String get username => AuthService.firebase().currentUser!.username;
 
   @override
   void initState() {
@@ -36,7 +35,7 @@ class _ChatManagerViewState extends State<ChatManagerView> {
 
   void sendMessage() async {
     _chatService.sendMessage(
-        sender: "test123", text: _send.text, destination: "global");
+        sender: username, text: _send.text, destination: "global");
   }
 
   @override
@@ -57,46 +56,52 @@ class _ChatManagerViewState extends State<ChatManagerView> {
           ),
         ),
         body: Column(
-        children: [Expanded(child:
-            StreamBuilder(
-              stream: _chatService.allMessages(destination: "global"),
-              builder: (context, snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.waiting:
-                  case ConnectionState.active:
-                    if (snapshot.hasData) {
-                      final allMessages =
-                          snapshot.data as Iterable<ChatMessage>;
-                      return ChatView(
-                        messages: allMessages,
-                      );
-                    } else {
+          children: [
+            Expanded(
+              child: StreamBuilder(
+                stream: _chatService.allMessages(destination: "global"),
+                builder: (context, snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.waiting:
+                    case ConnectionState.active:
+                      if (snapshot.hasData) {
+                        final allMessages =
+                            snapshot.data as Iterable<ChatMessage>;
+                        return ChatView(
+                          messages: allMessages,
+                        );
+                      } else {
+                        return const CircularProgressIndicator();
+                      }
+                    default:
                       return const CircularProgressIndicator();
-                    }
-                  default:
-                    return const CircularProgressIndicator();
-                }
-              },
-        ),),
-            Align(
-          alignment: FractionalOffset.bottomCenter, child:TextFormField(
-              autofocus: true,
-              textInputAction: TextInputAction.send,
-              controller: _send,
-              onEditingComplete: () {
-                if (_send.text.isEmpty) return;
-                sendMessage();
-              },
-              // onFieldSubmitted: (v) {
-                
-              //   },
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
+                  }
+                },
               ),
-              enableSuggestions: true,
-              autocorrect: true,
-              keyboardType: TextInputType.multiline,
-            ),)
+            ),
+            Align(
+                alignment: FractionalOffset.bottomCenter,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                  child: TextFormField(
+                    autofocus: true,
+                    textInputAction: TextInputAction.send,
+                    controller: _send,
+                    onEditingComplete: () {
+                      if (_send.text.isEmpty) return;
+                      sendMessage();
+                      _send.clear();
+                    },
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: "Start typing...",
+                    ),
+                    enableSuggestions: true,
+                    autocorrect: true,
+                    keyboardType: TextInputType.multiline,
+                  ),
+                )),
           ],
         ));
   }

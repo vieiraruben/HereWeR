@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:mapview/firestoreData/firestoreConfig/firebase_options.dart';
 import 'package:mapview/services/auth/auth_provider.dart';
 import 'package:mapview/services/auth/auth_user.dart';
@@ -50,12 +49,20 @@ class FirebaseAuthProvider implements AuthProvider {
 
   @override
   AuthUser? get currentUser {
-    log(FirebaseAuth.instance.currentUser.toString());
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       return AuthUser.fromFirebase(user);
     } else {
       return null;
+    }
+  }
+
+  String get getUsername {
+    final username = FirebaseAuth.instance.currentUser?.displayName;
+    if (username != null) {
+      return username;
+    } else {
+      return "undefined";
     }
   }
 
@@ -132,7 +139,7 @@ class FirebaseAuthProvider implements AuthProvider {
     if (user != null) {
       try {
         await FirebaseAuth.instance.currentUser?.updateDisplayName(username);
-      } on FirebaseAuthException catch (e) {
+      } on FirebaseAuthException {
         throw GenericAuthException();
       } catch (_) {
         throw GenericAuthException();

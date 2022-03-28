@@ -62,7 +62,6 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    log(AuthService.firebase().currentUser.toString());
     return Scaffold(
       appBar: AppBar(title: const Text("Log In")),
       body: SingleChildScrollView(

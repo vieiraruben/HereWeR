@@ -39,7 +39,6 @@ class _VerifyEmailViewState extends State<VerifyEmailView>
 
   @override
   Widget build(BuildContext context) {
-    print(AuthService.firebase().currentUser);
     return Scaffold(
       appBar: AppBar(title: const Text("Get Started")),
       body: SingleChildScrollView(

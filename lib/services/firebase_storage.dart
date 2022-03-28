@@ -21,7 +21,7 @@ class FirebaseCloudStorage {
   final usernames = FirebaseFirestore.instance.collection('usernames');
   final messages = FirebaseFirestore.instance.collection('messages');
 
-  void addUser({
+  void addUsername({
     required String username,
     required String text,
     required String destination,
@@ -34,8 +34,6 @@ class FirebaseCloudStorage {
     });
   }
 
-// TODO: Quey usernames
-// TODO: Finish this
   Future<ChatMessage> addMessage({required String senderUserId}) async {
     final document = await messages.add({
       senderUserField: senderUserId,
@@ -52,10 +50,10 @@ class FirebaseCloudStorage {
 
 // Dynamic query (live changes)
   Stream<Iterable<ChatMessage>> allMessages({required String destination}) =>
-      messages.orderBy("dateTime", descending: true).
-      snapshots().map((event) => event.docs
-          .map((doc) => ChatMessage.fromSnapshot(doc))
-          .where((message) => message.destination == destination));
+      messages.orderBy("dateTime", descending: true).snapshots().map((event) =>
+          event.docs
+              .map((doc) => ChatMessage.fromSnapshot(doc))
+              .where((message) => message.destination == destination));
 
 // Static query
   Future<Iterable<ChatMessage>> getMessages(
@@ -65,41 +63,43 @@ class FirebaseCloudStorage {
           .where(destinationField, isEqualTo: destination)
           .get()
           .then(
-            (value) => value.docs.map(
-              (doc) {
-                // or
-                // ChatMessage.fromSnapshot(doc);
-                return ChatMessage(
-                  documentId: doc.id,
-                  senderId: doc.data()[senderUserField] as String,
-                  text: doc.data()[textField] as String,
-                  dateTime: doc.data()[dateTimeField] as Timestamp,
-                  destination: doc.data()[destinationField] as String,
-                );
-              },
-            ),
+            (value) => value.docs.map((doc) => ChatMessage.fromSnapshot(doc)),
           );
     } catch (e) {
       throw CouldNotGetAllDocumentException();
     }
   }
 
-  Future<ChatMessage> sendMessage({required String sender, required String text, required String destination}) async {
+  Future<ChatMessage> sendMessage(
+      {required String sender,
+      required String text,
+      required String destination}) async {
     final document = await messages.add({
-      senderUserField : sender,
-      textField : text,
-      destinationField : destination,
-      dateTimeField : Timestamp.now()
+      senderUserField: sender,
+      textField: text,
+      destinationField: destination,
+      dateTimeField: Timestamp.now()
     });
     final fetchedMessage = await document.get();
     return ChatMessage(
-      documentId: fetchedMessage.id,
-      senderId: sender,
-      text: text,
-      dateTime: Timestamp.now(),
-      destination: destination
-    );
+        documentId: fetchedMessage.id,
+        senderId: sender,
+        text: text,
+        dateTime: Timestamp.now(),
+        destination: destination);
   }
+
+  Future<bool> isUsernameTaken(String username) async {
+    var query = await usernames.where("username", isEqualTo: username).get();
+    if (query.docs.isEmpty) {
+      return false;
+    }
+    return true;
+  }
+
+  // bool isUsernameTaken(username) {
+  //   if (usernameTaken(username: username).)
+  // }
 
   static final FirebaseCloudStorage _shared =
       FirebaseCloudStorage._sharedInstance();

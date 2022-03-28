@@ -17,7 +17,8 @@ class ChatView extends StatelessWidget {
         reverse: true,
         itemBuilder: (context, index) {
           return ListTile(
-            visualDensity: VisualDensity.compact,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+            visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
             leading: CircleAvatar(
               radius: 20,
               backgroundColor:
@@ -28,7 +29,7 @@ class ChatView extends StatelessWidget {
               title: Text(
                 messages.elementAt(index).text,
                 softWrap: true,
-                overflow: TextOverflow.ellipsis,
+                overflow: TextOverflow.visible,
                 ),
                 subtitle: Text(messages.elementAt(index).senderId),
                 );
