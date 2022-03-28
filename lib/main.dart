@@ -1,10 +1,6 @@
-import 'dart:developer';
-import 'dart:io';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mapview/constants/routes.dart';
-import 'package:mapview/firestoreData/firestoreConfig/firebase_options.dart';
+import 'package:mapview/services/auth_service.dart';
 import 'package:mapview/views/mapview.dart';
 import 'package:flutter/services.dart';
 import 'package:mapview/views/verify_email.dart';
@@ -16,15 +12,7 @@ void main() async {
   // final settingsController = SettingsController(SettingsService());
   // await settingsController.loadSettings();
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-  if (Platform.isIOS) {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-  } else {
-    await Firebase.initializeApp();
-  }
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(
     MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -48,18 +36,12 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform,
-        ),
+        future: AuthService.firebase().initialize(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
-              final user = FirebaseAuth.instance.currentUser;
-              log(user.toString());
-              if (user?.isAnonymous ?? false || user == null) {
-                return const Welcome();
-              }
-              if (user?.emailVerified ?? false) {
+              final user = AuthService.firebase().currentUser;
+              if (user != null && user.isEmailVerified) {
                 return MapView();
               } else {
                 return const Welcome();
@@ -67,6 +49,7 @@ class HomePage extends StatelessWidget {
             default:
               return const CircularProgressIndicator();
           }
-        });
+        }
+    );
   }
 }

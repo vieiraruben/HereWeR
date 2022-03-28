@@ -1,8 +1,8 @@
 import 'dart:developer';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mapview/constants/routes.dart';
+import 'package:mapview/services/exceptions.dart';
+import 'package:mapview/services/auth_service.dart';
 import 'package:mapview/utilities/error_dialog.dart';
 
 // TODO: Add forgotten password option
@@ -38,38 +38,31 @@ class _LoginViewState extends State<LoginView> {
       final email = _email.text;
       final password = _password.text;
       try {
-        await FirebaseAuth.instance
-            .signInWithEmailAndPassword(email: email, password: password);
-        if (FirebaseAuth.instance.currentUser?.emailVerified ?? false) {
-          Navigator.of(context).pushNamed(
-            mapRoute,
-          );
+        await AuthService.firebase().logIn(email: email, password: password);
+        final user = AuthService.firebase().currentUser;
+        if (user?.isEmailVerified ?? false) {
+          Navigator.of(context).pushNamed(mapRoute);
         } else {
-          Navigator.of(context).pushNamed(
-            verifyEmailRoute,
-          );
+          Navigator.of(context).pushNamed(verifyEmailRoute);
         }
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'user-not-found') {
-          await showErrorDialog(context, "Login Failed",
+      } on UserNotFoundAuthException {
+        await showErrorDialog(context, "Login Failed",
               "We can't find an account with this email address. Please try again.");
-          log(e.code);
-        } else if (e.code == "wrong-password") {
-          log("Wrong password");
-          await showErrorDialog(context, "Incorrect Password",
+      } on WrongPasswordAuthException {
+        await showErrorDialog(context, "Incorrect Password",
               "The password you entered is incorrect. Please try again.");
-        } else {
-          log(e.code);
-        }
+      } on GenericAuthException {
+        await showErrorDialog(context, "Undefined Error",
+              "Something bad happened. Please check your connectivity and try again.");
       } catch (e) {
         log(e.toString());
       }
     }
   }
-// IconButton (icon:Icon(Icons.arrow_back)
 
   @override
   Widget build(BuildContext context) {
+    log(AuthService.firebase().currentUser.toString());
     return Scaffold(
       appBar: AppBar(title: const Text("Log In")),
       body: SingleChildScrollView(

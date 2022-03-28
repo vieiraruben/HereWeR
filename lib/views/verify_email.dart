@@ -1,9 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:mapview/constants/routes.dart';
+import 'package:mapview/services/auth_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class VerifyEmailView extends StatefulWidget {
@@ -39,7 +39,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView>
 
   @override
   Widget build(BuildContext context) {
-    String email = FirebaseAuth.instance.currentUser?.email ?? "";
+    print(AuthService.firebase().currentUser);
     return Scaffold(
       appBar: AppBar(title: const Text("Get Started")),
       body: SingleChildScrollView(
@@ -53,12 +53,12 @@ class _VerifyEmailViewState extends State<VerifyEmailView>
               const Text("Verify your email address."),
               const SizedBox(height: 50),
               const Text("A confirmation email will be sent to:"),
-              Text(email, style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text(AuthService.firebase().currentUser?.email ?? "undefined",
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(height: 50),
               ElevatedButton(
                   onPressed: () {
-                    final user = FirebaseAuth.instance.currentUser;
-                    user?.sendEmailVerification();
+                    AuthService.firebase().sendEmailVerification();
                   },
                   child: const Text("Send Email")),
               const SizedBox(height: 50),
