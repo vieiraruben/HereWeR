@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mapview/services/exceptions.dart';
-import 'package:mapview/services/auth_service.dart';
+import 'package:mapview/services/auth/auth_service.dart';
 import 'dart:io';
 import 'package:mapview/utilities/error_dialog.dart';
 

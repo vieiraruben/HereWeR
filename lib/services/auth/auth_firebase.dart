@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:mapview/firestoreData/firestoreConfig/firebase_options.dart';
-import 'package:mapview/services/auth_provider.dart';
-import 'package:mapview/services/auth_user.dart';
+import 'package:mapview/services/auth/auth_provider.dart';
+import 'package:mapview/services/auth/auth_user.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:mapview/services/exceptions.dart';
 

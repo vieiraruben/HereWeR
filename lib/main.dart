@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mapview/constants/routes.dart';
-import 'package:mapview/services/auth_service.dart';
+import 'package:mapview/services/auth/auth_service.dart';
+import 'package:mapview/views/chat_manager_view.dart';
 import 'package:mapview/views/mapview.dart';
 import 'package:flutter/services.dart';
 import 'package:mapview/views/verify_email.dart';
@@ -23,9 +24,10 @@ void main() async {
           welcomeRoute: (context) => const Welcome(),
           loginRoute: (context) => const LoginView(),
           signupRoute: (context) => const SignUpView(),
-          mapRoute: (context) => MapView(),
+          mapRoute: (context) => const MapView(),
           newProfileRoute: (context) => const NewProfileView(),
           verifyEmailRoute: (context) => const VerifyEmailView(),
+          chatRoute:(context) => const ChatManagerView(),
         }),
   );
 }

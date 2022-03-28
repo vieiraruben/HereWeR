@@ -168,15 +168,21 @@ class _WelcomeState extends State<Welcome> {
           alignment: FractionalOffset.bottomCenter,
           child: SizedBox(
             height: 50,
-            child: GestureDetector(
-              child: const Text("Powered by HereWeR © 2022"),
-              onTap: () async {
-                await getMarkers();
-                Navigator.of(context).popAndPushNamed('/mapview/');
+            child: Row(children: [GestureDetector(
+              child: const Text("Powered by HereWeR © 2022 MAP HERE!"),
+              onTap: () {
+                // await getMarkers();
+                Navigator.of(context).pushNamed(mapRoute);
+              },
+            ),GestureDetector(
+              child: const Text("CHAT HERE!"),
+              onTap: () {
+                // await getMarkers();
+                Navigator.of(context).pushNamed(chatRoute);
               },
             ),
-          ),
-        ),
+            ]),
+        )),
       ])),
     );
   }

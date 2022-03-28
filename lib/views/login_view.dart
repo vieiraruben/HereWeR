@@ -2,7 +2,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:mapview/constants/routes.dart';
 import 'package:mapview/services/exceptions.dart';
-import 'package:mapview/services/auth_service.dart';
+import 'package:mapview/services/auth/auth_service.dart';
 import 'package:mapview/utilities/error_dialog.dart';
 
 // TODO: Add forgotten password option
@@ -47,13 +47,13 @@ class _LoginViewState extends State<LoginView> {
         }
       } on UserNotFoundAuthException {
         await showErrorDialog(context, "Login Failed",
-              "We can't find an account with this email address. Please try again.");
+            "We can't find an account with this email address. Please try again.");
       } on WrongPasswordAuthException {
         await showErrorDialog(context, "Incorrect Password",
-              "The password you entered is incorrect. Please try again.");
+            "The password you entered is incorrect. Please try again.");
       } on GenericAuthException {
         await showErrorDialog(context, "Undefined Error",
-              "Something bad happened. Please check your connectivity and try again.");
+            "Something bad happened. Please check your connectivity and try again.");
       } catch (e) {
         log(e.toString());
       }

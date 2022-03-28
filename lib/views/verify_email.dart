@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:mapview/constants/routes.dart';
-import 'package:mapview/services/auth_service.dart';
+import 'package:mapview/services/auth/auth_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class VerifyEmailView extends StatefulWidget {

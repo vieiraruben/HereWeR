@@ -1,6 +1,6 @@
-import 'package:mapview/services/auth_provider.dart';
-import 'package:mapview/services/auth_user.dart';
-import 'package:mapview/services/auth_firebase.dart';
+import 'package:mapview/services/auth/auth_provider.dart';
+import 'package:mapview/services/auth/auth_user.dart';
+import 'package:mapview/services/auth/auth_firebase.dart';
 
 class AuthService implements AuthProvider {
   final AuthProvider provider;
