@@ -11,10 +11,8 @@ class ChatView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Flexible(
-        child: Container(constraints: const BoxConstraints(maxHeight: 600),
-          child:ListView.builder(
+    return Container(
+      constraints: const BoxConstraints(maxHeight: 600), child: ListView.builder(
         itemCount: messages.length,
         reverse: true,
         itemBuilder: (context, index) {
@@ -34,8 +32,7 @@ class ChatView extends StatelessWidget {
                 ),
                 subtitle: Text(messages.elementAt(index).senderId),
                 );
-          },),)
-        ),
+          },),
     );
   }
 }

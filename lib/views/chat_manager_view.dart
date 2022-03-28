@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:mapview/services/auth/auth_service.dart';
 import 'package:mapview/services/chat_message.dart';
 import 'package:mapview/services/firebase_storage.dart';
@@ -33,9 +34,9 @@ class _ChatManagerViewState extends State<ChatManagerView> {
     super.dispose();
   }
 
-  void sendMessage(String value) async {
+  void sendMessage() async {
     _chatService.sendMessage(
-        sender: "test123", text: value, destination: "global");
+        sender: "test123", text: _send.text, destination: "global");
   }
 
   @override
@@ -56,8 +57,7 @@ class _ChatManagerViewState extends State<ChatManagerView> {
           ),
         ),
         body: Column(
-        children: [Container(
-          height: MediaQuery.of(context).size.height/1.5,child:
+        children: [Expanded(child:
             StreamBuilder(
               stream: _chatService.allMessages(destination: "global"),
               builder: (context, snapshot) {
@@ -78,17 +78,25 @@ class _ChatManagerViewState extends State<ChatManagerView> {
                 }
               },
         ),),
-            TextFormField(
+            Align(
+          alignment: FractionalOffset.bottomCenter, child:TextFormField(
               autofocus: true,
-              textInputAction: TextInputAction.next,
-              onFieldSubmitted: (v) => sendMessage(v),
+              textInputAction: TextInputAction.send,
+              controller: _send,
+              onEditingComplete: () {
+                if (_send.text.isEmpty) return;
+                sendMessage();
+              },
+              // onFieldSubmitted: (v) {
+                
+              //   },
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
               ),
               enableSuggestions: true,
               autocorrect: true,
               keyboardType: TextInputType.multiline,
-            ),
+            ),)
           ],
         ));
   }
