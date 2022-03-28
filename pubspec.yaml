@@ -48,6 +48,9 @@ dependencies:
   url_launcher: ^6.0.20
   equatable: ^2.0.3
   flutter_speed_dial: ^5.0.0+1
+  bot_toast: ^4.0.1
+  geolocator: ^8.2.0
+  latlong2: ^0.8.1
 
 
 dev_dependencies:
