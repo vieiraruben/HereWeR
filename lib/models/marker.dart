@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart' as LatLng;
-import '../firestoreData/markers_data.dart';
-import '../views/mapview.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class MyMarker extends StatefulWidget {
   String type;
@@ -45,13 +44,13 @@ class _MyMarkerState extends State<MyMarker> {
   Widget build(BuildContext context) {
     return RawMaterialButton(
       onPressed: () async{
-        await getMarkers("croix rouge");
-        setState(() {
-          MapView();
-        });
-
-
-      },
+        showTopSnackBar(
+            context,
+            const CustomSnackBar.info(
+            message:
+            "There is some information. You need to do something with that",
+        ));
+        },
       constraints: const BoxConstraints.expand(width: 40, height: 40),
       child: Icon(
         widget.icon,

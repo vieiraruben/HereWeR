@@ -13,7 +13,7 @@ import 'package:latlong2/latlong.dart' as LatLng;
     CollectionReference markersRef = await FirebaseFirestore.instance.collection('markers');
     QuerySnapshot querySnapshot = await markersRef.get();
     for (var doc in querySnapshot.docs) {
-      if (doc.get("type") == whichType) {
+      //if (doc.get("type") == whichType) {
           String type = doc.get("type");
           GeoPoint geoPoint = doc.get("position");
           double lat = geoPoint.latitude;
@@ -25,9 +25,10 @@ import 'package:latlong2/latlong.dart' as LatLng;
             point: myMarker.coor,
             builder: (ctx) => myMarker,
           );
+
           mapMarkers.add(marker);
 
-      }
+      //}
     }
   }
 
