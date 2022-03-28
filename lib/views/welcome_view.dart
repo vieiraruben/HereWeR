@@ -171,7 +171,7 @@ class _WelcomeState extends State<Welcome> {
             child: GestureDetector(
               child: const Text("Powered by HereWeR © 2022"),
               onTap: () async {
-                await getMarkers("wc");
+                await getMarkers();
                 Navigator.of(context).popAndPushNamed('/mapview/');
               },
             ),

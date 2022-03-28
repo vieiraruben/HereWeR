@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
@@ -5,22 +7,33 @@ import 'package:latlong2/latlong.dart' as LatLng;
 import 'package:geolocator/geolocator.dart' as geo;
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:mapview/firestoreData/markers_data.dart';
 
 import '../models/marker.dart';
 
-List<Marker> mapMarkers = [];
+
 class MapView extends StatefulWidget {
-  MapView({Key? key}) : super(key: key);
+  const MapView({Key? key}) : super(key: key);
   @override
   State<MapView> createState() => _MapViewState();
 }
 
 class _MapViewState extends State<MapView> {
+  List<Marker> restList = [];
+  bool showRestaurants = false;
+  List<Marker> croixRougeList = [];
+  bool showCroixRouge = true;
+  List<Marker> wcList= [];
+  bool showWc = false;
+  Map<String, List<Marker>> mapMarkers = {};
+  List<Marker> activeMarkers = [];
+
+
   var renderOverlay = true;
   var visible = true;
   var switchLabelPosition = false;
   var extend = false;
-  var rmicons = true;
+  var rmicons = false;
   var customDialRoot = false;
   var closeManually = false;
   var useRAnimation = false;
@@ -31,11 +44,24 @@ class _MapViewState extends State<MapView> {
 
 
 
+
+  @override
+  void initState() {
+
+    mapMarkers = {"restaurant" : restList, "wc" : wcList, "croix rouge" : croixRougeList};
+    for (MyMarker marker in markers) {
+      Marker mapMarker = Marker(point: marker.coor, builder: (ctx) => MyMarker(marker.type, marker.coor));
+      mapMarkers[marker.type]?.add(mapMarker);
+    }
+    activeMarkers.addAll(croixRougeList);
+    super.initState();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:
-      FlutterMap(
+      body: FlutterMap(
         options: MapOptions(
           center: LatLng.LatLng(51.50654, -0.173030),
           zoom: 16.7,
@@ -94,7 +120,10 @@ class _MapViewState extends State<MapView> {
             ),
           )),
           MarkerLayerWidget(
-            options: MarkerLayerOptions(markers: [...mapMarkers]),
+            options: MarkerLayerOptions(
+                markers: [
+                  ... activeMarkers
+                ]),
           )
         ],
       ),
@@ -169,30 +198,52 @@ class _MapViewState extends State<MapView> {
       childMargin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       children: [
         SpeedDialChild(
-          child: !rmicons ? const Icon(Icons.accessibility) : null,
-          backgroundColor: Colors.red,
+          child: const Icon(Icons.restaurant_rounded),
+          backgroundColor: !showRestaurants ? Colors.grey : Colors.blueAccent,
           foregroundColor: Colors.white,
-          label: 'First',
-          onLongPress: () => debugPrint('FIRST CHILD LONG PRESS'),
-        ),
-        SpeedDialChild(
-          child: !rmicons ? const Icon(Icons.brush) : null,
-          backgroundColor: Colors.deepOrange,
-          foregroundColor: Colors.white,
-          label: 'Second',
           onTap: () => setState(() {
-            mapMarkers.add(Marker(point: LatLng.LatLng(51.50654, -0.173030), builder: (ctx) => MyMarker("restaurant", LatLng.LatLng(51.50654, -0.173030))));
+            List<Marker>? list = mapMarkers["restaurant"];
+            if (showRestaurants == false){
+              activeMarkers.addAll(list!);
+              showRestaurants = true;
+            }
+            else {
+              activeMarkers.removeWhere((element) => list!.contains(element));
+              showRestaurants = false;
+            }
           }),
         ),
         SpeedDialChild(
-          child: !rmicons ? const Icon(Icons.margin) : null,
-          backgroundColor: Colors.indigo,
+          child: const Icon(Icons.wc_rounded),
+          backgroundColor: !showWc ? Colors.grey : Colors.green,
           foregroundColor: Colors.white,
-          label: 'Show Snackbar',
-          visible: true,
-          onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text(("Third Child Pressed")))),
-          onLongPress: () => debugPrint('THIRD CHILD LONG PRESS'),
+          onTap: () => setState(() {
+              List<Marker>? list = mapMarkers["wc"];
+              if (showWc == false){
+                activeMarkers.addAll(list!);
+                showWc = true;
+              }
+              else {
+                activeMarkers.removeWhere((element) => list!.contains(element));
+                showWc = false;
+              }
+          }),
+        ),
+        SpeedDialChild(
+          child: const Icon(Icons.health_and_safety_rounded),
+          backgroundColor: !showCroixRouge ? Colors.grey : Colors.redAccent,
+          foregroundColor: Colors.white,
+          onTap: () => setState(() {
+            List<Marker>? list = mapMarkers["croix rouge"];
+            if (showCroixRouge == false){
+              activeMarkers.addAll(list!);
+              showCroixRouge = true;
+            }
+            else {
+              activeMarkers.removeWhere((element) => list!.contains(element));
+              showCroixRouge = false;
+            }
+          }),
         ),
       ],
     ),
