@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -19,6 +18,7 @@ class MapView extends StatefulWidget {
 }
 
 class _MapViewState extends State<MapView> {
+
   List<Marker> restList = [];
   bool showRestaurants = false;
   List<Marker> croixRougeList = [];
@@ -44,7 +44,6 @@ class _MapViewState extends State<MapView> {
 
 
 
-
   @override
   void initState() {
 
@@ -54,12 +53,14 @@ class _MapViewState extends State<MapView> {
       mapMarkers[marker.type]?.add(mapMarker);
     }
     activeMarkers.addAll(croixRougeList);
+
     super.initState();
   }
 
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: FlutterMap(
         options: MapOptions(
@@ -157,34 +158,20 @@ class _MapViewState extends State<MapView> {
         );
       } : null,
       buttonSize:
-      buttonSize, // it's the SpeedDial size which defaults to 56 itself
-      // iconTheme: IconThemeData(size: 22),
+      buttonSize,
       label: extend
           ? const Text("Open")
-          : null, // The label of the main button.
-      /// The active label of the main button, Defaults to label if not specified.
+          : null, // The label of the main button..
       activeLabel: extend ? const Text("Close") : null,
-
-      /// Transition Builder between label and activeLabel, defaults to FadeTransition.
-      // labelTransitionBuilder: (widget, animation) => ScaleTransition(scale: animation,child: widget),
-      /// The below button size defaults to 56 itself, its the SpeedDial childrens size
       childrenButtonSize: childrenButtonSize,
       visible: visible,
       direction: SpeedDialDirection.down,
       switchLabelPosition: switchLabelPosition,
-
-      /// If true user is forced to close dial manually
       closeManually: closeManually,
-
-      /// If false, backgroundOverlay will not be rendered.
       renderOverlay: renderOverlay,
       overlayColor: Colors.black,
       overlayOpacity: 0.1,
-      onOpen: () => debugPrint('OPENING DIAL'),
-      onClose: () => debugPrint('DIAL CLOSED'),
       useRotationAnimation: useRAnimation,
-      tooltip: 'Open Speed Dial',
-      heroTag: 'speed-dial-hero-tag',
       foregroundColor: Colors.white,
       backgroundColor: Colors.blue,
       activeForegroundColor: Colors.white,
@@ -195,7 +182,7 @@ class _MapViewState extends State<MapView> {
       shape: customDialRoot
           ? const RoundedRectangleBorder()
           : const StadiumBorder(),
-      childMargin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      childMargin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       children: [
         SpeedDialChild(
           child: const Icon(Icons.restaurant_rounded),

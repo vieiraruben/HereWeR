@@ -3,13 +3,13 @@ import 'package:location/location.dart';
 late bool _serviceEnabled;
 late PermissionStatus _permissionGranted;
 
-Future<void> getUserLocationPermission() async {
+Future<Location?> getUserLocationPermission() async {
   Location location = Location();
   _serviceEnabled = await location.serviceEnabled();
   if (!_serviceEnabled) {
     _serviceEnabled = await location.requestService();
     if (!_serviceEnabled) {
-      return;
+      return null;
     }
   }
   // Check if permission is granted
@@ -17,8 +17,9 @@ Future<void> getUserLocationPermission() async {
   if (_permissionGranted == PermissionStatus.denied) {
     _permissionGranted = await location.requestPermission();
     if (_permissionGranted != PermissionStatus.granted) {
-      return;
+      return null;
     }
   }
   await location.getLocation();
+  return location;
 }

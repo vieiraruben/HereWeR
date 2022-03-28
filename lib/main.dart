@@ -1,3 +1,4 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:mapview/constants/routes.dart';
 import 'package:mapview/services/auth_service.dart';
@@ -18,6 +19,8 @@ void main() async {
         debugShowCheckedModeBanner: false,
         title: 'Hyde Park Fest',
         theme: ThemeData(primarySwatch: Colors.indigo),
+        builder: BotToastInit(),
+        navigatorObservers: [BotToastNavigatorObserver()],
         home: const HomePage(),
         routes: {
           welcomeRoute: (context) => const Welcome(),
