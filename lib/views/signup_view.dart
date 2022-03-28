@@ -1,8 +1,9 @@
 import 'dart:developer';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mapview/services/exceptions.dart';
+import 'package:mapview/services/auth_service.dart';
 import 'dart:io';
 import 'package:mapview/utilities/error_dialog.dart';
 
@@ -41,24 +42,18 @@ class _SignUpViewState extends State<SignUpView> {
     final password = _password.text;
     if (_formKey.currentState!.validate()) {
       try {
-        await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(email: email, password: password);
-        Navigator.of(context).pushNamed(
-          '/signup/newprofile/',
-        );
-      } on FirebaseAuthException catch (e) {
-        if (e.code == "weak-password") {
-          showErrorDialog(context, "Weak Password",
-              "This password is too easy to guess. Please try a stronger password.");
-        } else if (e.code == "email-already-in-use") {
-          showErrorDialog(context, "Sign Up Failed",
-              "An account already exists for this email address. Please log in.");
-        } else if (e.code == "invalid-email") {
-          showErrorDialog(context, "Sign Up Failed",
-              "The email address you entered is invalid. Please try again.");
-        } else {
-          log(e.code);
-        }
+        await AuthService.firebase()
+            .createUser(email: email, password: password);
+        Navigator.of(context).pushNamed('/signup/newprofile/');
+      } on WeakPasswordAuthException {
+        showErrorDialog(context, "Weak Password",
+            "This password is too easy to guess. Please try a stronger password.");
+      } on EmailAlreadyInUseAuthException {
+        showErrorDialog(context, "Sign Up Failed",
+            "An account already exists for this email address. Please log in.");
+      } on InvalidEmailAuthException {
+        showErrorDialog(context, "Sign Up Failed",
+            "The email address you entered is invalid. Please try again.");
       } catch (e) {
         log(e.toString());
       }
@@ -153,13 +148,14 @@ class _NewProfileViewState extends State<NewProfileView> {
     final username = _username.text;
     if (_formKey.currentState!.validate()) {
       try {
-        await FirebaseAuth.instance.currentUser?.updateDisplayName(username);
+        // await AuthService.firebase().updateUsername(username: username);
         Navigator.of(context).pushNamed(
           '/verifyemail/',
         );
-      } on FirebaseAuthException catch (e) {
+      } on GenericAuthException {
+        await showErrorDialog(context, "Username Taken",
+            "This username has been choosen. Please try a different username.");
         // TODO: Check "username taken" error;
-        log(e.code);
       } catch (e) {
         log(e.toString());
       }

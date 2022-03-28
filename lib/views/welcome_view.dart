@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:mapview/constants/routes.dart';
 import 'package:mapview/firestoreData/markers_data.dart';
+// import 'package:mapview/services/firebase_storage.dart';
 
 class Welcome extends StatefulWidget {
   const Welcome({Key? key}) : super(key: key);
@@ -36,6 +39,9 @@ class _WelcomeState extends State<Welcome> {
 
   @override
   Widget build(BuildContext context) {
+    
+    // FirebaseCloudStorage().addUsername(username: "john");
+    
     double width = MediaQuery.of(context).size.width;
     var conditionalStyle = [1.0, 20.0];
     if (MediaQuery.of(context).size.width <= 320) {
