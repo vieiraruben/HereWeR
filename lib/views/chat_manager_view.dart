@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mapview/services/auth/auth_service.dart';
 import 'package:mapview/services/chat_message.dart';
-import 'package:mapview/services/firebase_storage.dart';
+import 'package:mapview/services/firebase_database.dart';
 import 'package:mapview/views/chat_view.dart';
 
 extension Count<T extends Iterable> on Stream<T> {

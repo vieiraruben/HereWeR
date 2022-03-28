@@ -51,6 +51,7 @@ dependencies:
   bot_toast: ^4.0.1
   geolocator: ^8.2.0
   latlong2: ^0.8.1
+  firebase_storage: ^10.2.9
 
 
 dev_dependencies:

@@ -18,9 +18,19 @@ void main() async {
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(
     MaterialApp(
+      theme: ThemeData(
+        primarySwatch: Colors.indigo,
+        brightness: Brightness.light,
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        primarySwatch: Colors.indigo,
+        scaffoldBackgroundColor: Colors.black,
+        appBarTheme: const AppBarTheme(backgroundColor: Colors.indigo)
+      ),
+      themeMode: ThemeMode.system, 
         debugShowCheckedModeBanner: false,
         title: 'Hyde Park Fest',
-        theme: ThemeData(primarySwatch: Colors.indigo),
         builder: BotToastInit(),
         navigatorObservers: [BotToastNavigatorObserver()],
         home: const HomePage(),
