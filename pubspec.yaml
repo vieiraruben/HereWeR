@@ -52,6 +52,7 @@ dependencies:
   geolocator: ^8.2.0
   latlong2: ^0.8.1
   emoji_picker: ^0.1.0
+  firebase_storage: ^10.2.9
 
 
 dev_dependencies:

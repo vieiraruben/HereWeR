@@ -1,9 +1,8 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:mapview/constants/routes.dart';
 import 'package:mapview/firestoreData/markers_data.dart';
+import 'package:mapview/services/auth/auth_firebase.dart';
 // import 'package:mapview/services/firebase_storage.dart';
 
 class Welcome extends StatefulWidget {
@@ -39,9 +38,6 @@ class _WelcomeState extends State<Welcome> {
 
   @override
   Widget build(BuildContext context) {
-    
-    // FirebaseCloudStorage().addUsername(username: "john");
-    
     double width = MediaQuery.of(context).size.width;
     var conditionalStyle = [1.0, 20.0];
     if (MediaQuery.of(context).size.width <= 320) {
@@ -51,7 +47,6 @@ class _WelcomeState extends State<Welcome> {
       conditionalStyle[0] = 27.0;
       conditionalStyle[1] = 17.0;
     }
-    // double height = MediaQuery.of(context).size.height;
     final List<String> imgList = [
       'assets/images/map.png',
       'assets/images/chat.png',
@@ -165,18 +160,26 @@ class _WelcomeState extends State<Welcome> {
           ),
         ),
         Align(
-          alignment: FractionalOffset.bottomCenter,
-          child: SizedBox(
-            height: 50,
-            child: GestureDetector(
-              child: const Text("Powered by HereWeR © 2022"),
-              onTap: () async {
-                await getMarkers();
-                Navigator.of(context).popAndPushNamed('/mapview/');
-              },
-            ),
-          ),
-        ),
+            alignment: FractionalOffset.bottomCenter,
+            child: SizedBox(
+              height: 50,
+              child: Row(children: [
+                GestureDetector(
+                  child: const Text("Powered by HereWeR © 2022 MAP HERE!"),
+                  onTap: () async {
+                    await getMarkers();
+                    Navigator.of(context).pushNamed(mapRoute);
+                  },
+                ),
+                GestureDetector(
+                  child: const Text("CHAT HERE!"),
+                  onTap: () {
+                    // await getMarkers();
+                    Navigator.of(context).pushNamed(chatRoute);
+                  },
+                ),
+              ]),
+            )),
       ])),
     );
   }
