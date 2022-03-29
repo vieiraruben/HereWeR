@@ -91,6 +91,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   final _textController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   bool _isComposing = false;
+
   void _handleSubmitted(String text) {
     _textController.clear();
     setState(() {
