@@ -159,7 +159,6 @@ class _NewProfileViewState extends State<NewProfileView> {
           await showErrorDialog(context, "Username Taken",
               "This username has been choosen. Please try a different username.");
         } else {
-          print("hello");
           await AuthService.firebase().updateUsername(username: username);
           FirebaseCloudDatabase().addUsername(username);
           if (profilePic != null) {
@@ -169,8 +168,8 @@ class _NewProfileViewState extends State<NewProfileView> {
             );
             FirebaseCloudDatabase()
                 .addProfilePic(username, path.basename(profilePic!.path));
-            Navigator.of(context).pushNamed(verifyEmailRoute);
           }
+          Navigator.of(context).pushNamed(verifyEmailRoute);
         }
       } on GenericAuthException {
         await showErrorDialog(context, "Undefined Error",

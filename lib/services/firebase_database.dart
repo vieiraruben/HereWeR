@@ -93,6 +93,8 @@ class FirebaseCloudDatabase {
             .ref()
             .child(value.docs.first.data()['photoUrl'])
             .getDownloadURL();
+      } else {
+        return "default";
       }
     } catch (e) {
       throw CouldNotGetDocumentException();

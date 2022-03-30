@@ -15,13 +15,12 @@ class ChatView extends StatefulWidget {
   State<ChatView> createState() => _ChatViewState();
 }
 
-Future<CachedNetworkImageProvider> downloadPic(String username) async {
+Future<CachedNetworkImageProvider?> downloadPic(String username) async {
   String? url = await FirebaseCloudDatabase().getProfilePic(username);
-  if (url != null) {
+  if (url != null && url != "default") {
     return CachedNetworkImageProvider(url);
     // Image.network(url);
   }
-  return const CachedNetworkImageProvider('assets/images/defaultprofile.png');
 }
 
 class _ChatViewState extends State<ChatView> {
@@ -38,15 +37,20 @@ class _ChatViewState extends State<ChatView> {
             visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
             leading: FutureBuilder(
                 future: downloadPic(widget.messages.elementAt(index).senderId),
-                builder: (context, AsyncSnapshot<CachedNetworkImageProvider> snapshot) {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.done:
-                      return CircleAvatar(
-                          radius: 20,
-                          backgroundColor:
-                              const Color.fromARGB(255, 192, 229, 228),
-                          foregroundImage: snapshot.data!);
-                    default:
+                builder: (context,
+                    AsyncSnapshot<CachedNetworkImageProvider?> snapshot) {
+                  // switch (snapshot.connectionState) {
+                  //   case ConnectionState.done:
+                      if (snapshot.hasData) {
+                        return CircleAvatar(
+                            radius: 20,
+                            backgroundColor:
+                                const Color.fromARGB(255, 192, 229, 228),
+                            foregroundImage: snapshot.data);
+                      }
+                      // break;
+                    // default:
+                    else {
                       return CircleAvatar(
                         radius: 20,
                         backgroundColor:
