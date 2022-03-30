@@ -23,7 +23,7 @@ class CloudStorageException implements Exception {
 
 class CouldNotCreateDocumentException extends CloudStorageException {}
 
-class CouldNotGetAllDocumentException extends CloudStorageException {}
+class CouldNotGetDocumentException extends CloudStorageException {}
 
 class CouldNotUpdateDocumentException extends CloudStorageException {}
 

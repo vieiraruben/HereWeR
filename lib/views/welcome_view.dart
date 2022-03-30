@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:mapview/constants/carousel.dart';
 import 'package:mapview/constants/routes.dart';
 import 'package:mapview/firestoreData/markers_data.dart';
-import 'package:mapview/services/auth/auth_firebase.dart';
-// import 'package:mapview/services/firebase_storage.dart';
 
 class Welcome extends StatefulWidget {
   const Welcome({Key? key}) : super(key: key);
@@ -47,18 +46,6 @@ class _WelcomeState extends State<Welcome> {
       conditionalStyle[0] = 27.0;
       conditionalStyle[1] = 17.0;
     }
-    final List<String> imgList = [
-      'assets/images/map.png',
-      'assets/images/chat.png',
-      'assets/images/micro.png',
-      'assets/images/mega.png',
-    ];
-    final List<String> detailsList = [
-      'Easily find your way\nthrough the crowd',
-      'Connect with your\nfellow festival goers',
-      'Check out showtimes for your most anticipated concerts',
-      "Don't miss out on news throughout the event"
-    ];
 
     final List<Widget> imageSliders = imgList
         .map((item) => Container(
@@ -95,7 +82,7 @@ class _WelcomeState extends State<Welcome> {
               Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         const SizedBox(height: 15),
         Flexible(
-          flex: 3,
+          flex: 4,
           child: CarouselSlider(
             items: imageSliders,
             carouselController: _controller,
@@ -163,7 +150,7 @@ class _WelcomeState extends State<Welcome> {
             alignment: FractionalOffset.bottomCenter,
             child: SizedBox(
               height: 50,
-              child: Row(children: [
+              child: Column(children: [
                 GestureDetector(
                   child: const Text("Powered by HereWeR © 2022 MAP HERE!"),
                   onTap: () async {

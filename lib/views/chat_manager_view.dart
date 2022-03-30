@@ -17,13 +17,13 @@ class ChatManagerView extends StatefulWidget {
 
 class _ChatManagerViewState extends State<ChatManagerView> {
   late final TextEditingController _send;
-  late final FirebaseCloudStorage _chatService;
-  String get username => AuthService.firebase().currentUser!.username;
+  late final FirebaseCloudDatabase _chatService;
+  String get username => AuthService.firebase().currentUser?.username ?? "bob";
 
   @override
   void initState() {
     _send = TextEditingController();
-    _chatService = FirebaseCloudStorage();
+    _chatService = FirebaseCloudDatabase();
     super.initState();
   }
 

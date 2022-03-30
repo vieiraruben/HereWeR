@@ -28,7 +28,6 @@ void main() async {
         scaffoldBackgroundColor: Colors.black,
         appBarTheme: const AppBarTheme(backgroundColor: Colors.indigo)
       ),
-      themeMode: ThemeMode.system, 
         debugShowCheckedModeBanner: false,
         title: 'Hyde Park Fest',
         builder: BotToastInit(),

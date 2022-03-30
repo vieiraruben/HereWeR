@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'dart:developer';
+import 'package:mapview/services/auth/auth_firebase.dart';
+import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -7,6 +9,7 @@ import 'package:mapview/constants/routes.dart';
 import 'package:mapview/services/exceptions.dart';
 import 'package:mapview/services/auth/auth_service.dart';
 import 'package:mapview/services/firebase_database.dart';
+import 'package:mapview/services/firebase_storage.dart';
 import 'package:mapview/utilities/error_dialog.dart';
 
 // void main() {
@@ -150,14 +153,24 @@ class _NewProfileViewState extends State<NewProfileView> {
     final username = _username.text;
     if (_formKey.currentState!.validate()) {
       try {
-        final taken = await FirebaseCloudStorage().isUsernameTaken(username);
+        final taken = await FirebaseCloudDatabase().isUsernameTaken(username);
         print(taken);
         if (taken) {
           await showErrorDialog(context, "Username Taken",
               "This username has been choosen. Please try a different username.");
         } else {
+          print("hello");
           await AuthService.firebase().updateUsername(username: username);
-          Navigator.of(context).pushNamed(verifyEmailRoute);
+          FirebaseCloudDatabase().addUsername(username);
+          if (profilePic != null) {
+            await FireStorage().upload(
+              fileName: path.basename(profilePic!.path),
+              imageFile: profilePic!,
+            );
+            FirebaseCloudDatabase()
+                .addProfilePic(username, path.basename(profilePic!.path));
+            Navigator.of(context).pushNamed(verifyEmailRoute);
+          }
         }
       } on GenericAuthException {
         await showErrorDialog(context, "Undefined Error",
@@ -225,8 +238,10 @@ class _NewProfileViewState extends State<NewProfileView> {
                   onFieldSubmitted: (v) => nextButtonAction(),
                   // autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) {
-                    if (value == null || value.isEmpty || value.length < 3) {
+                    if (value == null || value.isEmpty) {
                       return 'Please choose your username';
+                    } else if (value.length < 3) {
+                      return 'Please choose a longer username';
                     }
                     return null;
                   },
