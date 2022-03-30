@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:mapview/services/chat_message.dart';
 import 'package:mapview/services/exceptions.dart';
 
@@ -17,43 +21,9 @@ class Username {
       : username = snapshot.data()[usernameField];
 }
 
-class FirebaseCloudStorage {
-  final usernames = FirebaseFirestore.instance.collection('usernames');
+class FirebaseCloudDatabase {
+  final usernames = FirebaseFirestore.instance.collection('users');
   final messages = FirebaseFirestore.instance.collection('messages');
-
-  void addUsername({
-    required String username,
-    required String text,
-    required String destination,
-  }) async {
-    await usernames.add({
-      usernameField: username,
-      textField: text,
-      dateTimeField: DateTime.now(),
-      destinationField: destination
-    });
-  }
-
-  Future<ChatMessage> addMessage({required String senderUserId}) async {
-    final document = await messages.add({
-      senderUserField: senderUserId,
-      textField: 'test',
-    });
-    final fetchedMessage = await document.get();
-    return ChatMessage(
-        documentId: fetchedMessage.id,
-        senderId: senderUserId,
-        text: '',
-        destination: "testRecipient",
-        dateTime: Timestamp.now());
-  }
-
-// Dynamic query (live changes)
-  Stream<Iterable<ChatMessage>> allMessages({required String destination}) =>
-      messages.orderBy("dateTime", descending: true).snapshots().map((event) =>
-          event.docs
-              .map((doc) => ChatMessage.fromSnapshot(doc))
-              .where((message) => message.destination == destination));
 
 // Static query
   Future<Iterable<ChatMessage>> getMessages(
@@ -66,9 +36,16 @@ class FirebaseCloudStorage {
             (value) => value.docs.map((doc) => ChatMessage.fromSnapshot(doc)),
           );
     } catch (e) {
-      throw CouldNotGetAllDocumentException();
+      throw CouldNotGetDocumentException();
     }
   }
+
+  // Dynamic query (live changes)
+  Stream<Iterable<ChatMessage>> allMessages({required String destination}) =>
+      messages.orderBy("dateTime", descending: true).snapshots().map((event) =>
+          event.docs
+              .map((doc) => ChatMessage.fromSnapshot(doc))
+              .where((message) => message.destination == destination));
 
   Future<ChatMessage> sendMessage(
       {required String sender,
@@ -82,11 +59,44 @@ class FirebaseCloudStorage {
     });
     final fetchedMessage = await document.get();
     return ChatMessage(
-        documentId: fetchedMessage.id,
-        senderId: sender,
-        text: text,
-        dateTime: Timestamp.now(),
-        destination: destination);
+      documentId: fetchedMessage.id,
+      senderId: sender,
+      text: text,
+      dateTime: Timestamp.now(),
+      destination: destination,
+    );
+  }
+
+  void addUsername(String username) async {
+    await usernames.add({"username": username});
+  }
+
+  void addProfilePic(String username, String photoUrl) async {
+    usernames.where("username", isEqualTo: username).get().then((value) async {
+      await usernames.doc(value.docs.first.id).update({"photoUrl": photoUrl});
+    });
+  }
+
+  Future<QuerySnapshot<Map<String, dynamic>>> getUser(String user) async {
+    try {
+      return await usernames.where('username', isEqualTo: user).limit(1).get();
+    } catch (e) {
+      throw CouldNotGetDocumentException();
+    }
+  }
+
+  Future<String?> getProfilePic(String user) async {
+    QuerySnapshot<Map<String, dynamic>> value = await getUser(user);
+    try {
+      if (value.docs.first.data().keys.contains("photoUrl")) {
+        return await FirebaseStorage.instance
+            .ref()
+            .child(value.docs.first.data()['photoUrl'])
+            .getDownloadURL();
+      }
+    } catch (e) {
+      throw CouldNotGetDocumentException();
+    }
   }
 
   Future<bool> isUsernameTaken(String username) async {
@@ -97,8 +107,8 @@ class FirebaseCloudStorage {
     return true;
   }
 
-  static final FirebaseCloudStorage _shared =
-      FirebaseCloudStorage._sharedInstance();
-  FirebaseCloudStorage._sharedInstance();
-  factory FirebaseCloudStorage() => _shared;
+  static final FirebaseCloudDatabase _shared =
+      FirebaseCloudDatabase._sharedInstance();
+  FirebaseCloudDatabase._sharedInstance();
+  factory FirebaseCloudDatabase() => _shared;
 }

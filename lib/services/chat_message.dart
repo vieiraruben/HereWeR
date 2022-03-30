@@ -28,5 +28,4 @@ class ChatMessage {
         text = snapshot.data()[textField] as String,
         dateTime = snapshot.data()[dateTimeField] as Timestamp,
         destination = snapshot.data()[destinationField] as String;
-
 }

@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:mapview/firestoreData/firestoreConfig/firebase_options.dart';
 import 'package:mapview/services/auth/auth_provider.dart';
 import 'package:mapview/services/auth/auth_user.dart';
@@ -51,6 +50,7 @@ class FirebaseAuthProvider implements AuthProvider {
   AuthUser? get currentUser {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
+      print(AuthUser.fromFirebase(user).username);
       return AuthUser.fromFirebase(user);
     } else {
       return null;
@@ -59,11 +59,16 @@ class FirebaseAuthProvider implements AuthProvider {
 
   String get getUsername {
     final username = FirebaseAuth.instance.currentUser?.displayName;
+    // FirebaseAuth.instance.get
     if (username != null) {
       return username;
     } else {
       return "undefined";
     }
+  }
+
+  void setProfilePic(String url) async {
+    await FirebaseAuth.instance.currentUser?.updatePhotoURL(url);
   }
 
   @override
