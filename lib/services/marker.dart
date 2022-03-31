@@ -35,9 +35,8 @@ class MarkerModel {
         String timeText = timeToGo(4, userDistance).toString() + " min away";
         BotToast.showAttachedWidget(
             attachedBuilder: (_) => FractionallySizedBox(
-              heightFactor: 0.2,
-              widthFactor: 0.4,
-              alignment: AlignmentDirectional.bottomEnd,
+              heightFactor: marker.name.length > 10 ? 0.25 : 0.2,
+              widthFactor: marker.name.length > 10 ? 0.5 : 0.4,
 
               child: Card(
                 color: Colors.white,
