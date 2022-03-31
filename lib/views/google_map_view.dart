@@ -84,7 +84,6 @@ class MapSampleState extends State<MapSample> {
 
 
   void _onMapCreated(GoogleMapController _cntlr) async{
-
     location = Location();
     _controller = _cntlr;
     _markersService.loadIconPaths();
@@ -170,29 +169,33 @@ class MapSampleState extends State<MapSample> {
           Align(
               alignment: Alignment.centerLeft,
               child: Column(
+
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget> [
                   RawMaterialButton(
+                    constraints: BoxConstraints.tight(const Size(36, 36)),
+                    child: const Icon(Icons.center_focus_strong, size: 18),
+                    shape: const CircleBorder(),
                     onPressed: (){
                       setState(() {
                         isUserCentered = !isUserCentered;
                       });
                     },
-                    child: const Text(
-                      'UserCentered',
-                    ),
                     fillColor: isUserCentered ? Colors.blue: Colors.grey,
                   ),
 
-                  ElevatedButton(
+                  RawMaterialButton(
+                    constraints: BoxConstraints.tight(const Size(36, 36)),
+                    child: const Icon(Icons.travel_explore, size: 18),
+                    shape: const CircleBorder(),
                     onPressed: (){
                       setState(() {
                         isUserCentered = false;
                         _goToTheEvent();
                       });
                     },
-                    child: const Text(
-                      'GoToEvent',
-                    ),
+                    fillColor: Colors.tealAccent,
+                    highlightColor : Colors.blue,
                   ),
 
                  if (isLocalScene) getLocalToggle(),
@@ -273,8 +276,11 @@ class MapSampleState extends State<MapSample> {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
+
           RawMaterialButton(
+            constraints: BoxConstraints.tight(const Size(66, 36)),
             fillColor: isInteract ? Colors.blue : Colors.grey,
             onPressed: (){
               setState(() {
@@ -290,6 +296,7 @@ class MapSampleState extends State<MapSample> {
 
           ),
           RawMaterialButton(
+            constraints: BoxConstraints.tight(const Size(66, 36)),
             fillColor: isPolygon ? Colors.blue : Colors.grey,
             onPressed: (){setState(() {
               isPolygon = true;
@@ -304,6 +311,7 @@ class MapSampleState extends State<MapSample> {
 
           ),
           RawMaterialButton(
+            constraints: BoxConstraints.tight(const Size(66, 36)),
             fillColor: isMarker ? Colors.blue : Colors.grey,
             onPressed: (){setState(() {
               isPolygon = false;
@@ -315,7 +323,8 @@ class MapSampleState extends State<MapSample> {
               showDialog(
                 context: context,
                 builder: (BuildContext context) => AlertDialog(
-                  title: const Text('Choose type'),
+
+                  title: const Text('Define marker',textAlign : TextAlign.center),
                   contentPadding: const EdgeInsets.all(8),
                   content: (
                   const MarkersCreationForm()
@@ -335,6 +344,7 @@ class MapSampleState extends State<MapSample> {
 
           ),
           RawMaterialButton(
+            constraints: BoxConstraints.tight(const Size(66, 36)),
             fillColor: isCircle ? Colors.blue : Colors.grey,
             onPressed: (){setState(() {
               isPolygon = false;
@@ -371,6 +381,8 @@ class MapSampleState extends State<MapSample> {
           ),
 
           RawMaterialButton(
+            padding: EdgeInsets.all(4.0),
+            constraints: BoxConstraints.tight(const Size(66, 36)),
             fillColor: tempMarkers.isNotEmpty || circles.isNotEmpty ? Colors.blue : Colors.grey,
             onPressed: (){setState(() {
               for (MarkerModel marker in tempMarkers){
@@ -388,7 +400,7 @@ class MapSampleState extends State<MapSample> {
             });
             },
             child: const Text(
-              'save markers',
+              'save',
             ),
           ),
         ],
