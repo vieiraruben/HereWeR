@@ -8,12 +8,14 @@ import 'package:mapview/geolocation/user_location_permission.dart';
 import 'package:mapview/services/circle.dart';
 import 'package:mapview/services/circle_service.dart';
 import 'package:mapview/utilities/geo_to_latlng.dart';
-import 'package:mapview/widgets/icons_drop_down.dart';
+import 'package:mapview/widgets/marker_creation_form.dart';
 import '../services/marker.dart';
 import '../services/marker_service.dart';
 import '../utilities/calculate_distance.dart';
 
 late String markerType;
+late String markerName;
+
 class MapSample extends StatefulWidget {
   const MapSample({Key? key}) : super(key: key);
 
@@ -154,7 +156,7 @@ class MapSampleState extends State<MapSample> {
               }
               else if (isMarker){
                 setState(() {
-                  _setMarkers(point, markerType);
+                  _setMarkers(point, markerType, markerName);
                 });
               }
               else if (isCircle){
@@ -222,10 +224,10 @@ class MapSampleState extends State<MapSample> {
     );
   }
 
-  _setMarkers(LatLng point, String type) async {
+  _setMarkers(LatLng point, String type, String name) async {
     final String markerId = "$tempMarkerIdCounter";
     tempMarkerIdCounter++;
-    MarkerModel markerModel = MarkerModel(documentId: markerId, markerPosition: latLngToGeo(point), type: type);
+    MarkerModel markerModel = MarkerModel(documentId: markerId, markerPosition: latLngToGeo(point), type: type, name: name);
     Marker marker =  await _markersService.initMarker(markerModel);
     markersSet.add(marker);
     tempMarkers.add(markerModel);
@@ -316,12 +318,14 @@ class MapSampleState extends State<MapSample> {
                   title: const Text('Choose type'),
                   contentPadding: const EdgeInsets.all(8),
                   content: (
-                  const IconsDropDown()
+                  const MarkersCreationForm()
                   ),
                   actions: [
                     TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text("ok"))
+                        onPressed:() async {
+                          Navigator.pop(context);
+                        },
+                        child: const Text("Validate"))
                   ],
                 ));
             },

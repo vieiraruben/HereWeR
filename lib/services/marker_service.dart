@@ -18,7 +18,8 @@ class FireStoreMarkerCloudStorage {
   }) async {
     await markers.add({
       "position": marker.markerPosition,
-      "type" : marker.type
+      "type" : marker.type,
+      "name" : marker.name
     });
   }
 
