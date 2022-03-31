@@ -1,7 +1,6 @@
 
 import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -9,12 +8,12 @@ import 'package:mapview/geolocation/user_location_permission.dart';
 import 'package:mapview/services/circle.dart';
 import 'package:mapview/services/circle_service.dart';
 import 'package:mapview/utilities/geo_to_latlng.dart';
-import '../constants/icon_imgs_paths.dart';
+import 'package:mapview/widgets/icons_drop_down.dart';
 import '../services/marker.dart';
 import '../services/marker_service.dart';
 import '../utilities/calculate_distance.dart';
 
-
+late String markerType;
 class MapSample extends StatefulWidget {
   const MapSample({Key? key}) : super(key: key);
 
@@ -24,7 +23,7 @@ class MapSample extends StatefulWidget {
 
 class MapSampleState extends State<MapSample> {
 
-  Map <String, BitmapDescriptor> iconBms = {};
+
 
   final FireStoreMarkerCloudStorage _markersService = FireStoreMarkerCloudStorage();
   final FireStoreCircleCloudStorage _circlesService = FireStoreCircleCloudStorage();
@@ -34,11 +33,13 @@ class MapSampleState extends State<MapSample> {
   late Location location;
   late BitmapDescriptor sourceIcon;
 
-  Set<Marker> markers = HashSet<Marker>();
+
+  Set<MarkerModel> tempMarkers = HashSet<MarkerModel>();
   Set<Polygon> polygons = HashSet<Polygon>();
   List<LatLng> polygonLatLngs = <LatLng>[];
   Set<Circle> circles = HashSet<Circle>();
   late double radius;
+
 
   int tempPolygonIdCounter =1;
   int tempCircleIdCounter =1;
@@ -64,24 +65,13 @@ class MapSampleState extends State<MapSample> {
     _controller.animateCamera(CameraUpdate.newCameraPosition(startCam));
   }
 
-  _loadBmIcons() async {
-    BitmapDescriptor iconBm;
-    for (var img in iconImgs){
-       var iconName = img.replaceAll("assets/images/icons8-", "");
-       iconName = iconName.replaceAll("-500.png", "");
-       iconBm = await BitmapDescriptor.fromAssetImage(
-           const ImageConfiguration(devicePixelRatio: 3),
-           img);
-       iconBms[iconName] = iconBm;
-     }
-  }
 
-  chargeMarkers() async{
-    _markersService.markers.get().then((docs) {
+  chargeMarkers() {
+    _markersService.markers.get().then((docs) async {
       if (docs.docs.isNotEmpty) {
         for (var doc in docs.docs) {
           MarkerModel marker = MarkerModel.fromSnapshot(doc);
-          markersSet.add(_markersService.initMarker(marker));
+          markersSet.add(await _markersService.initMarker(marker));
           setState(() {
           });
         }
@@ -95,7 +85,8 @@ class MapSampleState extends State<MapSample> {
 
     location = Location();
     _controller = _cntlr;
-    await _loadBmIcons();
+    _markersService.loadIconPaths();
+    chargeMarkers();
 
     location.onLocationChanged.listen((loc) async {
       if(isUserCentered) {
@@ -136,7 +127,6 @@ class MapSampleState extends State<MapSample> {
   @override
   void initState() {
     super.initState();
-    chargeMarkers();
     getUserLocationPermission();
   }
 
@@ -164,7 +154,7 @@ class MapSampleState extends State<MapSample> {
               }
               else if (isMarker){
                 setState(() {
-                  _setMarkers(point);
+                  _setMarkers(point, markerType);
                 });
               }
               else if (isCircle){
@@ -232,11 +222,13 @@ class MapSampleState extends State<MapSample> {
     );
   }
 
-  _setMarkers(LatLng point) {
+  _setMarkers(LatLng point, String type) async {
     final String markerId = "$tempMarkerIdCounter";
     tempMarkerIdCounter++;
-    MarkerModel marker = MarkerModel(documentId: markerId, markerPosition: latLngToGeo(point));
-    markersSet.add(_markersService.initMarker(marker));
+    MarkerModel markerModel = MarkerModel(documentId: markerId, markerPosition: latLngToGeo(point), type: type);
+    Marker marker =  await _markersService.initMarker(markerModel);
+    markersSet.add(marker);
+    tempMarkers.add(markerModel);
     setState(() {
 
     });
@@ -316,7 +308,22 @@ class MapSampleState extends State<MapSample> {
               isCircle = false;
               isMarker = true;
               isInteract = false;
+
             });
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: const Text('Choose type'),
+                  contentPadding: const EdgeInsets.all(8),
+                  content: (
+                  const IconsDropDown()
+                  ),
+                  actions: [
+                    TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text("ok"))
+                  ],
+                ));
             },
             child: const Text(
               'marker',
@@ -360,14 +367,10 @@ class MapSampleState extends State<MapSample> {
           ),
 
           RawMaterialButton(
-            fillColor: markers.isNotEmpty || circles.isNotEmpty ? Colors.blue : Colors.grey,
+            fillColor: tempMarkers.isNotEmpty || circles.isNotEmpty ? Colors.blue : Colors.grey,
             onPressed: (){setState(() {
-              for (Marker marker in markers){
-                double lat = marker.position.latitude;
-                double lng = marker.position.longitude;
-                GeoPoint markerGeo = GeoPoint(lat, lng);
-                //MarkerModel myMarker = MarkerModel(documentId: marker.markerId.toString(), markerPosition: markerGeo);
-                //_markersService.addMarker(marker: myMarker);
+              for (MarkerModel marker in tempMarkers){
+                _markersService.addMarker(marker: marker);
               }
               for (Circle circle in circles){
                 double lat = circle.center.latitude;
@@ -376,7 +379,7 @@ class MapSampleState extends State<MapSample> {
                 CircleModel myCircle = CircleModel(documentId: circle.circleId.toString(), center: centerGeo, radius: circle.radius);
                 _circlesService.addCircle(circle: myCircle);
               }
-              markers.clear();
+              tempMarkers.clear();
               circles.clear();
             });
             },
