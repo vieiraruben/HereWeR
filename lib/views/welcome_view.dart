@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:mapview/constants/carousel.dart';
 import 'package:mapview/constants/routes.dart';
-import 'package:mapview/firestoreData/markers_data.dart';
+
 
 class Welcome extends StatefulWidget {
   const Welcome({Key? key}) : super(key: key);
@@ -154,7 +154,6 @@ class _WelcomeState extends State<Welcome> {
                 GestureDetector(
                   child: const Text("Powered by HereWeR © 2022 MAP HERE!"),
                   onTap: () async {
-                    await getMarkers();
                     Navigator.of(context).pushNamed(mapRoute);
                   },
                 ),

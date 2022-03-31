@@ -43,8 +43,7 @@ class FirebaseCloudDatabase {
   // Dynamic query (live changes)
   Stream<Iterable<ChatMessage>> allMessages({required String destination}) =>
       messages.orderBy("dateTime", descending: true).snapshots().map((event) =>
-          event.docs
-              .map((doc) => ChatMessage.fromSnapshot(doc))
+          event.docs.map((doc) => ChatMessage.fromSnapshot(doc))
               .where((message) => message.destination == destination));
 
   Future<ChatMessage> sendMessage(

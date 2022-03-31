@@ -1,18 +1,20 @@
+/*
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:mapview/geolocation/user_location_permission.dart';
+
+
 
 
 
 class MyMarker extends StatefulWidget {
-  String type;
-  LatLng coor;
+  final String type;
+  final LatLng coor;
   IconData icon = Icons.restaurant;
-  MyMarker(this.type, this.coor) {
-    switch (this.type) {
+  num radius;
+  MyMarker(this.type, this.coor, { Key? key , this.radius = 0.0}) : super(key: key) {
+    switch (type) {
       case "restaurant":
         {
           icon = Icons.restaurant;
@@ -31,6 +33,12 @@ class MyMarker extends StatefulWidget {
         }
         break;
 
+      case "scene":
+        {
+          icon = Icons.music_note;
+        }
+        break;
+
       default:
         {
           icon = Icons.warning_outlined;
@@ -39,13 +47,16 @@ class MyMarker extends StatefulWidget {
     }
   }
   @override
+
   State<MyMarker> createState() => _MyMarkerState();
 
 }
 
 class _MyMarkerState extends State<MyMarker> {
   @override
+
   Widget build(BuildContext context) {
+    if (widget.type != "scene"){
     return RawMaterialButton(
       constraints: const BoxConstraints.expand(width: 40, height: 40),
       child: Icon(
@@ -96,4 +107,27 @@ class _MyMarkerState extends State<MyMarker> {
       },
     );
   }
+    else{
+      return GestureDetector(
+        
+        onTap: () {
+          print("Tapped a Container");
+        },
+        child: Card(
+          borderOnForeground: true,
+          color: Color.fromARGB(0, 0, 0, 0),
+          shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      );
+    }
 }
+
+
+
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
+}
+*/
