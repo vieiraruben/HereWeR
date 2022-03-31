@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mapview/constants/search.dart';
 import 'dart:math' as math;
 
+import 'package:mapview/views/search_results_view.dart';
+
 class SearchView extends StatefulWidget {
   const SearchView({Key? key}) : super(key: key);
 
@@ -88,12 +90,12 @@ class _SearchViewState extends State<SearchView> {
               controller: _search,
               onSubmitted: (value) => searchResults(value),
               textInputAction: TextInputAction.search,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 isCollapsed: false,
                 isDense: true,
                 filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(),
+                fillColor: Theme.of(context).canvasColor,
+                border: const OutlineInputBorder(),
                 hintText: "Search users, events and more...",
               ),
               enableSuggestions: true,
@@ -175,12 +177,12 @@ class _SearchViewState extends State<SearchView> {
                   controller: _search,
                   onSubmitted: (value) => searchResults(value),
                   textInputAction: TextInputAction.search,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     isCollapsed: false,
                     isDense: true,
                     filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(),
+                    fillColor: Theme.of(context).canvasColor,
+                    border: const OutlineInputBorder(),
                     hintText: "Search users, events and more...",
                   ),
                   enableSuggestions: true,
@@ -191,12 +193,11 @@ class _SearchViewState extends State<SearchView> {
             height: 700,
             child: Padding(
                 padding: const EdgeInsets.all(20),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [Text("Loading results...")]
+                child: SearchResultsView(searchTerm: _search.text,)
+                
                       ),
                       
-            ))]))
+            )]))
       ]));
     }
   }

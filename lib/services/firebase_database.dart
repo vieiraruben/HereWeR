@@ -84,6 +84,17 @@ class FirebaseCloudDatabase {
     }
   }
 
+  Future<QuerySnapshot<Map<String, dynamic>>> searchUsers(String user) async {
+    try {
+      return await usernames.where('username', isGreaterThanOrEqualTo: user)
+      .where('username', isLessThanOrEqualTo
+      : user+ '\uf8ff')
+      .get();
+    } catch (e) {
+      throw CouldNotGetDocumentException();
+    }
+  }
+
   Future<String?> getProfilePic(String user) async {
     QuerySnapshot<Map<String, dynamic>> value = await getUser(user);
     try {
