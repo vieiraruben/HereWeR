@@ -32,7 +32,7 @@ class _ChatViewState extends State<ChatView> {
             leading: FutureBuilder(
                 future: FirebaseCloudDatabase().getUser(widget.messages.elementAt(index).senderId),
                 builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                  if (snapshot.hasData) {
+                  if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
                     return CircleAvatar(
                         radius: 20,
                         backgroundColor:
