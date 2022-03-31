@@ -95,21 +95,21 @@ class FirebaseCloudDatabase {
     }
   }
 
-  Future<String?> getProfilePic(String user) async {
-    QuerySnapshot<Map<String, dynamic>> value = await getUser(user);
-    try {
-      if (value.docs.first.data().keys.contains("photoUrl")) {
-        return await FirebaseStorage.instance
-            .ref()
-            .child(value.docs.first.data()['photoUrl'])
-            .getDownloadURL();
-      } else {
-        return "default";
-      }
-    } catch (e) {
-      throw CouldNotGetDocumentException();
-    }
-  }
+  // Future<String?> getProfilePic(String user) async {
+  //   QuerySnapshot<Map<String, dynamic>> value = await getUser(user);
+  //   try {
+  //     if (value.docs.first.data().keys.contains("photoUrl")) {
+  //       return await FirebaseStorage.instance
+  //           .ref()
+  //           .child(value.docs.first.data()['photoUrl'])
+  //           .getDownloadURL();
+  //     } else {
+  //       return "default";
+  //     }
+  //   } catch (e) {
+  //     throw CouldNotGetDocumentException();
+  //   }
+  // }
 
   Future<bool> isUsernameTaken(String username) async {
     var query = await usernames.where("username", isEqualTo: username).get();

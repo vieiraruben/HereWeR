@@ -87,6 +87,8 @@ class _SearchViewState extends State<SearchView> {
           controller: _search,
           onSubmitted: (value) => searchResults(),
           textInputAction: TextInputAction.search,
+          enableSuggestions: false,
+          autocorrect: false,
           decoration: InputDecoration(
             suffixIcon: (showResults)
                 ? IconButton(
@@ -94,7 +96,7 @@ class _SearchViewState extends State<SearchView> {
                       _search.clear();
                       searchResults();
                     },
-                    icon: Icon(Icons.clear))
+                    icon: const Icon(Icons.clear))
                 : null,
             isCollapsed: false,
             isDense: true,
@@ -103,8 +105,6 @@ class _SearchViewState extends State<SearchView> {
             border: const OutlineInputBorder(),
             hintText: "Search users, events and more...",
           ),
-          enableSuggestions: true,
-          autocorrect: true,
           keyboardType: TextInputType.multiline,
         ),
       ),

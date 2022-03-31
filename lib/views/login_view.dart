@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:mapview/constants/routes.dart';
 import 'package:mapview/services/exceptions.dart';
 import 'package:mapview/services/auth/auth_service.dart';
-import 'package:mapview/services/firebase_database.dart';
 import 'package:mapview/utilities/error_dialog.dart';
 
 // TODO: Add forgotten password option
