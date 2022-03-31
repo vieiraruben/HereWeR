@@ -165,6 +165,13 @@ class _WelcomeState extends State<Welcome> {
                     Navigator.of(context).pushNamed(chatRoute);
                   },
                 ),
+                GestureDetector(
+                  child: const Text("Search HERE!"),
+                  onTap: () {
+                    // await getMarkers();
+                    Navigator.of(context).pushNamed(searchRoute);
+                  },
+                ),
               ]),
             )),
       ])),

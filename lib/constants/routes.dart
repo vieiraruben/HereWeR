@@ -5,3 +5,4 @@ const mapRoute = '/mapview/';
 const newProfileRoute = '/signup/newprofile/';
 const verifyEmailRoute = '/verifyemail/';
 const chatRoute = '/chat/';
+const searchRoute = '/search/';
