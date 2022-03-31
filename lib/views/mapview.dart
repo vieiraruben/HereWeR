@@ -1,3 +1,6 @@
+/*
+
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -18,7 +21,7 @@ class MapView extends StatefulWidget {
 }
 
 class _MapViewState extends State<MapView> {
-
+  List<Marker> sceneList = [];
   List<Marker> restList = [];
   bool showRestaurants = false;
   List<Marker> croixRougeList = [];
@@ -27,6 +30,7 @@ class _MapViewState extends State<MapView> {
   bool showWc = false;
   Map<String, List<Marker>> mapMarkers = {};
   List<Marker> activeMarkers = [];
+
 
 
   var renderOverlay = true;
@@ -49,6 +53,10 @@ class _MapViewState extends State<MapView> {
 
     mapMarkers = {"restaurant" : restList, "wc" : wcList, "croix rouge" : croixRougeList};
     for (MyMarker marker in markers) {
+      if (marker.type == "scene"){
+        Marker sceneMarker = Marker(point: marker.coor, builder: (ctx) => MyMarker(marker.type, marker.coor, radius: marker.radius));
+        sceneList.add(sceneMarker);
+      }
       Marker mapMarker = Marker(point: marker.coor, builder: (ctx) => MyMarker(marker.type, marker.coor));
       mapMarkers[marker.type]?.add(mapMarker);
     }
@@ -64,6 +72,7 @@ class _MapViewState extends State<MapView> {
     return Scaffold(
       body: FlutterMap(
         options: MapOptions(
+
           center: LatLng.LatLng(51.50654, -0.173030),
           zoom: 16.7,
           minZoom: 16.0,
@@ -120,12 +129,16 @@ class _MapViewState extends State<MapView> {
               color: Colors.blue,
             ),
           )),
+
+
           MarkerLayerWidget(
             options: MarkerLayerOptions(
                 markers: [
-                  ... activeMarkers
+                  ... sceneList,
+                  ... activeMarkers,
                 ]),
-          )
+          ),
+
         ],
       ),
 
@@ -232,8 +245,12 @@ class _MapViewState extends State<MapView> {
             }
           }),
         ),
+
       ],
     ),
     );
   }
 }
+*/
+
+

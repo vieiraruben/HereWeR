@@ -1,6 +1,5 @@
+/*
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:mapview/views/mapview.dart';
 import '../models/marker.dart';
 import 'package:latlong2/latlong.dart' as LatLng;
 
@@ -20,10 +19,18 @@ List <MyMarker> markers = [];
           double lng = geoPoint.longitude;
           LatLng.LatLng coor = LatLng.LatLng(lat, lng);
 
-          MyMarker marker = MyMarker(type, coor);
+          MyMarker marker;
+          if (type == "scene"){
+            num radius = doc.get("radius");
+            marker = MyMarker(type, coor, radius: radius);
+          }
+          else{
+            marker = MyMarker(type, coor);
+          }
 
           markers.add(marker);
     }
   }
 
 
+*/
