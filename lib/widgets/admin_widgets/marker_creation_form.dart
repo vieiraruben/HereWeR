@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mapview/views/google_map_view.dart';
 
-import '../services/marker_service.dart';
+import '../../services/marker_service.dart';
 
 class MarkersCreationForm extends StatefulWidget {
   const MarkersCreationForm({Key? key}) : super(key: key);

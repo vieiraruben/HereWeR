@@ -7,6 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mapview/services/marker.dart';
 import 'package:mapview/utilities/geo_to_latlng.dart';
 import '../constants/icon_imgs_paths.dart';
+import '../widgets/markers_widgets/marker_on_tap.dart';
 
 Map <String, String> iconPaths = {};
 Set<Marker> markersSet = {};
