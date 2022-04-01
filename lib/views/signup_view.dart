@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:developer';
-import 'package:mapview/services/auth/auth_firebase.dart';
 import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

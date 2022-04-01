@@ -34,7 +34,7 @@ class _SearchResultsViewState extends State<SearchResultsView> {
             if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
               return Column(
                   children: snapshot.data!.docs.map((e) {
-                return Padding(padding: EdgeInsets.symmetric(vertical: 5), child:  GestureDetector(
+                return Padding(padding: const EdgeInsets.symmetric(vertical: 5), child:  GestureDetector(
                   onTap: () => Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => UserProfileView(username: e["username"],)),
@@ -51,7 +51,7 @@ class _SearchResultsViewState extends State<SearchResultsView> {
                                   e["photoUrl"] +
                                   "?alt=media")
                           : Image.asset('assets/images/defaultprofile.png')
-                              .image), SizedBox(width:10),
+                              .image), const SizedBox(width:10),
                   Text(e["username"])
                 ])));
               }).toList());
@@ -63,9 +63,9 @@ class _SearchResultsViewState extends State<SearchResultsView> {
                     Image.asset('assets/images/defaultprofile.png').image,
               );
             } else if (snapshot.hasData && snapshot.data!.docs.isEmpty) {
-              return Text("No results found");
+              return const Text("No results found");
             } else {
-              return Text("Loading...");
+              return const Text("Loading...");
             }
           })
     ]);

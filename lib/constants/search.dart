@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 Map<String, String> announcements = {
   "icons8-commercial-500.png":
       "Water Pilots have been revealed as the surprise opening act for The Rollers!",
@@ -8,12 +6,16 @@ Map<String, String> announcements = {
   "icons8-energy-drink-500.png":
       "Stay fresh until sunrise with Xtreme energy drinks!"
 };
+
 Map<String, List<String>> rightnow = {
-  "The Surrenders": [
-    "rock.jpg",
-    "Main Stage",
-    "featuring Fox Alice",
-    "240 love this"
+  "malesinger.jpg": [
+    "Sebastian North",
+    
   ],
-  "Jackson 6": ["jackson.jpg", "Main Stage", "with Fox Alice", "143 love this"]
+  "rollers.jpg": [
+    "The Rollers"
+  ],
+  "femalepop.jpg": [
+    "Sandra Spears"
+  ]
 };

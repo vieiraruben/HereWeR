@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mapview/constants/search.dart';
+import 'package:mapview/utilities/here_we_r_icons_icons.dart';
 import 'dart:math' as math;
 
 import 'package:mapview/views/search_results_view.dart';
@@ -167,8 +168,41 @@ class _SearchViewState extends State<SearchView> {
               child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start, children: []),
-              ))
+
+
+
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: rightnow.keys.map((key) {
+                      return Column(
+                        children: [Stack(children: [
+                          ClipRRect(
+                            borderRadius: const BorderRadius.all(Radius.circular(10)),
+                            child: Container(foregroundDecoration: BoxDecoration(gradient:
+                            LinearGradient(colors:
+                            [Colors.black, Colors.transparent], begin: Alignment.bottomRight),
+                            ), child:
+                            Image.asset(
+                              'assets/images/sample/' + key,
+                              width: 500, height: 150, fit: BoxFit.cover,
+                            ))), Positioned(
+                              bottom: 5, left: 5,
+                              child: Text(rightnow[key]!.first, textScaleFactor: 1.2,
+                              style: TextStyle( color: Colors.white,))),
+                                Positioned(bottom: 5, right: 5,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: const Color.fromARGB(255, 160, 167, 211).withOpacity(0.9)), child:
+                                IconButton(icon: Icon(HereWeRIcons.icons8_place_marker_64,), color: Colors.white,
+                                onPressed: () {  },)))]),
+                                const SizedBox(height: 20,)], );
+
+                        }).toList()
+                          
+                      )
+                    )
+                    
+              )
         ]))
       ]));
     } else {
