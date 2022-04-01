@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
@@ -148,7 +149,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
           decoration: Theme.of(context).platform == TargetPlatform.iOS
               ? BoxDecoration(
                   border: Border(
-                    top: BorderSide(color: Colors.grey[200]!),
+                    top: BorderSide(color: Colors.grey[400]!),
                   ),
                 )
               : null),
@@ -162,6 +163,16 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
         margin: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Row(
           children: [
+            //add button emoji custom
+            Container(
+              child: IconButton(
+                icon: Image(
+                    image: AssetImage("assets/images/emoji-laughing.png")),
+                iconSize: 30,
+                onPressed: () => image(),
+              ),
+            ),
+            //add chantexte
             Flexible(
               child: TextField(
                 controller: _textController,
@@ -176,6 +187,8 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                 focusNode: _focusNode,
               ),
             ),
+
+            //add button Send
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 4.0),
               child: Theme.of(context).platform == TargetPlatform.iOS
@@ -195,4 +208,46 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       ),
     );
   }
+}
+
+image() {
+  return Container(
+    margin: EdgeInsets.all(10.0),
+    child: ListView(
+      scrollDirection: Axis.horizontal,
+      children: <Widget>[
+        Row(
+          children: <Widget>[
+            Container(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: Image(
+                  image: AssetImage("assets/images/add.png"),
+                  height: 20.0,
+                  width: 20.0,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            Container(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: Image(
+                  image: AssetImage("assets/images/hpf_logo.jpg"),
+                  height: 20.0,
+                  width: 20.0,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            //add image after container
+          ],
+        )
+      ],
+      // image: AssetImage("assets/images/add.png"),
+      // height: 20,
+      // width: 20,
+      // fit: BoxFit.cover,
+    ),
+  );
 }
