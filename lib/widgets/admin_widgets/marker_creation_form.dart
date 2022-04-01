@@ -3,12 +3,15 @@ import 'package:mapview/views/google_map_view.dart';
 
 import '../../services/marker_service.dart';
 
+
+//Formulaire à remplir pour créer un nouveau marker
 class MarkersCreationForm extends StatefulWidget {
   const MarkersCreationForm({Key? key}) : super(key: key);
 
   @override
   State<MarkersCreationForm> createState() => _MarkersCreationFormState();
 }
+
 
 class _MarkersCreationFormState extends State<MarkersCreationForm> {
   String dropdownType = 'add';
@@ -22,6 +25,8 @@ class _MarkersCreationFormState extends State<MarkersCreationForm> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
+
+              //DropDownButton qui contient la liste de tout les icones disponibles
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(labelText: 'Type'),
                 value: dropdownType,
@@ -43,6 +48,7 @@ class _MarkersCreationFormState extends State<MarkersCreationForm> {
                 }).toList(),
               ),
 
+              //Textfield pour choisir le nom du marker
               TextField(
                 controller: nameController,
                 decoration: const InputDecoration(

@@ -8,14 +8,24 @@ import '../../services/marker.dart';
 import '../../utilities/calculate_distance.dart';
 import '../../utilities/timeToGo.dart';
 
+
+
+//Widget qui apparait lorsque l'on tap un marker
 markerOnTapWidget(MarkerModel marker) async {
 
+  //Il renvoie le temps de parcours de l'utilisateur jusqu'au marker
   LocationData location = await Location().getLocation();
   GeoPoint markerLocation = marker.markerPosition;
   double userDistance = calculateDistance(location.latitude,location.longitude, markerLocation.latitude, markerLocation.longitude) * 1000;
+
+  //On suppose une vitesse de 4km/h
   String timeText = timeToGo(4, userDistance).toString() + " min away";
+
+  //un Toast d'une durée de 5 sec est affiché
   BotToast.showAttachedWidget(
       attachedBuilder: (_) => FractionallySizedBox(
+
+        //La taille de la box dépend de la longueure du nom du marker
         heightFactor: marker.name.length > 10 ? 0.25 : 0.2,
         widthFactor: marker.name.length > 10 ? 0.5 : 0.4,
 
@@ -32,11 +42,14 @@ markerOnTapWidget(MarkerModel marker) async {
             child:  Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
+                //Affichage du nom du marker
                 Text(marker.name,
                     style: const TextStyle(fontSize: 24)
                 ),
 
                 Text(timeText),
+                //Le boutton renvoie un nouveau toast avec un contenu définie dans un autre fichier
+                //pour l'instant celui ci est toujours le même mais il faudrait le faire varier en fonction du marker
                 ElevatedButton(
                   onPressed: (){
                     BotToast.cleanAll();
@@ -54,5 +67,6 @@ markerOnTapWidget(MarkerModel marker) async {
         ),
       ),
       duration: const Duration(seconds: 5),
+      //emplacement du toast sur l'écran
       target: const Offset(210, 200));
 }

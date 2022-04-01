@@ -8,12 +8,20 @@ import 'package:mapview/services/marker.dart';
 import 'package:mapview/utilities/geo_to_latlng.dart';
 import '../widgets/markers_widgets/marker_on_tap.dart';
 
+
+//Maps avec pour clef des nom d'icon et comme valeures des paths vers les assets correspondants
 Map <String, String> iconPaths = {};
 Map <String, String> stageIconsPaths = {};
+
+//List des markers à afficher sur la mapview
 Set<Marker> markersSet = {};
+
+//class gérant les intéractions avec la firestore pour les Markers
 class FireStoreMarkerCloudStorage {
+  //Instance de firestore connecté à la collection "markers"
   final markers = FirebaseFirestore.instance.collection('markers');
 
+  //Methode pour ajouté un marker à firestore à partir d'un MarkerModel
   void addMarker({
     required MarkerModel marker,
   }) async {
@@ -24,7 +32,7 @@ class FireStoreMarkerCloudStorage {
     });
   }
 
-
+  //Fonction qui convertie une image en Uint8List pour pouvoir l'utiliser en temps qu'icon de Marker google map.
   getBytesFromAsset( String path, int width) async {
     Uint8List iconUint8;
     ByteData data = await rootBundle.load(path);
@@ -34,7 +42,7 @@ class FireStoreMarkerCloudStorage {
     return iconUint8;
   }
 
-
+  //Fonction qui convertie des paths en nom d'icon en enlevant les char superflus
   loadIconPaths(List<String> imgs) async {
     for (var path in imgs){
       var iconName = path.replaceAll("assets/images/icons8-", "");
@@ -43,6 +51,7 @@ class FireStoreMarkerCloudStorage {
     }
   }
 
+  //Idem pour des assets avec des path ayant un autre format
   loadStageIconPaths(List<String> imgs) async {
     for (var path in imgs){
       var iconName = path.replaceAll(".png", "");
@@ -50,10 +59,15 @@ class FireStoreMarkerCloudStorage {
     }
   }
 
+  //Fonction qui créé un Marker google à partir d'un MarkerModel
   Future<Marker> initMarker(MarkerModel marker, int size) async{
+    //On converti l'id en MarkerId
     final MarkerId markerId = MarkerId(marker.documentId);
+    //La position de GeoPoint à LatLng
     LatLng markerLatLng = geoToLatLng(marker.markerPosition);
+    //On charge L'icon en convertissant L'asset en Uint8
     var iconUint8 = await getBytesFromAsset(iconPaths[marker.type]!, size);
+    //On créé le Marker
     final Marker googleMarker = Marker(
       markerId: markerId, position: markerLatLng,
       icon: BitmapDescriptor.fromBytes(iconUint8),
