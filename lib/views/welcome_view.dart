@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:mapview/constants/carousel.dart';
 import 'package:mapview/constants/routes.dart';
-import 'package:mapview/utilities/floating_menu.dart';
+import 'package:mapview/widgets/floating_menu.dart';
 
 
 class Welcome extends StatefulWidget {
