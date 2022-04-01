@@ -30,3 +30,8 @@ const List <String> iconImgs = [
   "assets/images/icons8-user-location-500.png",
   "assets/images/icons8-water-500.png"
 ];
+
+const List <String> stageIconsImgs = [
+  'assets/images/stages/Main-stage-500.png',
+  'assets/images/stages/Second-stage-500.png',
+];
