@@ -4,10 +4,14 @@ import 'package:mapview/services/circle.dart';
 
 import '../utilities/geo_to_latlng.dart';
 
+//Set des cercles à afficher
 Set<Circle> circlesSet = {};
+
+//class gérant les intéractions avec la firestore pour les Circles
 class FireStoreCircleCloudStorage{
   final circles = FirebaseFirestore.instance.collection('circles');
 
+  //Methode pour ajouté un Circle à firestore à partir d'un CircleModel
   void addCircle({
     required CircleModel circle,
   }) async {
@@ -17,6 +21,7 @@ class FireStoreCircleCloudStorage{
     });
   }
 
+  //Fonction qui créé un Circle google à partir d'un CircleModel
   Future<Circle> initCircle(CircleModel circle) async{
     final CircleId circleId = CircleId(circle.documentId);
     LatLng circleLatLng = geoToLatLng(circle.center);

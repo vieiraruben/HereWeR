@@ -1,9 +1,6 @@
-import 'package:bot_toast/bot_toast.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:mapview/services/marker.dart';
 import 'package:mapview/utilities/here_we_r_icons_icons.dart';
-
 import '../../constants/restaurant_carousel.dart';
 
 class RestaurantWidget extends StatefulWidget {
@@ -13,9 +10,14 @@ class RestaurantWidget extends StatefulWidget {
   State<RestaurantWidget> createState() => RestaurantWidgetState();
 }
 
+//Widget qui est appelé par le bouton 'Learn more' de marker_on_tap
 class RestaurantWidgetState extends State<RestaurantWidget> {
+  //Booléens pour la navigation au sein du widget
   bool isPhotos = true;
   bool isMenu = false;
+
+  //Liste de Maps entre des images (paths) et des descriptions
+  //Ici le contenu est ajouté en dur mais l'idée est de récupérer ces contenus à partir de firestore (liés au marker)
   List<Map<String, String>> contents = [FoodImgList, DrinksImgList];
   @override
   Widget build(BuildContext context) {
@@ -36,9 +38,12 @@ class RestaurantWidgetState extends State<RestaurantWidget> {
             Container(
               color: Colors.amberAccent,
               alignment: Alignment.topCenter,
+
+              //Bouttons de navigation entre les différentes 'pages' du widget
               child: ButtonBar(
                 mainAxisSize: MainAxisSize.min, // this will take space as minimum as posible(to center)
                 children: <Widget>[
+                  //Bouton pour passer en mode menu
                   ElevatedButton(
                       child: const Icon(HereWeRIcons.icons8_hamburger_64),
                       onPressed: () {
@@ -46,6 +51,7 @@ class RestaurantWidgetState extends State<RestaurantWidget> {
                         isMenu = true;
                         setState(() {});
                       }),
+                  //Pour passer en mode photos
                   ElevatedButton(
                       child: const Icon(Icons.photo_sharp),
                       onPressed: () {
@@ -56,6 +62,7 @@ class RestaurantWidgetState extends State<RestaurantWidget> {
                 ],
               ),
             ),
+            //Le contenu est chargé en fonction du booléen qui est vrai
             Container(
               color: Colors.white,
               child: isPhotos ? restaurantPhotos(contents) : restaurantMenu(), //fit: BoxFit.fill
@@ -66,6 +73,8 @@ class RestaurantWidgetState extends State<RestaurantWidget> {
     );
   }
 
+  //Ce Widget est constitué d'une liste view de carroussels
+  //Chaque carroussel est généré pour chaque Map dans la Liste contents
   Widget restaurantPhotos(List<Map<String, String>> contents) {
     return Container(
       width: 350,
@@ -74,28 +83,30 @@ class RestaurantWidgetState extends State<RestaurantWidget> {
           shrinkWrap: true,
           itemCount: contents.length,
           itemBuilder: (BuildContext context, int index) {
+            //On itère sur la list et à chaque index, on appel carouselBuilder avec la Map correspondante.
             var content = contents[index];
             return carouselBuilder(content);
           }),
     );
   }
 
+  //Génère un carrousel à partir d'une Map de paths et de descriptions
   Widget carouselBuilder(Map<String, String> content) {
-    var paths = content.keys.toList();
-    var descr = content.values.toList();
-    final List<Widget> imageSliders = paths
-        .map((item) => Container(
+    var paths = content.keys.toList();//Les clefs sont les paths car uniques, ici on les convertie en liste pour facilité la suite
+    var descr = content.values.toList();//Idem pour les descriptions qui sont les values de la map
+    final List<Widget> imageSliders = paths.map((path)  //Pour chaque paths(clefs) de la map on retourne le widget suivant
+    => Container(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Image.asset(
-                    item,
+                  Image.asset(         //On charge l'image
+                    path,
                     fit: BoxFit.contain,
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: Text(
-                      descr.elementAt(paths.indexOf(item)),
+                      descr.elementAt(paths.indexOf(path)),  // et la description correspondante
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 12,
@@ -106,10 +117,11 @@ class RestaurantWidgetState extends State<RestaurantWidget> {
                 ],
               ),
             ))
-        .toList();
+        .toList();    // On converti le tout en list
 
+    //on fait appel à la librairie carrousel slider comme définie dans la documentation
+    //avec la list précedement créée et le controller associé.
     var _controller = CarouselController();
-
     return CarouselSlider(
       items: imageSliders,
       carouselController: _controller,
@@ -122,6 +134,7 @@ class RestaurantWidgetState extends State<RestaurantWidget> {
   }
 }
 
+//placeholder pour la page menu du toast
 restaurantMenu() {
   return Image.asset("assets/images/food/menu.jpeg", );
 }

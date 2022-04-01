@@ -1,10 +1,8 @@
-import 'package:bot_toast/bot_toast.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:location/location.dart';
-import 'package:mapview/utilities/calculate_distance.dart';
-import 'package:mapview/utilities/timeToGo.dart';
 
+//Class qui définie toutes les informations necessaires à la création d'un Marker
 @immutable
 class MarkerModel {
 
@@ -20,6 +18,7 @@ class MarkerModel {
     required this.markerPosition,
   });
 
+  //Methode permettant d'instancier un MarkerModel à partir d'un document FireStore
   MarkerModel.fromSnapshot(QueryDocumentSnapshot<Map<String, dynamic>> snapshot)
       : documentId = snapshot.id,
         type = snapshot.data()["type"],

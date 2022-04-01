@@ -10,6 +10,7 @@ import 'package:mapview/services/circle.dart';
 import 'package:mapview/services/circle_service.dart';
 import 'package:mapview/utilities/geo_to_latlng.dart';
 import 'package:mapview/widgets/admin_widgets/marker_creation_form.dart';
+import 'package:mapview/widgets/floating_menu.dart';
 import '../services/marker.dart';
 import '../services/marker_service.dart';
 import '../utilities/calculate_distance.dart';
@@ -257,6 +258,7 @@ class MapSampleState extends State<MapSample> {
                 ],
               )
           ),
+          getMenu(context),
 
           //Si le mode admin est activé alors les contrôles permettant d'ajouter des éléments sont affichés
           if (isAdmin) getAdminTools(),

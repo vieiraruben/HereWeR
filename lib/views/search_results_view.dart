@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mapview/services/firebase_database.dart';
-import 'package:mapview/utilities/floating_menu.dart';
+import 'package:mapview/widgets/floating_menu.dart';
 import 'package:mapview/views/user_profile_view.dart';
 
 class SearchResultsView extends StatefulWidget {
