@@ -54,12 +54,12 @@ class _SearchViewState extends State<SearchView> {
       pinned: true,
       floating: false,
       delegate: _SliverAppBarDelegate(
-        minHeight: 60.0,
-        maxHeight: 60.0,
+        minHeight: 40.0,
+        maxHeight: 40.0,
         child: Container(
             color: Theme.of(context).backgroundColor,
             child: Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(10),
               child: Text(headerText,
                   style: const TextStyle(fontWeight: FontWeight.bold)),
             )),
