@@ -23,7 +23,7 @@ class _MarkersCreationFormState extends State<MarkersCreationForm> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               DropdownButtonFormField<String>(
-                decoration: InputDecoration(labelText: 'Type'),
+                decoration: const InputDecoration(labelText: 'Type'),
                 value: dropdownType,
                 icon: const Icon(Icons.arrow_downward),
                 elevation: 16,

@@ -46,7 +46,7 @@ class FireStoreMarkerCloudStorage {
   Future<Marker> initMarker(MarkerModel marker) async{
     final MarkerId markerId = MarkerId(marker.documentId);
     LatLng markerLatLng = geoToLatLng(marker.markerPosition);
-    var iconUint8 = await getBytesFromAsset(iconPaths[marker.type]!, 50);
+    var iconUint8 = await getBytesFromAsset(iconPaths[marker.type]!, 70);
     final Marker googleMarker = Marker(
       markerId: markerId, position: markerLatLng,
       icon: BitmapDescriptor.fromBytes(iconUint8),

@@ -15,6 +15,7 @@ import '../utilities/calculate_distance.dart';
 
 late String markerType;
 late String markerName;
+late double radius;
 
 class MapSample extends StatefulWidget {
   const MapSample({Key? key}) : super(key: key);
@@ -33,14 +34,12 @@ class MapSampleState extends State<MapSample> {
 
   late LocationData currentLocation;
   late Location location;
-  late BitmapDescriptor sourceIcon;
-
 
   Set<MarkerModel> tempMarkers = HashSet<MarkerModel>();
   Set<Polygon> polygons = HashSet<Polygon>();
   List<LatLng> polygonLatLngs = <LatLng>[];
   Set<Circle> circles = HashSet<Circle>();
-  late double radius;
+
 
 
   int tempPolygonIdCounter =1;
@@ -82,15 +81,33 @@ class MapSampleState extends State<MapSample> {
   }
 
 
+  chargeCircles() {
+    _circlesService.circles.get().then((docs) async {
+      if (docs.docs.isNotEmpty) {
+        for (var doc in docs.docs) {
+          CircleModel circle = CircleModel.fromSnapshot(doc);
+          circlesSet.add(await _circlesService.initCircle(circle));
+          setState(() {
+          });
+        }
+      }
+    });
+  }
+
+
+
 
   void _onMapCreated(GoogleMapController _cntlr) async{
     location = Location();
     _controller = _cntlr;
     _markersService.loadIconPaths();
+    chargeCircles();
     chargeMarkers();
+
 
     location.onLocationChanged.listen((loc) async {
       if(isUserCentered) {
+        print("test");
         _controller.animateCamera(
             CameraUpdate.newCameraPosition(
               CameraPosition(target: LatLng(loc.latitude!, loc.longitude!),
@@ -99,10 +116,11 @@ class MapSampleState extends State<MapSample> {
         );
       }
 
-      for (Circle circle in circles){
+      for (Circle circle in circlesSet){
         double distance = calculateDistance(loc.latitude!, loc.longitude!, circle.center.latitude, circle.center.longitude);
         if (distance <= circle.radius){
           isLocalScene = true;
+          radius = circle.radius;
           currentScene = circle;
           setState(() {
           });
@@ -114,7 +132,7 @@ class MapSampleState extends State<MapSample> {
       }
 
       if (isLocalScene & isLocalSceneActivated){
-        double zoomLvl = 17 + (1 * 100/radius);
+        double zoomLvl = 16 + (1.5 * 100/radius);
         _controller.animateCamera(
             CameraUpdate.newCameraPosition(
               CameraPosition(target: LatLng(currentScene!.center.latitude, currentScene!.center.longitude),
@@ -140,10 +158,11 @@ class MapSampleState extends State<MapSample> {
         children: <Widget>[
           GoogleMap(
             mapType: MapType.terrain,
-            myLocationButtonEnabled: true,
             initialCameraPosition: startCam,
             onMapCreated: _onMapCreated,
-            circles: circles,
+            myLocationEnabled: true,
+            myLocationButtonEnabled: false,
+            circles: circlesSet,
             markers:  markersSet,
             polygons: polygons,
             onTap: (point){
@@ -174,18 +193,6 @@ class MapSampleState extends State<MapSample> {
                 children: <Widget> [
                   RawMaterialButton(
                     constraints: BoxConstraints.tight(const Size(36, 36)),
-                    child: const Icon(Icons.center_focus_strong, size: 18),
-                    shape: const CircleBorder(),
-                    onPressed: (){
-                      setState(() {
-                        isUserCentered = !isUserCentered;
-                      });
-                    },
-                    fillColor: isUserCentered ? Colors.blue: Colors.grey,
-                  ),
-
-                  RawMaterialButton(
-                    constraints: BoxConstraints.tight(const Size(36, 36)),
                     child: const Icon(Icons.travel_explore, size: 18),
                     shape: const CircleBorder(),
                     onPressed: (){
@@ -197,6 +204,20 @@ class MapSampleState extends State<MapSample> {
                     fillColor: Colors.tealAccent,
                     highlightColor : Colors.blue,
                   ),
+
+                  RawMaterialButton(
+                    constraints: BoxConstraints.tight(const Size(36, 36)),
+                    child: const Icon(Icons.center_focus_strong, size: 18),
+                    shape: const CircleBorder(),
+                    onPressed: (){
+                      setState(() {
+                        isUserCentered = !isUserCentered;
+                      });
+                    },
+                    fillColor: isUserCentered ? Colors.blue: Colors.grey,
+                  ),
+
+
 
                  if (isLocalScene) getLocalToggle(),
 
@@ -212,6 +233,9 @@ class MapSampleState extends State<MapSample> {
 
   Widget getLocalToggle() {
     return RawMaterialButton(
+      constraints: BoxConstraints.tight(const Size(36, 36)),
+      child: Icon(isLocalSceneActivated? Icons.zoom_out_map :  Icons.zoom_in_map, size: 18),
+      shape: const CircleBorder(),
       onPressed: (){
         isLocalSceneActivated = !isLocalSceneActivated;
         if (!isLocalSceneActivated){
@@ -220,9 +244,6 @@ class MapSampleState extends State<MapSample> {
         setState(() {
         });
       },
-      child: const Text(
-        'localScene',
-      ),
       fillColor: isLocalSceneActivated? Colors.blue: Colors.grey,
     );
   }
@@ -264,8 +285,9 @@ class MapSampleState extends State<MapSample> {
         Polygon(
           polygonId: PolygonId(polygonId),
           points : polygonLatLngs,
+          fillColor: Colors.transparent,
           strokeWidth: 2,
-          strokeColor: Colors.yellow,
+          strokeColor: Colors.red,
         ),
       );
     });

@@ -17,6 +17,6 @@ class CircleModel {
 
   CircleModel.fromSnapshot(QueryDocumentSnapshot<Map<String, dynamic>> snapshot)
       : documentId = snapshot.id,
-        center = snapshot.data()["center"],
+        center = snapshot.data()["position"],
         radius = snapshot.data()["radius"];
 }
