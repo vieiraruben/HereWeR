@@ -62,7 +62,7 @@ Widget getMenu(BuildContext context) {
                       ],
                     ),
                   ), 
-                ), SizedBox(height: 10),
+                ), const SizedBox(height: 10),
                 Container(decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(50),
                       color: Colors.black.withOpacity(0.3)),
