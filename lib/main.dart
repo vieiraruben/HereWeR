@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:mapview/constants/routes.dart';
 import 'package:mapview/services/auth/auth_service.dart';
 import 'package:mapview/views/chat_manager_view.dart';
-import 'package:mapview/views/mapview.dart';
+import 'package:mapview/views/google_map_view.dart';
 import 'package:flutter/services.dart';
+import 'package:mapview/views/search_view.dart';
 import 'package:mapview/views/verify_email.dart';
 import 'views/welcome_view.dart';
 import 'views/login_view.dart';
@@ -37,10 +38,11 @@ void main() async {
           welcomeRoute: (context) => const Welcome(),
           loginRoute: (context) => const LoginView(),
           signupRoute: (context) => const SignUpView(),
-          mapRoute: (context) => const MapView(),
+          mapRoute: (context) => const MapSample(),
           newProfileRoute: (context) => const NewProfileView(),
           verifyEmailRoute: (context) => const VerifyEmailView(),
           chatRoute: (context) => const ChatManagerView(),
+          searchRoute: (context) => const SearchView(),
         }),
   );
 }
