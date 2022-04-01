@@ -12,6 +12,8 @@ class RestaurantWidget extends StatefulWidget {
   @override
   State<RestaurantWidget> createState() => RestaurantWidgetState();
 }
+
+
 class RestaurantWidgetState extends State<RestaurantWidget>{
   bool isPhotos = true;
   bool isMenu = false;
@@ -31,12 +33,12 @@ class RestaurantWidgetState extends State<RestaurantWidget>{
                 borderRadius: BorderRadius.circular(10),
               ),
 
-              child : Padding(padding :
-              const EdgeInsets.all(8.0),
-                child:  Column(
+              child : Column(
+                  mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children:  [
-                    Align(
+                    Container(
+                      color: Colors.amberAccent,
                       alignment: Alignment.topCenter,
                       child: ButtonBar(
                         mainAxisSize: MainAxisSize.min, // this will take space as minimum as posible(to center)
@@ -67,19 +69,17 @@ class RestaurantWidgetState extends State<RestaurantWidget>{
                   ],
                 ),
               ),
-            ),
           );
 
   }
 
   Widget restaurantPhotos(List<Map<String, String>> contents){
-    print(contents.length);
-    return SizedBox(
-      height: 450,
-      width: 300,
-
+    return Container(
+      height: 500,
+      width: 350,
+      alignment: Alignment.center,
       child: ListView.builder(
-
+          shrinkWrap: true,
           itemCount: contents.length,
           itemBuilder: (BuildContext context, int index){
             var content = contents[index];
@@ -131,7 +131,7 @@ class RestaurantWidgetState extends State<RestaurantWidget>{
       options: CarouselOptions(
           autoPlay: true,
           enlargeCenterPage: true,
-          aspectRatio: 1.0,
+          aspectRatio: 1.5,
           onPageChanged: (index, reason) {
           }),
     );
