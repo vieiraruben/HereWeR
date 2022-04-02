@@ -45,8 +45,8 @@ class FireStoreMarkerCloudStorage {
   //Fonction qui convertie des paths en nom d'icon en enlevant les char superflus
   loadIconPaths(List<String> imgs) async {
     for (var path in imgs){
-      var iconName = path.replaceAll("assets/images/icons8-", "");
-      iconName = iconName.replaceAll("-500.png", "");
+      var iconName = path.replaceAll("assets/images/icons/icons8-", "");
+      iconName = iconName.replaceAll("-64.png", "");
       iconPaths[iconName] = path;
     }
   }

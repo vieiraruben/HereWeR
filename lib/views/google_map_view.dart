@@ -1,4 +1,3 @@
-
 import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -27,14 +26,14 @@ class MapSample extends StatefulWidget {
 }
 
 class MapSampleState extends State<MapSample> {
-
-
 //instances des class permettant la gestion des Markers et des Cercles vis à vis de fireStore
-  final FireStoreMarkerCloudStorage _markersService = FireStoreMarkerCloudStorage();
-  final FireStoreCircleCloudStorage _circlesService = FireStoreCircleCloudStorage();
+  final FireStoreMarkerCloudStorage _markersService =
+      FireStoreMarkerCloudStorage();
+  final FireStoreCircleCloudStorage _circlesService =
+      FireStoreCircleCloudStorage();
 
 //Controller pour gérer les zooms de la caméra
-  late  GoogleMapController _controller;
+  late GoogleMapController _controller;
 
 //Instance de géolocalisation
   late Location location;
@@ -45,11 +44,10 @@ class MapSampleState extends State<MapSample> {
   List<LatLng> tempPolygonLatLngs = <LatLng>[];
   Set<Circle> tempCircles = HashSet<Circle>();
 
-
 //Id des markers temporaires (un id est nécessaire pour créer un Marker google)
-  int tempPolygonIdCounter =1;
-  int tempCircleIdCounter =1;
-  int tempMarkerIdCounter =1;
+  int tempPolygonIdCounter = 1;
+  int tempCircleIdCounter = 1;
+  int tempMarkerIdCounter = 1;
 
   //Booléens qui gèrent les fonctionnalités lièes à l'ajout de marqueurs sur la carte.
   bool isAdmin = true;
@@ -57,7 +55,6 @@ class MapSampleState extends State<MapSample> {
   bool isCircle = false;
   bool isMarker = false;
   bool isInteract = false;
-
 
   //Booléens qui gèrent la caméra
   //centrage de la caméra sur l'utilisateur
@@ -76,7 +73,7 @@ class MapSampleState extends State<MapSample> {
   );
 
   //Fonction qui sera appelé pour recentrer la caméra sur l'évènement
-  void _goToTheEvent()  {
+  void _goToTheEvent() {
     _controller.animateCamera(CameraUpdate.newCameraPosition(startCam));
   }
 
@@ -88,8 +85,7 @@ class MapSampleState extends State<MapSample> {
         for (var doc in docs.docs) {
           MarkerModel marker = MarkerModel.fromSnapshot(doc);
           markersSet.add(await _markersService.initMarker(marker, 70));
-          setState(() {
-          });
+          setState(() {});
         }
       }
     });
@@ -103,17 +99,14 @@ class MapSampleState extends State<MapSample> {
         for (var doc in docs.docs) {
           CircleModel circle = CircleModel.fromSnapshot(doc);
           circlesSet.add(await _circlesService.initCircle(circle));
-          setState(() {
-          });
+          setState(() {});
         }
       }
     });
   }
 
-
-
   //Fonction qui s'execute à la création de la map
-  void _onMapCreated(GoogleMapController _cntlr) async{
+  void _onMapCreated(GoogleMapController _cntlr) async {
     //initiallisation des instances de localisation et de controller
     location = Location();
     _controller = _cntlr;
@@ -125,44 +118,42 @@ class MapSampleState extends State<MapSample> {
 
     //Listener qui effectue des actions à chaque notification de position
     location.onLocationChanged.listen((loc) async {
-
       //Si Le toggle UserCentered est enclenché, la caméra est placé sur sa position
-      if(isUserCentered) {
-        _controller.animateCamera(
-            CameraUpdate.newCameraPosition(
-              CameraPosition(target: LatLng(loc.latitude!, loc.longitude!),
-                  zoom: await _controller.getZoomLevel()),
-            )
-        );
+      if (isUserCentered) {
+        _controller.animateCamera(CameraUpdate.newCameraPosition(
+          CameraPosition(
+              target: LatLng(loc.latitude!, loc.longitude!),
+              zoom: await _controller.getZoomLevel()),
+        ));
       }
 
       //Pour chaques cercles affichés, on calcul sa distance avec la position actuelle de l'utilisateur
-      for (Circle circle in circlesSet){
-        double distance = calculateDistance(loc.latitude!, loc.longitude!, circle.center.latitude, circle.center.longitude);
+      for (Circle circle in circlesSet) {
+        double distance = calculateDistance(loc.latitude!, loc.longitude!,
+            circle.center.latitude, circle.center.longitude);
         //Si la distance est plus petite que le rayon du cercle on active localToggle c'est à dire la possibilité de passer en vue scène
-        if (distance <= circle.radius){
+        if (distance <= circle.radius) {
           isLocalScene = true;
           radius = circle.radius;
           currentScene = circle;
-          setState(() {
-          });
+          setState(() {});
         }
         //Sinon on le désactive
-        else{
+        else {
           isLocalScene = false;
           currentScene = null;
         }
       }
 
       //Si le localToggle est disponible et activé on centre la caméra sur la currentScene
-      if (isLocalScene & isLocalSceneActivated){
-        double zoomLvl = 16 + (1.5 * 100/radius);
-        _controller.animateCamera(
-            CameraUpdate.newCameraPosition(
-              CameraPosition(target: LatLng(currentScene!.center.latitude, currentScene!.center.longitude),
-                  zoom: zoomLvl),
-            )
-        );
+      if (isLocalScene & isLocalSceneActivated) {
+        double zoomLvl = 16 + (1.5 * 100 / radius);
+        _controller.animateCamera(CameraUpdate.newCameraPosition(
+          CameraPosition(
+              target: LatLng(currentScene!.center.latitude,
+                  currentScene!.center.longitude),
+              zoom: zoomLvl),
+        ));
       }
     });
   }
@@ -173,8 +164,6 @@ class MapSampleState extends State<MapSample> {
     //Vérification de la permission d'accès à la geolocation
     getUserLocationPermission();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -193,22 +182,20 @@ class MapSampleState extends State<MapSample> {
             myLocationButtonEnabled: false,
             //Specification de la source des markers et des cercles
             circles: circlesSet,
-            markers:  markersSet,
+            markers: markersSet,
             polygons: tempPolygons,
             //Lorsque l'on tap sur la map, celon le booléen qui vaut vrai, on appel différentes fonctions pour créer nos markers, cercles...
-            onTap: (point){
-              if (isPolygon){
+            onTap: (point) {
+              if (isPolygon) {
                 setState(() {
                   tempPolygonLatLngs.add(point);
                   _setPolygon();
                 });
-              }
-              else if (isMarker){
+              } else if (isMarker) {
                 setState(() {
                   _setMarkers(point, markerType, markerName);
                 });
-              }
-              else if (isCircle){
+              } else if (isCircle) {
                 setState(() {
                   _setCircles(point);
                 });
@@ -220,22 +207,21 @@ class MapSampleState extends State<MapSample> {
           Align(
               alignment: Alignment.centerLeft,
               child: Column(
-
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget> [
+                children: <Widget>[
                   //Le premier permet de replacer la caméra sur sa position initial (centre de l'évenement)
                   RawMaterialButton(
                     constraints: BoxConstraints.tight(const Size(36, 36)),
                     child: const Icon(Icons.travel_explore, size: 18),
                     shape: const CircleBorder(),
-                    onPressed: (){
+                    onPressed: () {
                       setState(() {
                         isUserCentered = false;
                         _goToTheEvent();
                       });
                     },
                     fillColor: Colors.tealAccent,
-                    highlightColor : Colors.blue,
+                    highlightColor: Colors.blue,
                   ),
 
                   //Le second est un toggle qui gère le centrage de la caméra sur l'utilisateur
@@ -243,46 +229,43 @@ class MapSampleState extends State<MapSample> {
                     constraints: BoxConstraints.tight(const Size(36, 36)),
                     child: const Icon(Icons.center_focus_strong, size: 18),
                     shape: const CircleBorder(),
-                    onPressed: (){
+                    onPressed: () {
                       setState(() {
                         isUserCentered = !isUserCentered;
                       });
                     },
-                    fillColor: isUserCentered ? Colors.blue: Colors.grey,
+                    fillColor: isUserCentered ? Colors.blue : Colors.grey,
                   ),
 
-
-                 //Si L'utilisateur se trouve dans un cercle (scène) alors le troisième bouton est affiché
-                 if (isLocalScene) getLocalToggle(),
-
+                  //Si L'utilisateur se trouve dans un cercle (scène) alors le troisième bouton est affiché
+                  if (isLocalScene) getLocalToggle(),
                 ],
-              )
-          ),
-          getMenu(context),
+              )),
+          // getMenu(context, ),
 
           //Si le mode admin est activé alors les contrôles permettant d'ajouter des éléments sont affichés
           if (isAdmin) getAdminTools(),
-            ],
-          ),
-
-        );
+        ],
+      ),
+    );
   }
 
   //Toggle permettant de centrer la caméra sur la scène. A sa desactivation il recentre la caméra sur l'évenement
   Widget getLocalToggle() {
     return RawMaterialButton(
       constraints: BoxConstraints.tight(const Size(36, 36)),
-      child: Icon(isLocalSceneActivated? Icons.zoom_out_map :  Icons.zoom_in_map, size: 18),
+      child: Icon(
+          isLocalSceneActivated ? Icons.zoom_out_map : Icons.zoom_in_map,
+          size: 18),
       shape: const CircleBorder(),
-      onPressed: (){
+      onPressed: () {
         isLocalSceneActivated = !isLocalSceneActivated;
-        if (!isLocalSceneActivated){
+        if (!isLocalSceneActivated) {
           _goToTheEvent();
         }
-        setState(() {
-        });
+        setState(() {});
       },
-      fillColor: isLocalSceneActivated? Colors.blue: Colors.grey,
+      fillColor: isLocalSceneActivated ? Colors.blue : Colors.grey,
     );
   }
 
@@ -293,27 +276,30 @@ class MapSampleState extends State<MapSample> {
     //on cet id pour les prochains markers
     tempMarkerIdCounter++;
     //On créé un markerModel à partir des coordonnés du tap, de l'id et des infos rentrés par l'admin
-    MarkerModel markerModel = MarkerModel(documentId: markerId, markerPosition: latLngToGeo(point), type: type, name: name);
+    MarkerModel markerModel = MarkerModel(
+        documentId: markerId,
+        markerPosition: latLngToGeo(point),
+        type: type,
+        name: name);
     //On convertie le model en Marker
-    Marker marker =  await _markersService.initMarker(markerModel, 70);
+    Marker marker = await _markersService.initMarker(markerModel, 70);
     //On l'ajoute à la liste de Marker affichés
     markersSet.add(marker);
     //et à la liste temporaire de Marker
     tempMarkers.add(markerModel);
     //rafraichi le widget pour l'affichage
-    setState(() {
-    });
+    setState(() {});
   }
 
   //Même procédé que pour setMarker cette fois pour les cercles
-  void _setCircles(LatLng point){
+  void _setCircles(LatLng point) {
     final String circleId = "circle_$tempCircleIdCounter";
     tempCircleIdCounter++;
     setState(() {
       tempCircles.add(
         Circle(
           circleId: CircleId(circleId),
-          center : point,
+          center: point,
           radius: radius,
           strokeColor: Colors.red,
           strokeWidth: 1,
@@ -323,14 +309,14 @@ class MapSampleState extends State<MapSample> {
   }
 
   //Même procédé que pour setMarker cette fois pour les polygons
-  void _setPolygon(){
+  void _setPolygon() {
     final String polygonId = "polygon_$tempPolygonIdCounter";
     tempPolygonIdCounter++;
     setState(() {
       tempPolygons.add(
         Polygon(
           polygonId: PolygonId(polygonId),
-          points : tempPolygonLatLngs,
+          points: tempPolygonLatLngs,
           fillColor: Colors.transparent,
           strokeWidth: 2,
           strokeColor: Colors.red,
@@ -340,7 +326,7 @@ class MapSampleState extends State<MapSample> {
   }
 
   //Widget qui s'affiche dans le cas ou isAdmin vaut true
-  Widget getAdminTools(){
+  Widget getAdminTools() {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Row(
@@ -352,7 +338,7 @@ class MapSampleState extends State<MapSample> {
           RawMaterialButton(
             constraints: BoxConstraints.tight(const Size(66, 36)),
             fillColor: isInteract ? Colors.blue : Colors.grey,
-            onPressed: (){
+            onPressed: () {
               setState(() {
                 isPolygon = false;
                 isCircle = false;
@@ -363,101 +349,99 @@ class MapSampleState extends State<MapSample> {
             child: const Text(
               'interact',
             ),
-
           ),
 
           //Passe en mode polygon
           RawMaterialButton(
             constraints: BoxConstraints.tight(const Size(66, 36)),
             fillColor: isPolygon ? Colors.blue : Colors.grey,
-            onPressed: (){setState(() {
-              isPolygon = true;
-              isCircle = false;
-              isMarker = false;
-              isInteract = false;
-            });
+            onPressed: () {
+              setState(() {
+                isPolygon = true;
+                isCircle = false;
+                isMarker = false;
+                isInteract = false;
+              });
             },
             child: const Text(
               'polygon',
             ),
-
           ),
 
           //Passe en mode marker
           RawMaterialButton(
             constraints: BoxConstraints.tight(const Size(66, 36)),
             fillColor: isMarker ? Colors.blue : Colors.grey,
-            onPressed: (){setState(() {
-              isPolygon = false;
-              isCircle = false;
-              isMarker = true;
-              isInteract = false;
-
-            });
+            onPressed: () {
+              setState(() {
+                isPolygon = false;
+                isCircle = false;
+                isMarker = true;
+                isInteract = false;
+              });
               showDialog(
-                context: context,
-                builder: (BuildContext context) => AlertDialog(
-
-                  title: const Text('Define marker',textAlign : TextAlign.center),
-                  contentPadding: const EdgeInsets.all(8),
-                  content: (
-                  //appel un formulaire de création qui permet de définir l'icon et le nom du nouveau Marker
-                  const MarkersCreationForm()
-                  ),
-                  actions: [
-                    TextButton(
-                        onPressed:() async {
-                          Navigator.pop(context);
-                        },
-                        child: const Text("Validate"))
-                  ],
-                ));
+                  context: context,
+                  builder: (BuildContext context) => AlertDialog(
+                        title: const Text('Define marker',
+                            textAlign: TextAlign.center),
+                        contentPadding: const EdgeInsets.all(8),
+                        content: (
+                            //appel un formulaire de création qui permet de définir l'icon et le nom du nouveau Marker
+                            const MarkersCreationForm()),
+                        actions: [
+                          TextButton(
+                              onPressed: () async {
+                                Navigator.pop(context);
+                              },
+                              child: const Text("Validate"))
+                        ],
+                      ));
             },
             child: const Text(
               'marker',
             ),
-
           ),
 
           //Passe en mode marker
           RawMaterialButton(
             constraints: BoxConstraints.tight(const Size(66, 36)),
             fillColor: isCircle ? Colors.blue : Colors.grey,
-            onPressed: (){setState(() {
-              isPolygon = false;
-              isCircle = true;
-              isMarker = false;
-              isInteract = false;
-            });
-            //formulaire de création qui permet de définir le radius du nouveau cercle
-            showDialog(
-                context: context,
-                builder: (BuildContext context) => AlertDialog(
-                  title: const Text('Choose radius'),
-                  contentPadding: const EdgeInsets.all(8),
-                  content: TextField(
-                    decoration:  const InputDecoration(icon: Icon(Icons.zoom_out_map),
-                        hintText: 'ex: 100', suffixText: 'meters'),
-                    keyboardType: const TextInputType.numberWithOptions(),
-                    onChanged: (input){
-                      setState(() {
-                        radius = double.parse(input);
-                      });
-                    },
-                  ),
-                  actions: [
-                    TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text("ok"))
-                  ],
-                ));
+            onPressed: () {
+              setState(() {
+                isPolygon = false;
+                isCircle = true;
+                isMarker = false;
+                isInteract = false;
+              });
+              //formulaire de création qui permet de définir le radius du nouveau cercle
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) => AlertDialog(
+                        title: const Text('Choose radius'),
+                        contentPadding: const EdgeInsets.all(8),
+                        content: TextField(
+                          decoration: const InputDecoration(
+                              icon: Icon(Icons.zoom_out_map),
+                              hintText: 'ex: 100',
+                              suffixText: 'meters'),
+                          keyboardType: const TextInputType.numberWithOptions(),
+                          onChanged: (input) {
+                            setState(() {
+                              radius = double.parse(input);
+                            });
+                          },
+                        ),
+                        actions: [
+                          TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text("ok"))
+                        ],
+                      ));
             },
-
             child: const Text(
               'circle',
             ),
           ),
-
 
           //Bouton qui permet de sauvegarder dans fireStore les éléments ajoutés
           RawMaterialButton(
@@ -465,24 +449,30 @@ class MapSampleState extends State<MapSample> {
             constraints: BoxConstraints.tight(const Size(66, 36)),
 
             //Si il y a des nouveaux éléments le bouton est bleu ce qui indique qu'il y a des éléments à sauvegarder
-            fillColor: tempMarkers.isNotEmpty || tempCircles.isNotEmpty ? Colors.blue : Colors.grey,
-            onPressed: (){setState(() {
-              //Pour chaque éléments dans les Listes temporaires de markers et de cercles on les ajoute à fireStore
-              for (MarkerModel marker in tempMarkers){
-                _markersService.addMarker(marker: marker);
-              }
-              for (Circle circle in tempCircles){
-                double lat = circle.center.latitude;
-                double lng = circle.center.longitude;
-                GeoPoint centerGeo = GeoPoint(lat, lng);
-                CircleModel myCircle = CircleModel(documentId: circle.circleId.toString(), center: centerGeo, radius: circle.radius);
-                _circlesService.addCircle(circle: myCircle);
-              }
+            fillColor: tempMarkers.isNotEmpty || tempCircles.isNotEmpty
+                ? Colors.blue
+                : Colors.grey,
+            onPressed: () {
+              setState(() {
+                //Pour chaque éléments dans les Listes temporaires de markers et de cercles on les ajoute à fireStore
+                for (MarkerModel marker in tempMarkers) {
+                  _markersService.addMarker(marker: marker);
+                }
+                for (Circle circle in tempCircles) {
+                  double lat = circle.center.latitude;
+                  double lng = circle.center.longitude;
+                  GeoPoint centerGeo = GeoPoint(lat, lng);
+                  CircleModel myCircle = CircleModel(
+                      documentId: circle.circleId.toString(),
+                      center: centerGeo,
+                      radius: circle.radius);
+                  _circlesService.addCircle(circle: myCircle);
+                }
 
-              //On vide les Listes temporaires après la sauvegarde pour ne pas les ajoutés plusieurs fois
-              tempMarkers.clear();
-              tempCircles.clear();
-            });
+                //On vide les Listes temporaires après la sauvegarde pour ne pas les ajoutés plusieurs fois
+                tempMarkers.clear();
+                tempCircles.clear();
+              });
             },
             child: const Text(
               'save',
@@ -490,13 +480,6 @@ class MapSampleState extends State<MapSample> {
           ),
         ],
       ),
-
     );
   }
-
-
-
-
-
 }
-

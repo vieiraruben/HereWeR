@@ -177,7 +177,7 @@ class _SearchViewState extends State<SearchView> {
                         children: [Stack(children: [
                           ClipRRect(
                             borderRadius: const BorderRadius.all(Radius.circular(10)),
-                            child: Container(foregroundDecoration: BoxDecoration(gradient:
+                            child: Container(foregroundDecoration: const BoxDecoration(gradient:
                             LinearGradient(colors:
                             [Colors.black, Colors.transparent], begin: Alignment.bottomRight),
                             ), child:
