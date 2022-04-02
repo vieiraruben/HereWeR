@@ -102,48 +102,48 @@ class MapViewState extends State<MapView> {
       if (docs.docs.isNotEmpty) {
         for (var doc in docs.docs) {
           MarkerModel marker = MarkerModel.fromSnapshot(doc);
-          Color circleColor = Colors.blue.withOpacity(0.5);
+          Color circleColor = Colors.blue;
           double circleRadius = 15;
           switch (doc.data()["type"]) {
             case "beer-mug":
             case "soda":
             case "restaurant":
-              circleColor = Colors.yellow.withOpacity(0.5);
+              circleColor = Colors.yellow;
               circleRadius = 20;
               break;
             case "dj":
-              circleColor = Colors.purple.withOpacity(0.5);
+              circleColor = Colors.purple;
               circleRadius = 25;
               break;
             case "stage":
-              circleColor = Colors.pink.withOpacity(0.5);
+              circleColor = Colors.pink;
               circleRadius = 35;
               break;
             case "country-music":
-              circleColor = Colors.brown.withOpacity(0.5);
+              circleColor = Colors.brown;
               circleRadius = 17;
               break;
             case "camping-tent":
-              circleColor = Colors.lightGreen.withOpacity(0.5);
+              circleColor = Colors.lightGreen;
               circleRadius = 16;
               break;
             case "atm":
             case "charging-battery":
-              circleColor = Colors.green.withOpacity(0.5);
+              circleColor = Colors.green;
               circleRadius = 15;
               break;
             case "medical-bag":
-              circleColor = Colors.red.withOpacity(0.5);
+              circleColor = Colors.red;
               circleRadius = 18;
               break;
             case "theme-park":
-              circleColor = Colors.pink.withOpacity(0.5);
+              circleColor = Colors.pink;
               circleRadius = 20;
           }
           print(doc.data()["type"]);
           circlesSet.add(Circle(
               circleId: CircleId(doc.id),
-              fillColor: circleColor,
+              fillColor: circleColor.withOpacity(0.70),
               radius: circleRadius,
               center: LatLng(doc.data()["position"].latitude + 0.00007,
                   (doc.data()["position"].longitude)),

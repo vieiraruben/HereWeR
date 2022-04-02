@@ -122,9 +122,7 @@ class _SearchViewState extends State<SearchView> {
         makeHeader(context, "ANNOUNCEMENTS"),
         SliverList(
             delegate: SliverChildListDelegate([
-          SizedBox(
-              height: 250,
-              child: Padding(
+          Padding(
                   padding: const EdgeInsets.all(20),
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,7 +156,7 @@ class _SearchViewState extends State<SearchView> {
                                 ],
                               ));
                         }).toList())
-                      ])))
+                      ]))
         ])),
         makeHeader(context, "RIGHT NOW"),
         SliverList(
