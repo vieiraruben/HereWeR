@@ -9,6 +9,8 @@ import 'package:mapview/geolocation/user_location_permission.dart';
 import 'package:mapview/services/circle.dart';
 import 'package:mapview/services/circle_service.dart';
 import 'package:mapview/utilities/geo_to_latlng.dart';
+import 'package:mapview/views/chat_manager_view.dart';
+import 'package:mapview/views/chat_view.dart';
 import 'package:mapview/widgets/admin_widgets/marker_creation_form.dart';
 import 'package:mapview/widgets/floating_menu.dart';
 import '../services/marker.dart';
@@ -19,6 +21,7 @@ import '../utilities/calculate_distance.dart';
 late String markerType;
 late String markerName;
 late double radius;
+late bool chatVisible;
 
 class MapView extends StatefulWidget {
   const MapView({Key? key}) : super(key: key);
@@ -43,17 +46,22 @@ class MapViewState extends State<MapView> {
   @override
   void initState() {
     super.initState();
+    chatVisible = true;
     _actionController = StreamController<int>()
       ..stream.listen((action) {
         switch (action) {
           case 1:
             isUserCentered = !isUserCentered;
+            break;
+          case 2:
+            chatVisible = !chatVisible;
         }
         setState(() {});
       });
 
     //Vérification de la permission d'accès à la geolocation
     getUserLocationPermission();
+    // if (ChatManagerViewS)
   }
 
 //Variables temporaires qui stockent les nouveaux éléments ajoutés à la map
@@ -271,6 +279,26 @@ class MapViewState extends State<MapView> {
             },
           ),
           getMenu(context, _actionController),
+          Visibility(
+              visible: chatVisible,
+              child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: SizedBox(
+                      height: 300,
+                      child: ShaderMask(
+                          shaderCallback: (Rect bounds) {
+                            return LinearGradient(
+                              begin: Alignment.bottomRight,
+                              end: Alignment.topRight,
+                              stops: const [0.6, 1],
+                              colors: <Color>[
+                                Colors.white.withOpacity(0.9),
+                                Colors.white.withOpacity(0)
+                              ],
+                              tileMode: TileMode.repeated,
+                            ).createShader(bounds);
+                          },
+                          child: const ChatManagerView(fullScreen: false)))))
 
           //Si le mode admin est activé alors les contrôles permettant d'ajouter des éléments sont affichés
           // if (isAdmin) getAdminTools(),

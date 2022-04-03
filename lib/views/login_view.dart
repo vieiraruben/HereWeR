@@ -4,6 +4,7 @@ import 'package:mapview/constants/routes.dart';
 import 'package:mapview/services/exceptions.dart';
 import 'package:mapview/services/auth/auth_service.dart';
 import 'package:mapview/utilities/error_dialog.dart';
+import 'package:mapview/widgets/loading_overlay.dart';
 
 // TODO: Add forgotten password option
 
@@ -35,6 +36,7 @@ class _LoginViewState extends State<LoginView> {
 
   void loginButton() async {
     if (_formKey.currentState!.validate()) {
+      // const LoadingOverlay();
       final email = _email.text;
       final password = _password.text;
       try {
@@ -51,6 +53,9 @@ class _LoginViewState extends State<LoginView> {
       } on WrongPasswordAuthException {
         await showErrorDialog(context, "Incorrect Password",
             "The password you entered is incorrect. Please try again.");
+      } on InvalidEmailAuthException {
+        await showErrorDialog(context, "Invalid Email",
+            "The email address you entered is invalid. Please try again.");
       } on GenericAuthException {
         await showErrorDialog(context, "Undefined Error",
             "Something bad happened. Please check your connectivity and try again.");

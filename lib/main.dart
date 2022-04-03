@@ -7,6 +7,7 @@ import 'package:mapview/views/google_map_view2.dart';
 import 'package:flutter/services.dart';
 import 'package:mapview/views/search_view.dart';
 import 'package:mapview/views/verify_email.dart';
+import 'package:mapview/widgets/loading_overlay.dart';
 import 'views/welcome_view.dart';
 import 'views/login_view.dart';
 import 'views/signup_view.dart';
@@ -19,16 +20,15 @@ void main() async {
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(
     MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.indigo,
-        brightness: Brightness.light,
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        primarySwatch: Colors.indigo,
-        scaffoldBackgroundColor: Colors.black,
-        appBarTheme: const AppBarTheme(backgroundColor: Colors.indigo)
-      ),
+        theme: ThemeData(
+          primarySwatch: Colors.indigo,
+          brightness: Brightness.light,
+        ),
+        darkTheme: ThemeData(
+            brightness: Brightness.dark,
+            primarySwatch: Colors.indigo,
+            scaffoldBackgroundColor: Colors.black,
+            appBarTheme: const AppBarTheme(backgroundColor: Colors.indigo)),
         debugShowCheckedModeBanner: false,
         title: 'Hyde Park Fest',
         builder: BotToastInit(),
@@ -41,7 +41,7 @@ void main() async {
           mapRoute: (context) => const MapView(),
           newProfileRoute: (context) => const NewProfileView(),
           verifyEmailRoute: (context) => const VerifyEmailView(),
-          chatRoute: (context) => const ChatManagerView(),
+          chatRoute: (context) => const ChatManagerView(fullScreen: true,),
           searchRoute: (context) => const SearchView(),
         }),
   );
@@ -59,14 +59,19 @@ class HomePage extends StatelessWidget {
             case ConnectionState.done:
               final user = AuthService.firebase().currentUser;
               if (user != null && user.isEmailVerified) {
+                // return LoadingOverlay();
                 return Welcome();
                 // return MapView();
               } else {
+                // return LoadingOverlay();
                 return const Welcome();
               }
             default:
-              return const CircularProgressIndicator();
+              return const LoadingOverlay();
           }
-        });
+        }, 
+        );
   }
 }
+
+

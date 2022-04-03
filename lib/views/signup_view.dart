@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:developer';
+import 'package:mapview/widgets/loading_overlay.dart';
 import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -56,7 +57,7 @@ class _SignUpViewState extends State<SignUpView> {
         showErrorDialog(context, "Sign Up Failed",
             "An account already exists for this email address. Please log in.");
       } on InvalidEmailAuthException {
-        showErrorDialog(context, "Sign Up Failed",
+        showErrorDialog(context, "Invalid Email",
             "The email address you entered is invalid. Please try again.");
       } catch (e) {
         log(e.toString());
@@ -148,7 +149,7 @@ class _NewProfileViewState extends State<NewProfileView> {
     super.initState();
   }
 
-  void nextButtonAction() async {
+  Future<int?> nextButtonAction() async {
     final username = _username.text;
     if (_formKey.currentState!.validate()) {
       try {
@@ -157,6 +158,7 @@ class _NewProfileViewState extends State<NewProfileView> {
         if (taken) {
           await showErrorDialog(context, "Username Taken",
               "This username has been choosen. Please try a different username.");
+          return 1;
         } else {
           await AuthService.firebase().updateUsername(username: username);
           FirebaseCloudDatabase().addUsername(username);
@@ -169,10 +171,12 @@ class _NewProfileViewState extends State<NewProfileView> {
                 .addProfilePic(username, path.basename(profilePic!.path));
           }
           Navigator.of(context).pushNamed(verifyEmailRoute);
+          return 0;
         }
       } on GenericAuthException {
         await showErrorDialog(context, "Undefined Error",
             "Something bad happened. Please check your connectivity and try again.");
+        return 1;
       } catch (e) {
         log(e.toString());
       }
@@ -233,13 +237,25 @@ class _NewProfileViewState extends State<NewProfileView> {
                   autofocus: true,
                   controller: _username,
                   keyboardType: TextInputType.name,
-                  onFieldSubmitted: (v) => nextButtonAction(),
+                  onFieldSubmitted: (v) => FutureBuilder(
+                    future: nextButtonAction(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        print("oii");
+                        return LoadingOverlay();
+                      }
+                      print("oi");
+                      return LoadingOverlay();
+                    },
+                  ),
                   // autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) {
+                    final regex = RegExp(
+                        r"^(?=.{4,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$");
                     if (value == null || value.isEmpty) {
                       return 'Please choose your username';
-                    } else if (value.length < 3) {
-                      return 'Please choose a longer username';
+                    } else if (!regex.hasMatch(value)) {
+                      return 'Please choose a valid username. Letters, numbers, . and _ only.';
                     }
                     return null;
                   },

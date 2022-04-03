@@ -48,7 +48,7 @@ Widget getMenu(BuildContext context, StreamController _controller) {
                         ),
                         IconButton(
                             onPressed: () {
-                              Navigator.of(context).pushNamed(chatRoute);
+                               _controller.add(2);
                             },
                             icon: const Icon(
                                 HereWeRIcons.icons8_communication_64),
