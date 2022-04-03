@@ -16,6 +16,7 @@ import 'package:mapview/widgets/floating_menu.dart';
 import '../services/marker.dart';
 import '../services/marker_service.dart';
 import '../utilities/calculate_distance.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 //Variables servant à stocker les infos des cercles et marker ajoutés en mode admin
 late String markerType;
@@ -29,7 +30,9 @@ class MapView extends StatefulWidget {
   State<MapView> createState() => MapViewState();
 }
 
-class MapViewState extends State<MapView> {
+class MapViewState extends State<MapView> with WidgetsBindingObserver {
+  late final String _darkStyle;
+  late final String _lightStyle;
   late final _actionController;
 //instances des class permettant la gestion des Markers et des Cercles vis à vis de fireStore
   final FireStoreMarkerCloudStorage _markersService =
@@ -46,7 +49,14 @@ class MapViewState extends State<MapView> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance!.addObserver(this);
     chatVisible = true;
+    rootBundle.loadString('assets/dark_map.txt').then((string) {
+      _darkStyle = string;
+    });
+    rootBundle.loadString('assets/light_map.txt').then((string) {
+      _lightStyle = string;
+    });
     _actionController = StreamController<int>()
       ..stream.listen((action) {
         switch (action) {
@@ -62,6 +72,33 @@ class MapViewState extends State<MapView> {
     //Vérification de la permission d'accès à la geolocation
     getUserLocationPermission();
     // if (ChatManagerViewS)
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance?.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    setState(() {
+      final controller = _controller;
+      final theme = WidgetsBinding.instance!.window.platformBrightness;
+      if (theme == Brightness.dark) {
+        print("dark");
+        controller.setMapStyle(_darkStyle);
+      } else {
+        print("light");
+        controller.setMapStyle(_lightStyle);
+      }
+    });
+
+    // if (state == AppLifecycleState.resumed) {
+    //   (Theme.of(context).brightness == Brightness.dark)
+    //       ? _controller.setMapStyle(_darkStyle)
+    //       : _controller.setMapStyle(_lightStyle);
+    // }
   }
 
 //Variables temporaires qui stockent les nouveaux éléments ajoutés à la map
@@ -125,7 +162,7 @@ class MapViewState extends State<MapView> {
               break;
             case "stage":
               circleColor = Colors.pink;
-              circleRadius = 35;
+              circleRadius = 50;
               break;
             case "country-music":
               circleColor = Colors.brown;
@@ -184,6 +221,10 @@ class MapViewState extends State<MapView> {
     location = Location();
     _controller = _cntlr;
 
+    (Theme.of(context).brightness == Brightness.dark)
+        ? _controller.setMapStyle(_darkStyle)
+        : _controller.setMapStyle(_lightStyle);
+
     //Chargement des icons pour leur convertion en bitmap et chargement des cercles et des marker déja présents sur firestore.
     _markersService.loadIconPaths(iconImgs);
     // chargeCircles();
@@ -239,8 +280,9 @@ class MapViewState extends State<MapView> {
         children: <Widget>[
           //On Build la map
           GoogleMap(
-            mapType: MapType.terrain,
             initialCameraPosition: startCam,
+            buildingsEnabled: false,
+            zoomControlsEnabled: false,
             cameraTargetBounds: CameraTargetBounds(LatLngBounds(
                 southwest: const LatLng(51.504240, -0.175532),
                 northeast: const LatLng(51.512146, -0.163387))),

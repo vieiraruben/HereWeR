@@ -149,7 +149,7 @@ class _NewProfileViewState extends State<NewProfileView> {
     super.initState();
   }
 
-  Future<int?> nextButtonAction() async {
+  void nextButtonAction() async {
     final username = _username.text;
     if (_formKey.currentState!.validate()) {
       try {
@@ -158,7 +158,6 @@ class _NewProfileViewState extends State<NewProfileView> {
         if (taken) {
           await showErrorDialog(context, "Username Taken",
               "This username has been choosen. Please try a different username.");
-          return 1;
         } else {
           await AuthService.firebase().updateUsername(username: username);
           FirebaseCloudDatabase().addUsername(username);
@@ -171,12 +170,10 @@ class _NewProfileViewState extends State<NewProfileView> {
                 .addProfilePic(username, path.basename(profilePic!.path));
           }
           Navigator.of(context).pushNamed(verifyEmailRoute);
-          return 0;
         }
       } on GenericAuthException {
         await showErrorDialog(context, "Undefined Error",
             "Something bad happened. Please check your connectivity and try again.");
-        return 1;
       } catch (e) {
         log(e.toString());
       }
@@ -237,17 +234,7 @@ class _NewProfileViewState extends State<NewProfileView> {
                   autofocus: true,
                   controller: _username,
                   keyboardType: TextInputType.name,
-                  onFieldSubmitted: (v) => FutureBuilder(
-                    future: nextButtonAction(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        print("oii");
-                        return LoadingOverlay();
-                      }
-                      print("oi");
-                      return LoadingOverlay();
-                    },
-                  ),
+                  onFieldSubmitted: (v) => nextButtonAction(),
                   // autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) {
                     final regex = RegExp(

@@ -85,6 +85,8 @@ flutter:
     - assets/images/food/
     - assets/images/stages/
     - assets/images/icons/
+    - assets/dark_map.txt
+    - assets/light_map.txt
 
 
 

@@ -19,13 +19,12 @@ class ChatView extends StatefulWidget {
 class _ChatViewState extends State<ChatView> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: const BoxConstraints(maxHeight: 600),
-      child: ListView.builder(
+    return ListView.builder(
+      padding: EdgeInsets.zero,
         itemCount: widget.messages.length,
         reverse: true,
         itemBuilder: (context, index) {
-          return ListTile(shape: const RoundedRectangleBorder(),
+          return ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 20),
             visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
             leading: FutureBuilder(
@@ -60,7 +59,7 @@ class _ChatViewState extends State<ChatView> {
             
           );
         },
-      ),
+      
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:mapview/constants/routes.dart';
 import 'package:mapview/services/auth/auth_service.dart';
@@ -19,6 +20,7 @@ class ChatManagerView extends StatefulWidget {
 }
 
 class _ChatManagerViewState extends State<ChatManagerView> {
+  late double conditionalStyle;
   late final FocusNode _messageFocus;
   late final TextEditingController _send;
   late final FirebaseCloudDatabase _chatService;
@@ -26,6 +28,7 @@ class _ChatManagerViewState extends State<ChatManagerView> {
 
   @override
   void initState() {
+    (Platform.isIOS) ? conditionalStyle = 50 : conditionalStyle = 20;
     _messageFocus = FocusNode();
     _send = TextEditingController();
     _chatService = FirebaseCloudDatabase();
@@ -33,6 +36,12 @@ class _ChatManagerViewState extends State<ChatManagerView> {
       if (_messageFocus.hasFocus && !widget.fullScreen) {
         _messageFocus.unfocus();
         Navigator.of(context).pushNamed(chatRoute);
+      }
+      if (Platform.isIOS &&
+          WidgetsBinding.instance!.window.viewInsets.bottom < 1) {
+        conditionalStyle = 50;
+      } else {
+        conditionalStyle = 20;
       }
     });
     super.initState();
@@ -58,7 +67,7 @@ class _ChatManagerViewState extends State<ChatManagerView> {
   Widget build(BuildContext context) {
     Widget body = Column(
       children: [
-        Expanded(
+        Flexible(
           child: StreamBuilder(
             stream: _chatService.allMessages(destination: "global"),
             builder: (context, snapshot) {
@@ -82,7 +91,8 @@ class _ChatManagerViewState extends State<ChatManagerView> {
         Align(
             alignment: FractionalOffset.bottomCenter,
             child: Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+              padding: EdgeInsets.only(
+                  left: 20, right: 20, top: 0, bottom: conditionalStyle),
               child: TextFormField(
                 focusNode: _messageFocus,
                 autofocus: (widget.fullScreen) ? true : false,
@@ -107,7 +117,8 @@ class _ChatManagerViewState extends State<ChatManagerView> {
     );
 
     if (widget.fullScreen) {
-      return Scaffold(appBar: AppBar(title: const Text("Event Chat")), body: body);
+      return Scaffold(
+          appBar: AppBar(title: const Text("Event Chat")), body: body);
     } else {
       return Scaffold(body: body);
     }
