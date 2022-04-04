@@ -155,7 +155,7 @@ class _WelcomeState extends State<Welcome> {
                 height: 50,
                 child: Column(children: [
                   GestureDetector(
-                    child: const Text("Powered by HereWeR © 2022 MAP HERE!"),
+                    child: const Text("Powered by HereWeR © 2022"),
                     onTap: () async {
                       Navigator.of(context).pushNamed(mapRoute);
                     },

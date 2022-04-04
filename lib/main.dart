@@ -21,14 +21,19 @@ void main() async {
   runApp(
     MaterialApp(
         theme: ThemeData(
-          primarySwatch: Colors.indigo,
+         colorScheme: ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 0, 49, 141)),
+          // colorScheme: ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 0, 6, 126)),
+          // primarySwatch: Colors.yellow,
           brightness: Brightness.light,
         ),
         darkTheme: ThemeData(
             brightness: Brightness.dark,
-            primarySwatch: Colors.indigo,
+            // primarySwatch: Colors.indigo,
+            colorScheme: ColorScheme.fromSeed(brightness: Brightness.dark,
+            seedColor: Color.fromARGB(255, 0, 49, 141)),
             scaffoldBackgroundColor: Colors.black,
-            appBarTheme: const AppBarTheme(backgroundColor: Colors.indigo)),
+            // appBarTheme: const AppBarTheme(backgroundColor: Colors.indigo)
+            ),
         debugShowCheckedModeBanner: false,
         title: 'Hyde Park Fest',
         builder: BotToastInit(),
@@ -41,7 +46,7 @@ void main() async {
           mapRoute: (context) => const MapView(),
           newProfileRoute: (context) => const NewProfileView(),
           verifyEmailRoute: (context) => const VerifyEmailView(),
-          chatRoute: (context) => const ChatManagerView(fullScreen: true,),
+          chatRoute: (context) => const ChatManagerView(fullScreen: true),
           searchRoute: (context) => const SearchView(),
         }),
   );

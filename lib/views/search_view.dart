@@ -58,7 +58,7 @@ class _SearchViewState extends State<SearchView> {
         minHeight: 40.0,
         maxHeight: 40.0,
         child: Container(
-            color: Theme.of(context).backgroundColor,
+            color: Theme.of(context).primaryColorLight,
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: Text(headerText,
@@ -76,6 +76,7 @@ class _SearchViewState extends State<SearchView> {
       snap: false,
       floating: false,
       toolbarHeight: 90,
+      backgroundColor: Color.fromARGB(255, 56, 89, 180),
       expandedHeight: 240.0,
       flexibleSpace: FlexibleSpaceBar(
         centerTitle: true,
@@ -190,7 +191,7 @@ class _SearchViewState extends State<SearchView> {
                                   child: Container(
                                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(50),
-                      color: const Color.fromARGB(255, 160, 167, 211).withOpacity(0.9)), child:
+                      color: Theme.of(context).primaryColorLight.withOpacity(0.8)), child:
                                 IconButton(icon: Icon(HereWeRIcons.icons8_place_marker_64,), color: Colors.white,
                                 onPressed: () {  },)))]),
                                 const SizedBox(height: 20,)], );

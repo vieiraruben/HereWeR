@@ -38,7 +38,9 @@ Widget getMenu(BuildContext context, StreamController _controller) {
                     child: Column(
                       children: [
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            _controller.add(3);
+                          },
                           icon: const Icon(HereWeRIcons.icons8_customer_64),
                           color: Colors.white,
                           iconSize: 35,
@@ -48,7 +50,7 @@ Widget getMenu(BuildContext context, StreamController _controller) {
                         ),
                         IconButton(
                             onPressed: () {
-                               _controller.add(2);
+                              _controller.add(2);
                             },
                             icon: const Icon(
                                 HereWeRIcons.icons8_communication_64),
@@ -79,12 +81,18 @@ Widget getMenu(BuildContext context, StreamController _controller) {
                     child: Padding(
                         padding: const EdgeInsets.all(3.0),
                         child: Column(children: [
-                          IconButton(
-                            onPressed: () {
-                              showPopupMenu(context);
+                          PopupMenuButton(
+                            elevation: 0,
+                            color: Colors.black.withOpacity(0.3),
+                            shape: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            itemBuilder: (context) => list,
+                            onSelected: (v) {
+                              _controller.add(v);
                             },
-                            icon: const Icon(HereWeRIcons.icons8_filter_64),
-                            color: Colors.white,
+                            icon: const Icon(HereWeRIcons.icons8_filter_64,
+                                color: Colors.white),
                             iconSize: 35,
                           ),
                         ]))),
@@ -98,6 +106,7 @@ Widget getMenu(BuildContext context, StreamController _controller) {
                         child: Column(children: [
                           IconButton(
                             onPressed: () {
+                              print(1);
                               _controller.add(1);
                             },
                             icon:
@@ -119,16 +128,18 @@ int getAction() {
   return action;
 }
 
+const textStyle = TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
+
 showPopupMenu(BuildContext context) {
   const textStyle = TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
 
   showMenu<String>(
-    shape: RoundedRectangleBorder(
+    shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(10))),
     elevation: 0,
     color: Colors.black.withOpacity(0.3),
     context: context,
-    position: RelativeRect.fromLTRB(
+    position: const RelativeRect.fromLTRB(
         55, 100, 45, 0), //position where you want to show the menu on screen
     items: [
       const PopupMenuItem<String>(
@@ -188,3 +199,26 @@ showPopupMenu(BuildContext context) {
     ],
   );
 }
+
+List<PopupMenuEntry> list = [
+  const PopupMenuItem<int>(
+    value: 5,
+    child: ListTile(
+      leading:
+          Icon(HereWeRIcons.icons8_stage_64, color: Colors.white, size: 35),
+      title: Text('Stages', style: textStyle),
+    ),
+  ),
+  const PopupMenuItem<String>(
+      child: ListTile(
+          leading: Icon(HereWeRIcons.icons8_toilet_64,
+              color: Colors.white, size: 35),
+          title: Text('Restrooms', style: textStyle)),
+      value: '2'),
+  const PopupMenuItem<String>(
+      child: ListTile(
+          leading:
+              Icon(HereWeRIcons.icons8_about_64, color: Colors.white, size: 35),
+          title: Text('Info', style: textStyle)),
+      value: '2')
+];
