@@ -1,7 +1,7 @@
 const List<String> foodImgList = [
       'assets/images/food/burger.jpeg',
       'assets/images/food/frites.jpeg',
-      'assets/images/food/keabab.jpeg',
+      'assets/images/food/kebab.jpeg',
 ];
 const Map<String, String> DrinksImgList = {
       'assets/images/food/beer.jpeg' : 'Beer',

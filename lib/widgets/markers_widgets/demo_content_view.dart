@@ -1,7 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:mapview/services/marker.dart';
-import 'package:mapview/utilities/here_we_r_icons_icons.dart';
 import '../../constants/restaurant_carousel.dart';
 
 class DemoContentView extends StatefulWidget {
@@ -102,7 +101,7 @@ class DemoContentViewState extends State<DemoContentView> {
           items: foodImgList
               .map((item) => Container(
                     child: Center(
-                        child: Image.network(item,
+                        child: Image.asset(item,
                             fit: BoxFit.cover, width: 1000)),
                   ))
               .toList(),
