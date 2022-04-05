@@ -1,69 +1,88 @@
-// import 'package:bot_toast/bot_toast.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:flutter/material.dart';
-// import 'package:location/location.dart';
-// import 'restaurant.dart';
+import 'package:bot_toast/bot_toast.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:location/location.dart';
+import 'demo_content_view.dart';
 
-// import '../../services/marker.dart';
-// import '../../utilities/calculate_distance.dart';
-// import '../../utilities/timeToGo.dart';
+import '../../services/marker.dart';
+import '../../utilities/calculate_distance.dart';
+import '../../utilities/timeToGo.dart';
 
-// //Widget qui apparait lorsque l'on tap un marker
-// markerOnTapWidget(MarkerModel marker, Location location) async {
-//   //Il renvoie le temps de parcours de l'utilisateur jusqu'au marker
+//Widget qui apparait lorsque l'on tap un marker
+markerOnTapWidget(MarkerModel marker, Location location, BuildContext context) {
+  //Il renvoie le temps de parcours de l'utilisateur jusqu'au marker
 
-//   LocationData data = await location.getLocation();
-//   GeoPoint markerLocation = marker.markerPosition;
-//   double userDistance = calculateDistance(data.latitude, data.longitude,
-//           markerLocation.latitude, markerLocation.longitude) *
-//       1000;
+  List<String> typesWithContent = ["stage", "dj", "restaurant"];
 
-//   //On suppose une vitesse de 4km/h
-//   String timeText = timeToGo(4, userDistance).toString() + " min away";
-
-//   //un Toast d'une durée de 5 sec est affiché
-//   BotToast.showAttachedWidget(
-//       attachedBuilder: (_) => FractionallySizedBox(
-//             //La taille de la box dépend de la longueure du nom du marker
-//             heightFactor: marker.name.length > 10 ? 0.25 : 0.2,
-//             widthFactor: marker.name.length > 10 ? 0.5 : 0.4,
-
-//             child: Card(
-//               color: Colors.white,
-//               clipBehavior: Clip.antiAliasWithSaveLayer,
-//               shape: RoundedRectangleBorder(
-//                 side: const BorderSide(color: Colors.white54, width: 1),
-//                 borderRadius: BorderRadius.circular(10),
-//               ),
-//               child: Padding(
-//                 padding: const EdgeInsets.all(8.0),
-//                 child: Column(
-//                   mainAxisAlignment: MainAxisAlignment.spaceAround,
-//                   children: [
-//                     //Affichage du nom du marker
-//                     Text(marker.name, style: const TextStyle(fontSize: 24)),
-
-//                     Text(timeText),
-//                     //Le boutton renvoie un nouveau toast avec un contenu définie dans un autre fichier
-//                     //pour l'instant celui ci est toujours le même mais il faudrait le faire varier en fonction du marker
-//                     ElevatedButton(
-//                       onPressed: () {
-//                         BotToast.cleanAll();
-//                         BotToast.showAttachedWidget(
-//                             attachedBuilder: (void Function() cancelFunc) {
-//                               return const RestaurantWidget();
-//                             },
-//                             duration: const Duration(minutes: 30),
-//                             target: const Offset(210, 50));
-//                       },
-//                       child: const Text("Learn more"),
-//                     )
-//                   ],
-//                 ),
-//               ),
-//             ),
-//           ),
-//       duration: const Duration(seconds: 5),
-//       //emplacement du toast sur l'écran
-//       target: const Offset(210, 200));
-// }
+  BotToast.showAttachedWidget(
+      attachedBuilder: (_) => FractionallySizedBox(
+            //La taille de la box dépend de la longueure du nom du marker
+            heightFactor: (typesWithContent.contains(marker.type)) ? 0.5 : 0.2,
+            widthFactor: 0.8,
+            child: Card(
+              margin: EdgeInsets.zero,
+              elevation: 25,
+              shadowColor: Colors.black.withOpacity(1),
+              borderOnForeground: false,
+              color: Theme.of(context).scaffoldBackgroundColor,
+              clipBehavior: Clip.antiAlias,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  //Affichage du nom du marker
+                  Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(children: [
+                        Image.asset(
+                            "assets/images/icons/icons8-" +
+                                marker.type +
+                                "-64.png",
+                            color:
+                                Theme.of(context).textTheme.bodyMedium!.color,
+                            height: 25),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(marker.name, textScaleFactor: 1.2)
+                            ]),
+                        FutureBuilder(
+                            future: location.getLocation(),
+                            builder: (context,
+                                AsyncSnapshot<LocationData> location) {
+                              if (location.hasData) {
+                                GeoPoint markerLocation = marker.markerPosition;
+                                double userDistance = calculateDistance(
+                                        location.data!.latitude,
+                                        location.data!.longitude,
+                                        markerLocation.latitude,
+                                        markerLocation.longitude) *
+                                    1000;
+                                return Text(
+                                    timeToGo(4, userDistance).toString() +
+                                        " min away");
+                              } else {
+                                return const Text("... min away");
+                              }
+                            })
+                      ])),
+                  //Le boutton renvoie un nouveau toast avec un contenu définie dans un autre fichier
+                  //pour l'instant celui ci est toujours le même mais il faudrait le faire varier en fonction du marker
+                  (typesWithContent.contains(marker.type))
+                      ? Expanded(
+                          child: SingleChildScrollView(
+                              child: DemoContentView(marker: marker)))
+                      : const SizedBox(),
+                ],
+              ),
+            ),
+          ),
+      duration: const Duration(seconds: 30),
+      //emplacement du toast sur l'écran
+      target: Offset(MediaQuery.of(context).size.width/2, 50));
+}

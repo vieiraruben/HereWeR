@@ -7,7 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:mapview/services/marker.dart';
 import 'package:mapview/utilities/geo_to_latlng.dart';
-import '../widgets/markers_widgets/marker_on_tap2.dart';
+import '../widgets/markers_widgets/marker_on_tap.dart';
 
 //Maps avec pour clef des nom d'icon et comme valeures des paths vers les assets correspondants
 Map<String, String> iconPaths = {};

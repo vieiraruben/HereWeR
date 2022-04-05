@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:mapview/constants/demo_messages.dart';
 import 'package:mapview/constants/routes.dart';
 import 'package:mapview/services/auth/auth_service.dart';
 import 'package:mapview/services/chat_message.dart';
@@ -44,6 +46,7 @@ class _ChatManagerViewState extends State<ChatManagerView> {
         conditionalStyle = 20;
       }
     });
+
     super.initState();
   }
 
@@ -115,6 +118,15 @@ class _ChatManagerViewState extends State<ChatManagerView> {
             )),
       ],
     );
+    int i = 0;
+    int m = 0;
+    Timer.periodic(const Duration(seconds: 3), (timer) {
+      _chatService.sendMessage(
+          text: demoMessages[i], destination: "global", sender: senders[i]);
+           (i == 7) ? i = 0 : i++;
+           (i == 20) ? m = 0 : m++;
+    });
+    
 
     if (widget.fullScreen) {
       return Scaffold(
