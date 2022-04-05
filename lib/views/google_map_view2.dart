@@ -9,6 +9,7 @@ import 'package:mapview/geolocation/user_location_permission.dart';
 import 'package:mapview/services/circle.dart';
 import 'package:mapview/services/circle_service.dart';
 import 'package:mapview/utilities/geo_to_latlng.dart';
+import 'package:mapview/utilities/poi_loader.dart';
 import 'package:mapview/views/chat_manager_view.dart';
 import 'package:mapview/views/chat_view.dart';
 import 'package:mapview/widgets/admin_widgets/marker_creation_form.dart';
@@ -34,7 +35,8 @@ class MapView extends StatefulWidget {
 class MapViewState extends State<MapView> with WidgetsBindingObserver {
   late final String _darkStyle;
   late final String _lightStyle;
-  late final _actionController;
+  late final StreamController<MenuAction> _actionController;
+  final PoiLoader _poiLoader = PoiLoader();
 //instances des class permettant la gestion des Markers et des Cercles vis à vis de fireStore
   final FireStoreMarkerCloudStorage _markersService =
       FireStoreMarkerCloudStorage();
@@ -59,15 +61,15 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
     rootBundle.loadString('assets/light_map.txt').then((string) {
       _lightStyle = string;
     });
-    _actionController = StreamController<int>()
+    _actionController = StreamController<MenuAction>()
       ..stream.listen((action) {
         switch (action) {
-          case 1:
+          case MenuAction.locate:
             setState(() {
               isUserCentered = !isUserCentered;
             });
             break;
-          case 2:
+          case MenuAction.chat:
             chatVisible = !chatVisible;
             setState(() {
               if (!isOpaque) {
@@ -75,13 +77,56 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
               }
             });
             break;
-          case 3:
+          case MenuAction.userProfile:
             isAdmin = !isAdmin;
             break;
-          case 5:
+          case MenuAction.food:
             setState(() {
-              circlesSet.clear();
+              circlesSet = _poiLoader.food;
             });
+            break;
+          case MenuAction.stage:
+            setState(() {
+              circlesSet = _poiLoader.stage;
+            });
+            break;
+          case MenuAction.camping:
+            setState(() {
+              circlesSet = _poiLoader.camping;
+            });
+            break;
+          case MenuAction.necessities:
+            setState(() {
+              circlesSet = _poiLoader.necessities;
+            });
+            break;
+          case MenuAction.medical:
+            setState(() {
+              circlesSet = _poiLoader.medical;
+            });
+            break;
+          case MenuAction.drinks:
+            setState(() {
+              circlesSet = _poiLoader.drinks;
+            });
+            break;
+          case MenuAction.fun:
+            setState(() {
+              circlesSet = _poiLoader.fun;
+            });
+            break;
+          case MenuAction.toilets:
+            setState(() {
+              circlesSet = _poiLoader.toilets;
+            });
+            break;
+          case MenuAction.cleanFilter:
+            setState(() {
+              circlesSet = _poiLoader.unfiltered;
+            });
+            break;
+          default:
+            break;
         }
         setState(() {});
       });
@@ -155,75 +200,14 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
       if (docs.docs.isNotEmpty) {
         for (var doc in docs.docs) {
           MarkerModel marker = MarkerModel.fromSnapshot(doc);
-          Color circleColor = Colors.blue;
-          double circleRadius = 15;
-          switch (doc.data()["type"]) {
-            case "beer-mug":
-            case "soda":
-            case "restaurant":
-              circleColor = Colors.yellow;
-              circleRadius = 30;
-              break;
-            case "dj":
-              circleColor = Colors.purple;
-              circleRadius = 45;
-              break;
-            case "rock-music":
-              circleColor = Colors.blue.shade900;
-              circleRadius = 50;
-              break;
-            case "stage":
-              circleColor = Colors.pink;
-              circleRadius = 60;
-              break;
-            case "international-music":
-              circleColor = Colors.deepOrange;
-              circleRadius = 50;
-              break;
-            case "country-music":
-              circleColor = Colors.brown;
-              circleRadius = 30;
-              break;
-            case "camping-tent":
-              circleColor = Colors.lightGreen;
-              circleRadius = 35;
-              break;
-            case "atm":
-            case "charging-battery":
-              circleColor = Colors.green;
-              circleRadius = 15;
-              break;
-            case "medical-bag":
-              circleColor = Colors.red;
-              circleRadius = 18;
-              break;
-            case "cocktail":
-              circleColor = Colors.orange;
-              circleRadius = 25;
-              break;
-            case "hamburger":
-            case "cola":
-              circleColor = Colors.brown;
-              circleRadius = 30;
-              break;
-            case "loudspeaker":
-              circleColor = Colors.teal.shade100;
-              circleRadius = 35;
-              break;
-            case "theme-park":
-              circleColor = Colors.pink.shade100;
-              circleRadius = 50;
-          }
-          circlesSet.add(Circle(
-              circleId: CircleId(doc.id),
-              fillColor: circleColor.withOpacity(0.70),
-              radius: circleRadius,
-              center: LatLng(doc.data()["position"].latitude + 0.00007,
-                  (doc.data()["position"].longitude)),
-              strokeWidth: 0));
+          // Color circleColor = Colors.blue;
+          // double circleRadius = 15;
+          _poiLoader.loadInitialCircles(marker);
           markersSet.add(await _markersService.initMarker(marker, 70));
         }
-        setState(() {});
+        setState(() {
+          circlesSet = _poiLoader.unfiltered;
+        });
       }
     });
   }
