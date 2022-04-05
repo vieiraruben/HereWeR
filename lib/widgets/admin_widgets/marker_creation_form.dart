@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mapview/views/google_map_view.dart';
+
+
 
 import '../../services/marker_service.dart';
+import '../../views/google_map_view2.dart';
 
 
 //Formulaire à remplir pour créer un nouveau marker
