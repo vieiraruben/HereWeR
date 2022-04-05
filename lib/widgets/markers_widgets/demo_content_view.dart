@@ -4,16 +4,16 @@ import 'package:mapview/services/marker.dart';
 import 'package:mapview/utilities/here_we_r_icons_icons.dart';
 import '../../constants/restaurant_carousel.dart';
 
-class RestaurantWidget extends StatefulWidget {
+class DemoContentView extends StatefulWidget {
   final MarkerModel marker;
 
-  const RestaurantWidget({Key? key, required this.marker}) : super(key: key);
+  const DemoContentView({Key? key, required this.marker}) : super(key: key);
 
   @override
-  State<RestaurantWidget> createState() => RestaurantWidgetState();
+  State<DemoContentView> createState() => DemoContentViewState();
 }
 
-class RestaurantWidgetState extends State<RestaurantWidget> {
+class DemoContentViewState extends State<DemoContentView> {
   static Container makeHeader(BuildContext context, String headerText) {
     return Container(
       height: 40,

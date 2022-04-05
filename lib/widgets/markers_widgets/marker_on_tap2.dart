@@ -2,7 +2,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
-import 'restaurant.dart';
+import 'demo_content_view.dart';
 
 import '../../services/marker.dart';
 import '../../utilities/calculate_distance.dart';
@@ -74,7 +74,7 @@ markerOnTapWidget(MarkerModel marker, Location location, BuildContext context) {
                   //Le boutton renvoie un nouveau toast avec un contenu définie dans un autre fichier
                   //pour l'instant celui ci est toujours le même mais il faudrait le faire varier en fonction du marker
                   (typesWithContent.contains(marker.type)) ? Expanded(child: SingleChildScrollView(
-         child: RestaurantWidget(marker: marker))) : const SizedBox() ,
+         child: DemoContentView(marker: marker))) : const SizedBox() ,
                 ],
               ),
             ),
