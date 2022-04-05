@@ -11,7 +11,6 @@ import 'package:mapview/services/circle_service.dart';
 import 'package:mapview/utilities/geo_to_latlng.dart';
 import 'package:mapview/utilities/poi_loader.dart';
 import 'package:mapview/views/chat_manager_view.dart';
-import 'package:mapview/views/chat_view.dart';
 import 'package:mapview/widgets/admin_widgets/marker_creation_form.dart';
 import 'package:mapview/widgets/floating_menu.dart';
 import '../services/marker.dart';
@@ -38,8 +37,7 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
   late final StreamController<MenuAction> _actionController;
   final PoiLoader _poiLoader = PoiLoader();
 //instances des class permettant la gestion des Markers et des Cercles vis à vis de fireStore
-  final FireStoreMarkerCloudStorage _markersService =
-      FireStoreMarkerCloudStorage();
+  late FireStoreMarkerCloudStorage _markersService;
   final FireStoreCircleCloudStorage _circlesService =
       FireStoreCircleCloudStorage();
 
@@ -47,11 +45,12 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
   late GoogleMapController _controller;
 
 //Instance de géolocalisation
-  late Location location;
+  final Location location = Location();
 
   @override
   void initState() {
     super.initState();
+    _markersService = FireStoreMarkerCloudStorage(context, location);
     WidgetsBinding.instance!.addObserver(this);
     chatVisible = true;
     isOpaque = true;
@@ -195,13 +194,11 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
 
   //Fonction qui va chercher les infos concernant les markers sur firestore
   // et les converties d'abord en MarkerModel puis en Marker.
-  chargeMarkers(int filter) {
+  chargeMarkers() {
     _markersService.markers.get().then((docs) async {
       if (docs.docs.isNotEmpty) {
         for (var doc in docs.docs) {
           MarkerModel marker = MarkerModel.fromSnapshot(doc);
-          // Color circleColor = Colors.blue;
-          // double circleRadius = 15;
           _poiLoader.loadInitialCircles(marker);
           markersSet.add(await _markersService.initMarker(marker, 70));
         }
@@ -229,7 +226,6 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
   //Fonction qui s'execute à la création de la map
   void _onMapCreated(GoogleMapController _cntlr) async {
     //initiallisation des instances de localisation et de controller
-    location = Location();
     _controller = _cntlr;
 
     (Theme.of(context).brightness == Brightness.dark)
@@ -239,7 +235,7 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
     //Chargement des icons pour leur convertion en bitmap et chargement des cercles et des marker déja présents sur firestore.
     _markersService.loadIconPaths(iconImgs);
     // chargeCircles();
-    chargeMarkers(0);
+    chargeMarkers();
 
     //Listener qui effectue des actions à chaque notification de position
     location.onLocationChanged.listen((loc) async {

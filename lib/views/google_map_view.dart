@@ -26,9 +26,9 @@ class MapSample extends StatefulWidget {
 }
 
 class MapSampleState extends State<MapSample> {
+  final Location location = Location();
 //instances des class permettant la gestion des Markers et des Cercles vis à vis de fireStore
-  final FireStoreMarkerCloudStorage _markersService =
-      FireStoreMarkerCloudStorage();
+  late FireStoreMarkerCloudStorage _markersService;
   final FireStoreCircleCloudStorage _circlesService =
       FireStoreCircleCloudStorage();
 
@@ -36,7 +36,7 @@ class MapSampleState extends State<MapSample> {
   late GoogleMapController _controller;
 
 //Instance de géolocalisation
-  late Location location;
+  // late Location location;
 
 //Variables temporaires qui stockent les nouveaux éléments ajoutés à la map
   Set<MarkerModel> tempMarkers = HashSet<MarkerModel>();
@@ -80,6 +80,7 @@ class MapSampleState extends State<MapSample> {
   //Fonction qui va chercher les infos concernant les markers sur firestore
   // et les converties d'abord en MarkerModel puis en Marker.
   chargeMarkers() {
+    _markersService = FireStoreMarkerCloudStorage(context, location);
     _markersService.markers.get().then((docs) async {
       if (docs.docs.isNotEmpty) {
         for (var doc in docs.docs) {
@@ -108,7 +109,6 @@ class MapSampleState extends State<MapSample> {
   //Fonction qui s'execute à la création de la map
   void _onMapCreated(GoogleMapController _cntlr) async {
     //initiallisation des instances de localisation et de controller
-    location = Location();
     _controller = _cntlr;
 
     //Chargement des icons pour leur convertion en bitmap et chargement des cercles et des marker déja présents sur firestore.

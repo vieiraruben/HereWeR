@@ -21,6 +21,7 @@ class HereWeRIcons {
   static const _kFontFam = 'HereWeRIcons';
   static const String? _kFontPkg = null;
 
+  static const IconData icons8_high_importance = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData icons8_about_64 = IconData(0xe850, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData icons8_add_64 = IconData(0xe851, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData icons8_approval_64 = IconData(0xe852, fontFamily: _kFontFam, fontPackage: _kFontPkg);

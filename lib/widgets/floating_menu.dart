@@ -133,7 +133,6 @@ Widget getMenu(BuildContext context, StreamController _controller) {
                         child: Column(children: [
                           IconButton(
                             onPressed: () {
-                              print(1);
                               _controller.add(MenuAction.locate);
                             },
                             icon:
