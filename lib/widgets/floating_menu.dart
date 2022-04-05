@@ -1,15 +1,18 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mapview/constants/routes.dart';
 import 'package:mapview/utilities/here_we_r_icons_icons.dart';
+import 'package:mapview/views/search_view.dart';
 
 bool isFiltered = false;
+CameraPosition? eventPositional;
 
 enum MenuAction {
   userProfile,
   chat,
   search,
+  didPopFromSearch,
   filter,
   cleanFilter,
   locate,
@@ -77,8 +80,14 @@ Widget getMenu(BuildContext context, StreamController _controller) {
                           height: 5,
                         ),
                         IconButton(
-                            onPressed: () {
-                              Navigator.of(context).pushNamed(searchRoute);
+                            onPressed: () async {
+                              eventPositional = null;
+                              eventPositional = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const SearchView()),
+                              );
+                              _controller.add(MenuAction.didPopFromSearch);
                             },
                             icon: const Icon(HereWeRIcons.icons8_search_64),
                             color: Colors.white,

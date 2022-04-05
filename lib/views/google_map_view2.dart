@@ -15,12 +15,11 @@ import 'package:mapview/widgets/admin_widgets/marker_creation_form.dart';
 import 'package:mapview/widgets/floating_menu.dart';
 import '../services/marker.dart';
 import '../services/marker_service.dart';
-import '../utilities/calculate_distance.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 //Variables servant à stocker les infos des cercles et marker ajoutés en mode admin
-late String markerType = "camping-tent";
-late String markerName = "Camping Site";
+late String markerType;
+late String markerName;
 late double radius;
 late bool chatVisible;
 late bool isOpaque;
@@ -124,12 +123,19 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
               circlesSet = _poiLoader.unfiltered;
             });
             break;
+          case MenuAction.didPopFromSearch:
+            if (eventPositional != null) {
+              setState(() {
+                _controller.animateCamera(CameraUpdate.newCameraPosition(
+                    eventPositional ?? startCam));
+              });
+            }
+            break;
           default:
             break;
         }
         setState(() {});
       });
-
     //Vérification de la permission d'accès à la geolocation
     getUserLocationPermission();
   }
@@ -188,7 +194,7 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
   );
 
   //Fonction qui sera appelé pour recentrer la caméra sur l'évènement
-  void _goToTheEvent() {
+  void goToTheEvent() {
     _controller.animateCamera(CameraUpdate.newCameraPosition(startCam));
   }
 
@@ -227,7 +233,6 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
   void _onMapCreated(GoogleMapController _cntlr) async {
     //initiallisation des instances de localisation et de controller
     _controller = _cntlr;
-
     (Theme.of(context).brightness == Brightness.dark)
         ? _controller.setMapStyle(_darkStyle)
         : _controller.setMapStyle(_lightStyle);
