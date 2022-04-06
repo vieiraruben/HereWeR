@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:mapview/services/marker.dart';
+import 'package:mapview/models/marker.dart';
 
 import '../services/circle_service.dart';
 

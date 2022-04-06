@@ -6,14 +6,14 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:mapview/constants/icon_imgs_paths.dart';
 import 'package:mapview/geolocation/user_location_permission.dart';
-import 'package:mapview/services/circle.dart';
+import 'package:mapview/models/circle.dart';
 import 'package:mapview/services/circle_service.dart';
 import 'package:mapview/utilities/geo_to_latlng.dart';
 import 'package:mapview/utilities/poi_loader.dart';
 import 'package:mapview/views/chat_manager_view.dart';
 import 'package:mapview/widgets/admin_widgets/marker_creation_form.dart';
 import 'package:mapview/widgets/floating_menu.dart';
-import '../services/marker.dart';
+import '../models/marker.dart';
 import '../services/marker_service.dart';
 import 'package:flutter/services.dart' show rootBundle;
 

@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:mapview/services/chat_message.dart';
+import 'package:mapview/models/chat_message.dart';
 import 'package:mapview/services/exceptions.dart';
 
 const usernameField = "username";

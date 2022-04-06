@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:mapview/services/marker.dart';
+import 'package:mapview/models/marker.dart';
 import 'package:mapview/utilities/geo_to_latlng.dart';
 import '../widgets/markers_widgets/marker_on_tap.dart';
 

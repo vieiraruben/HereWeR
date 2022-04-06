@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'demo_content_view.dart';
 
-import '../../services/marker.dart';
+import '../../models/marker.dart';
 import '../../utilities/calculate_distance.dart';
 import '../../utilities/timeToGo.dart';
 

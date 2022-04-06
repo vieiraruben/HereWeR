@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mapview/constants/demo_messages.dart';
 import 'package:mapview/constants/routes.dart';
 import 'package:mapview/services/auth/auth_service.dart';
-import 'package:mapview/services/chat_message.dart';
+import 'package:mapview/models/chat_message.dart';
 import 'package:mapview/services/firebase_database.dart';
 import 'package:mapview/views/chat_view.dart';
 import 'package:mapview/widgets/loading_overlay.dart';
