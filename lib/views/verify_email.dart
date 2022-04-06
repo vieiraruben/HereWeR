@@ -51,7 +51,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView>
               const Text("Step 3/3", textScaleFactor: 1.3),
               const Text("Verify your email address."),
               const SizedBox(height: 50),
-              const Text("A confirmation email will be sent to:"),
+              const Text("A confirmation has been sent to:"),
               Text(AuthService.firebase().currentUser?.email ?? "undefined",
                   style: const TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(height: 50),
@@ -59,7 +59,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView>
                   onPressed: () {
                     AuthService.firebase().sendEmailVerification();
                   },
-                  child: const Text("Send Email")),
+                  child: const Text("Resend Email")),
               const SizedBox(height: 50),
               const Text(
                 "Click the link on the email to validate your address and start enjoying the app.",
@@ -82,13 +82,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView>
                     }
                   },
                   child: const Text("Open Mail")),
-              TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pushNamed(
-                      mapRoute,
-                    );
-                  },
-                  child: const Text("."))
+              
             ],
           ),
         ),

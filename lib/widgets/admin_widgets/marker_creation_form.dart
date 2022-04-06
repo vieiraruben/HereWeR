@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 
 import '../../services/marker_service.dart';
-import '../../views/google_map_view2.dart';
+import '../../views/google_map_view.dart';
 
 
 //Formulaire à remplir pour créer un nouveau marker
