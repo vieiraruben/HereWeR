@@ -9,6 +9,7 @@ bool isFiltered = false;
 CameraPosition? eventPositional;
 
 enum MenuAction {
+  adminTools,
   userProfile,
   chat,
   search,
@@ -148,6 +149,22 @@ Widget getMenu(BuildContext context, StreamController _controller) {
                             icon:
                                 const Icon(HereWeRIcons.icons8_my_location_64),
                             color: Colors.white,
+                            iconSize: 35,
+                          ),
+                        ]))), Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        color: Colors.transparent),
+                    child: Padding(
+                        padding: const EdgeInsets.all(3.0),
+                        child: Column(children: [
+                          IconButton(
+                            onPressed: () {
+                              _controller.add(MenuAction.adminTools);
+                            },
+                            icon:
+                                const Icon(HereWeRIcons.icons8_my_location_64),
+                            color: Colors.transparent,
                             iconSize: 35,
                           ),
                         ])))

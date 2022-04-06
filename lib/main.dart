@@ -51,6 +51,8 @@ void main() async {
           verifyEmailRoute: (context) => const VerifyEmailView(),
           chatRoute: (context) => const ChatManagerView(fullScreen: true),
           searchRoute: (context) => const SearchView(),
+         
+
         }),
   );
 }

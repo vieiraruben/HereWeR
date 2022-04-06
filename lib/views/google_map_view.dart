@@ -5,12 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:mapview/constants/icon_imgs_paths.dart';
+import 'package:mapview/constants/routes.dart';
 import 'package:mapview/geolocation/user_location_permission.dart';
 import 'package:mapview/models/circle.dart';
+import 'package:mapview/services/auth/auth_service.dart';
 import 'package:mapview/services/circle_service.dart';
 import 'package:mapview/utilities/geo_to_latlng.dart';
 import 'package:mapview/utilities/poi_loader.dart';
 import 'package:mapview/views/chat_manager_view.dart';
+import 'package:mapview/views/user_profile_view.dart';
 import 'package:mapview/widgets/admin_widgets/marker_creation_form.dart';
 import 'package:mapview/widgets/floating_menu.dart';
 import '../models/marker.dart';
@@ -85,8 +88,14 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
               }
             });
             break;
-          case MenuAction.userProfile:
+          case MenuAction.adminTools:
             isAdmin = !isAdmin;
+            break;
+          case MenuAction.userProfile:
+            Navigator.push(
+              context, MaterialPageRoute(
+                builder: (context) => UserProfileView(username: AuthService.firebase().currentUser?.username ?? "john"
+              )));
             break;
           case MenuAction.food:
             setState(() {
@@ -586,8 +595,8 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
                               'Are you sure you want to delete the following marker?',
                               textAlign: TextAlign.center),
                           contentPadding: const EdgeInsets.all(8),
-                          content:
-                              (Text("marker name : " + selectedMarker.toString())),
+                          content: (Text(
+                              "marker name : " + selectedMarker.toString())),
                           actions: [
                             TextButton(
                                 onPressed: () async {
@@ -596,7 +605,8 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
                                 child: const Text("Cancel")),
                             TextButton(
                                 onPressed: () async {
-                                  _markersService.delMarker(marker: selectedMarker);
+                                  _markersService.delMarker(
+                                      marker: selectedMarker);
                                   markersSet.removeWhere((element) =>
                                       element.markerId ==
                                       MarkerId(selectedMarker.documentId));
@@ -604,7 +614,7 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
                                       element.documentId ==
                                       selectedMarker.documentId);
                                   circlesSet.removeWhere((element) =>
-                                  element.circleId ==
+                                      element.circleId ==
                                       CircleId(selectedMarker.documentId));
                                   Navigator.pop(context);
                                   setState(() {});

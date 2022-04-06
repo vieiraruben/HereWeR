@@ -1,13 +1,13 @@
 const List<String> foodImgList = [
       'assets/images/food/csalad.jpg',
       'assets/images/food/sand.jpg',
-      'assets/images/food/frites.jpg',
+      'assets/images/food/greek.jpg',
 ];
 
 const List<String> fastFoodImgList = [
       'assets/images/food/csalad.jpg',
       'assets/images/food/sand.jpg',
-      'assets/images/food/frites.jpg',
+      'assets/images/food/greek.jpg',
 ];
 
 
