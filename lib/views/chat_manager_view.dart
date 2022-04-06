@@ -118,14 +118,14 @@ class _ChatManagerViewState extends State<ChatManagerView> {
             )),
       ],
     );
-    int i = 0;
-    int m = 0;
-    Timer.periodic(const Duration(seconds: 3), (timer) {
-      _chatService.sendMessage(
-          text: demoMessages[i], destination: "global", sender: senders[i]);
-           (i == 7) ? i = 0 : i++;
-           (i == 20) ? m = 0 : m++;
-    });
+    // int i = 0;
+    // int m = 0;
+    // Timer.periodic(const Duration(seconds: 3), (timer) {
+    //   _chatService.sendMessage(
+    //       text: demoMessages[i], destination: "global", sender: senders[i]);
+    //        (i == 7) ? i = 0 : i++;
+    //        (i == 20) ? m = 0 : m++;
+    // });
     
 
     if (widget.fullScreen) {
