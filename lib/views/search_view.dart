@@ -3,7 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mapview/constants/routes.dart';
 import 'package:mapview/constants/search.dart';
 import 'package:mapview/utilities/here_we_r_icons_icons.dart';
-import 'package:mapview/views/google_map_view2.dart';
+import 'package:mapview/views/google_map_view.dart';
 import 'dart:math' as math;
 
 import 'package:mapview/views/search_results_view.dart';

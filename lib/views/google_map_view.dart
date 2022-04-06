@@ -287,7 +287,9 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+        onWillPop: () async => false, child:
+    Scaffold(
       body: Stack(
         children: <Widget>[
           //On Build la map
@@ -368,7 +370,7 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
 
           //Si le mode admin est activé alors les contrôles permettant d'ajouter des éléments sont affichés
         ],
-      ),
+      )),
     );
   }
 

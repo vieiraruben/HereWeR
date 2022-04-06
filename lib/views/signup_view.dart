@@ -179,6 +179,7 @@ class _NewProfileViewState extends State<NewProfileView> {
       }
     }
   }
+  
 
   @override
   void dispose() {
@@ -188,9 +189,22 @@ class _NewProfileViewState extends State<NewProfileView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Get Started")),
-      body: SingleChildScrollView(
+    
+    return WillPopScope(
+        onWillPop: () async => false, child:
+    Scaffold(
+      appBar: AppBar(automaticallyImplyLeading: false,
+        title: const Text("Get Started"),
+      actions: [
+          PopupMenuButton<String>(
+            onSelected: (v) {
+              Navigator.of(context).pushNamed(welcomeRoute);
+            },
+            itemBuilder: (context) => [const
+              PopupMenuItem<String>(
+                  value: "Start Over",
+                  child: Text("Start Over"))])]),
+                  body: SingleChildScrollView(
         child: Form(
           key: _formKey,
           child: Padding(
@@ -235,7 +249,6 @@ class _NewProfileViewState extends State<NewProfileView> {
                   controller: _username,
                   keyboardType: TextInputType.name,
                   onFieldSubmitted: (v) => nextButtonAction(),
-                  // autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) {
                     final regex = RegExp(
                         r"^(?=.{4,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$");
@@ -258,7 +271,7 @@ class _NewProfileViewState extends State<NewProfileView> {
           ),
         ),
       ),
-    );
+    ));
   }
 
   Future pickImage() async {

@@ -4,7 +4,6 @@ import 'package:mapview/constants/routes.dart';
 import 'package:mapview/services/exceptions.dart';
 import 'package:mapview/services/auth/auth_service.dart';
 import 'package:mapview/utilities/error_dialog.dart';
-import 'package:mapview/widgets/loading_overlay.dart';
 
 // TODO: Add forgotten password option
 
