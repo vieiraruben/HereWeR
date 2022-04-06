@@ -12,6 +12,7 @@ import '../widgets/markers_widgets/marker_on_tap.dart';
 //Maps avec pour clef des nom d'icon et comme valeures des paths vers les assets correspondants
 Map<String, String> iconPaths = {};
 Map<String, String> stageIconsPaths = {};
+late MarkerModel selectedMarker = const MarkerModel( type: "init",name: "", documentId: "", markerPosition: GeoPoint(0,0));
 
 //List des markers à afficher sur la mapview
 Set<Marker> markersSet = {};
@@ -36,6 +37,18 @@ class FireStoreMarkerCloudStorage {
       "name": marker.name
     });
   }
+
+
+  void editMarker({
+    required MarkerModel marker,
+  }) async {
+    await markers.doc(marker.documentId).update({
+      "position": marker.markerPosition,
+      "type": marker.type,
+      "name": marker.name
+    });
+  }
+
 
   //Fonction qui convertie une image en Uint8List pour pouvoir l'utiliser en temps qu'icon de Marker google map.
   getBytesFromAsset(String path, int width) async {

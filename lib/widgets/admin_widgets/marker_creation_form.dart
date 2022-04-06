@@ -17,10 +17,17 @@ class MarkersCreationForm extends StatefulWidget {
 
 class _MarkersCreationFormState extends State<MarkersCreationForm> {
   String dropdownType = 'add';
-
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    markerType = dropdownType;
+    TextEditingController nameController = TextEditingController();
+    markerName = nameController.text;
+  }
   @override
   Widget build(BuildContext context) {
-    TextEditingController nameController = TextEditingController();
+
     return
       FractionallySizedBox(
         heightFactor: 0.4,
@@ -31,7 +38,7 @@ class _MarkersCreationFormState extends State<MarkersCreationForm> {
               //DropDownButton qui contient la liste de tout les icones disponibles
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(labelText: 'Type'),
-                value: dropdownType,
+                value: dropdownType = selectedMarker.type,
                 icon: const Icon(Icons.arrow_downward),
                 elevation: 16,
                 style: const TextStyle(color: Colors.deepPurple),
@@ -52,13 +59,13 @@ class _MarkersCreationFormState extends State<MarkersCreationForm> {
 
               //Textfield pour choisir le nom du marker
               TextField(
-                controller: nameController,
+                controller: TextEditingController(text: selectedMarker.name),
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Marker name',
                 ),
                 onChanged: (text) {
-                  markerName = nameController.text;
+                  markerName = TextEditingController().text;
                 },
               )
             ],

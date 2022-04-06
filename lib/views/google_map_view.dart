@@ -24,6 +24,16 @@ late double radius;
 late bool chatVisible;
 late bool isOpaque;
 
+//Booléens qui gèrent les fonctionnalités lièes à l'ajout de marqueurs sur la carte.
+bool isAdmin = false;
+bool isMarker = false;
+bool isInteract = false;
+bool isPolygon = false;
+bool isCircle = false;
+bool isEdit = false;
+
+
+
 class MapView extends StatefulWidget {
   const MapView({Key? key}) : super(key: key);
   @override
@@ -170,12 +180,8 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
   int tempCircleIdCounter = 1;
   int tempMarkerIdCounter = 1;
 
-  //Booléens qui gèrent les fonctionnalités lièes à l'ajout de marqueurs sur la carte.
-  bool isAdmin = false;
-  bool isPolygon = false;
-  bool isCircle = false;
-  bool isMarker = false;
-  bool isInteract = false;
+
+
 
   //Booléens qui gèrent la caméra
   //centrage de la caméra sur l'utilisateur
@@ -323,6 +329,7 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
                 setState(() {
                   _setMarkers(point, markerType, markerName);
                 });
+                isMarker = false;
               } else if (isCircle) {
                 setState(() {
                   // _setCircles(point);
@@ -476,21 +483,7 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
           ),
 
           //         //Passe en mode polygon
-          RawMaterialButton(
-            constraints: BoxConstraints.tight(const Size(66, 36)),
-            fillColor: isPolygon ? Colors.blue : Colors.grey,
-            onPressed: () {
-              setState(() {
-                isPolygon = true;
-                isCircle = false;
-                isMarker = false;
-                isInteract = false;
-              });
-            },
-            child: const Text(
-              'polygon',
-            ),
-          ),
+
 
           //         //Passe en mode marker
           RawMaterialButton(
@@ -526,7 +519,105 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
             ),
           ),
 
+
+          if(selectedMarker.type != "init")  RawMaterialButton(
+            constraints: BoxConstraints.tight(const Size(66, 36)),
+            fillColor: isMarker ? Colors.blue : Colors.grey,
+            onPressed: () {
+              setState(() {
+                isPolygon = false;
+                isCircle = false;
+                isMarker = false;
+                isInteract = false;
+                isEdit = true;
+              });
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) => AlertDialog(
+                    title: const Text('Edit marker',
+                        textAlign: TextAlign.center),
+                    contentPadding: const EdgeInsets.all(8),
+                    content: (
+                        //appel un formulaire de création qui permet de définir l'icon et le nom du nouveau Marker
+                        const MarkersCreationForm()),
+                    actions: [
+                      TextButton(
+                          onPressed: () async {
+                            selectedMarker = MarkerModel(type: markerType, name: markerName, documentId: selectedMarker.documentId, markerPosition: selectedMarker.markerPosition);
+                            _markersService.editMarker(marker: selectedMarker);
+                            Navigator.pop(context);
+                            setState(() {});
+                          },
+                          child: const Text("Save changes")),
+                      TextButton(
+                          onPressed: () async {
+                            Navigator.pop(context);
+                          },
+                          child: const Text("cancel"))
+                    ],
+                  ));
+            },
+            child: const Text(
+              'edit',
+            ),
+          ),
+
+
+
+
+          //Bouton qui permet de sauvegarder dans fireStore les éléments ajoutés
+          RawMaterialButton(
+            padding: EdgeInsets.all(4.0),
+            constraints: BoxConstraints.tight(const Size(66, 36)),
+
+            //Si il y a des nouveaux éléments le bouton est bleu ce qui indique qu'il y a des éléments à sauvegarder
+            fillColor: tempMarkers.isNotEmpty || tempCircles.isNotEmpty
+                ? Colors.blue
+                : Colors.grey,
+            onPressed: () {
+              setState(() {
+                //Pour chaque éléments dans les Listes temporaires de markers et de cercles on les ajoute à fireStore
+                for (MarkerModel marker in tempMarkers) {
+                  _markersService.addMarker(marker: marker);
+                }
+                for (Circle circle in tempCircles) {
+                  double lat = circle.center.latitude;
+                  double lng = circle.center.longitude;
+                  GeoPoint centerGeo = GeoPoint(lat, lng);
+                  CircleModel myCircle = CircleModel(
+                      documentId: circle.circleId.toString(),
+                      center: centerGeo,
+                      radius: circle.radius);
+                  _circlesService.addCircle(circle: myCircle);
+                }
+
+                //On vide les Listes temporaires après la sauvegarde pour ne pas les ajoutés plusieurs fois
+                tempMarkers.clear();
+                tempCircles.clear();
+              });
+            },
+            child: const Text(
+              'save',
+            ),
+          ),
           //         //Passe en mode marker
+          /*
+          RawMaterialButton(
+            constraints: BoxConstraints.tight(const Size(66, 36)),
+            fillColor: isPolygon ? Colors.blue : Colors.grey,
+            onPressed: () {
+              setState(() {
+                isPolygon = true;
+                isCircle = false;
+                isMarker = false;
+                isInteract = false;
+              });
+            },
+            child: const Text(
+              'polygon',
+            ),
+          ),
+
           RawMaterialButton(
             constraints: BoxConstraints.tight(const Size(66, 36)),
             fillColor: isCircle ? Colors.blue : Colors.grey,
@@ -565,43 +656,8 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
             child: const Text(
               'circle',
             ),
-          ),
+          ),*/
 
-          //         //Bouton qui permet de sauvegarder dans fireStore les éléments ajoutés
-          RawMaterialButton(
-            padding: EdgeInsets.all(4.0),
-            constraints: BoxConstraints.tight(const Size(66, 36)),
-
-            //Si il y a des nouveaux éléments le bouton est bleu ce qui indique qu'il y a des éléments à sauvegarder
-            fillColor: tempMarkers.isNotEmpty || tempCircles.isNotEmpty
-                ? Colors.blue
-                : Colors.grey,
-            onPressed: () {
-              setState(() {
-                //Pour chaque éléments dans les Listes temporaires de markers et de cercles on les ajoute à fireStore
-                for (MarkerModel marker in tempMarkers) {
-                  _markersService.addMarker(marker: marker);
-                }
-                for (Circle circle in tempCircles) {
-                  double lat = circle.center.latitude;
-                  double lng = circle.center.longitude;
-                  GeoPoint centerGeo = GeoPoint(lat, lng);
-                  CircleModel myCircle = CircleModel(
-                      documentId: circle.circleId.toString(),
-                      center: centerGeo,
-                      radius: circle.radius);
-                  _circlesService.addCircle(circle: myCircle);
-                }
-
-                //On vide les Listes temporaires après la sauvegarde pour ne pas les ajoutés plusieurs fois
-                tempMarkers.clear();
-                tempCircles.clear();
-              });
-            },
-            child: const Text(
-              'save',
-            ),
-          ),
         ],
       ),
     );
