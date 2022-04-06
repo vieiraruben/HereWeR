@@ -27,15 +27,14 @@ late bool isOpaque;
 //Booléens qui gèrent les fonctionnalités lièes à l'ajout de marqueurs sur la carte.
 bool isAdmin = false;
 bool isMarker = false;
-bool isInteract = false;
+bool isInteract = true;
 bool isPolygon = false;
 bool isCircle = false;
 bool isEdit = false;
 
-
-
 class MapView extends StatefulWidget {
   const MapView({Key? key}) : super(key: key);
+
   @override
   State<MapView> createState() => MapViewState();
 }
@@ -45,6 +44,7 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
   late final String _lightStyle;
   late final StreamController<MenuAction> _actionController;
   final PoiLoader _poiLoader = PoiLoader();
+
 //instances des class permettant la gestion des Markers et des Cercles vis à vis de fireStore
   late FireStoreMarkerCloudStorage _markersService;
   final FireStoreCircleCloudStorage _circlesService =
@@ -180,16 +180,16 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
   int tempCircleIdCounter = 1;
   int tempMarkerIdCounter = 1;
 
-
-
-
   //Booléens qui gèrent la caméra
   //centrage de la caméra sur l'utilisateur
   bool isUserCentered = false;
+
   //L'utilisateur est il dans le perimêtre d'une scène?
   bool isLocalScene = false;
+
   //L'utilisateur a -t-il activivé le mode local dans ce cas?
   bool isLocalSceneActivated = false;
+
   //Sur quelle scène/ dans quel cercle l'utilisateur est il?
   late Circle? currentScene;
 
@@ -294,9 +294,9 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: () async => false, child:
-    Scaffold(
-      body: Stack(
+      onWillPop: () async => false,
+      child: Scaffold(
+          body: Stack(
         children: <Widget>[
           //On Build la map
           GoogleMap(
@@ -330,6 +330,7 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
                   _setMarkers(point, markerType, markerName);
                 });
                 isMarker = false;
+                isInteract = true;
               } else if (isCircle) {
                 setState(() {
                   // _setCircles(point);
@@ -484,7 +485,6 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
 
           //         //Passe en mode polygon
 
-
           //         //Passe en mode marker
           RawMaterialButton(
             constraints: BoxConstraints.tight(const Size(66, 36)),
@@ -515,55 +515,109 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
                       ));
             },
             child: const Text(
-              'marker',
+              'add',
             ),
           ),
 
-
-          if(selectedMarker.type != "init")  RawMaterialButton(
+          RawMaterialButton(
             constraints: BoxConstraints.tight(const Size(66, 36)),
-            fillColor: isMarker ? Colors.blue : Colors.grey,
+            fillColor: Colors.grey,
             onPressed: () {
-              setState(() {
-                isPolygon = false;
-                isCircle = false;
-                isMarker = false;
-                isInteract = false;
-                isEdit = true;
-              });
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) => AlertDialog(
-                    title: const Text('Edit marker',
-                        textAlign: TextAlign.center),
-                    contentPadding: const EdgeInsets.all(8),
-                    content: (
-                        //appel un formulaire de création qui permet de définir l'icon et le nom du nouveau Marker
-                        const MarkersCreationForm()),
-                    actions: [
-                      TextButton(
-                          onPressed: () async {
-                            selectedMarker = MarkerModel(type: markerType, name: markerName, documentId: selectedMarker.documentId, markerPosition: selectedMarker.markerPosition);
-                            _markersService.editMarker(marker: selectedMarker);
-                            Navigator.pop(context);
-                            setState(() {});
-                          },
-                          child: const Text("Save changes")),
-                      TextButton(
-                          onPressed: () async {
-                            Navigator.pop(context);
-                          },
-                          child: const Text("cancel"))
-                    ],
-                  ));
+              if (selectedMarker.documentId != "") {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) => AlertDialog(
+                          title: const Text('Edit marker',
+                              textAlign: TextAlign.center),
+                          contentPadding: const EdgeInsets.all(8),
+                          content: (
+                              //appel un formulaire de création qui permet de définir l'icon et le nom du nouveau Marker
+                              const MarkersCreationForm()),
+                          actions: [
+                            TextButton(
+                                onPressed: () async {
+                                  selectedMarker = MarkerModel(
+                                      type: markerType,
+                                      name: markerName,
+                                      documentId: selectedMarker.documentId,
+                                      markerPosition:
+                                          selectedMarker.markerPosition);
+                                  _markersService.editMarker(
+                                      marker: selectedMarker);
+                                  markersSet.removeWhere((element) =>
+                                      element.markerId ==
+                                      MarkerId(selectedMarker.documentId));
+                                  tempMarkers.removeWhere((element) =>
+                                      element.documentId ==
+                                      selectedMarker.documentId);
+                                  tempMarkers.add(selectedMarker);
+                                  markersSet.add(await _markersService
+                                      .initMarker(selectedMarker, 70));
+                                  circlesSet.removeWhere((element) =>
+                                      element.circleId ==
+                                      CircleId(selectedMarker.documentId));
+                                  Navigator.pop(context);
+                                  setState(() {});
+                                },
+                                child: const Text("Save changes")),
+                            TextButton(
+                                onPressed: () async {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text("cancel"))
+                          ],
+                        ));
+              }
             },
             child: const Text(
               'edit',
             ),
           ),
 
-
-
+          RawMaterialButton(
+            constraints: BoxConstraints.tight(const Size(66, 36)),
+            fillColor: Colors.grey,
+            onPressed: () {
+              if (selectedMarker.documentId != "") {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) => AlertDialog(
+                          title: const Text(
+                              'Are you sure you want to delete the following marker?',
+                              textAlign: TextAlign.center),
+                          contentPadding: const EdgeInsets.all(8),
+                          content:
+                              (Text("marker name : " + selectedMarker.toString())),
+                          actions: [
+                            TextButton(
+                                onPressed: () async {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text("Cancel")),
+                            TextButton(
+                                onPressed: () async {
+                                  _markersService.delMarker(marker: selectedMarker);
+                                  markersSet.removeWhere((element) =>
+                                      element.markerId ==
+                                      MarkerId(selectedMarker.documentId));
+                                  tempMarkers.removeWhere((element) =>
+                                      element.documentId ==
+                                      selectedMarker.documentId);
+                                  circlesSet.removeWhere((element) =>
+                                  element.circleId ==
+                                      CircleId(selectedMarker.documentId));
+                                  Navigator.pop(context);
+                                  setState(() {});
+                                },
+                                child: const Text("Validate"))
+                          ],
+                        ));
+              }
+            },
+            child: const Text(
+              'Delete',
+            ),
+          ),
 
           //Bouton qui permet de sauvegarder dans fireStore les éléments ajoutés
           RawMaterialButton(
@@ -657,7 +711,6 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
               'circle',
             ),
           ),*/
-
         ],
       ),
     );

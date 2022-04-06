@@ -21,13 +21,12 @@ class _MarkersCreationFormState extends State<MarkersCreationForm> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    markerType = dropdownType;
-    TextEditingController nameController = TextEditingController();
-    markerName = nameController.text;
+    markerType = selectedMarker.type;
+    markerName = selectedMarker.name;
   }
   @override
   Widget build(BuildContext context) {
-
+    TextEditingController nameController = TextEditingController(text: selectedMarker.name);
     return
       FractionallySizedBox(
         heightFactor: 0.4,
@@ -59,13 +58,13 @@ class _MarkersCreationFormState extends State<MarkersCreationForm> {
 
               //Textfield pour choisir le nom du marker
               TextField(
-                controller: TextEditingController(text: selectedMarker.name),
+                controller: nameController,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Marker name',
                 ),
                 onChanged: (text) {
-                  markerName = TextEditingController().text;
+                  markerName = nameController.text;
                 },
               )
             ],

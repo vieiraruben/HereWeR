@@ -12,7 +12,7 @@ import '../widgets/markers_widgets/marker_on_tap.dart';
 //Maps avec pour clef des nom d'icon et comme valeures des paths vers les assets correspondants
 Map<String, String> iconPaths = {};
 Map<String, String> stageIconsPaths = {};
-late MarkerModel selectedMarker = const MarkerModel( type: "init",name: "", documentId: "", markerPosition: GeoPoint(0,0));
+MarkerModel selectedMarker = const MarkerModel( type: "add",name: "This is a placeholder", documentId: "", markerPosition: GeoPoint(0,0));
 
 //List des markers à afficher sur la mapview
 Set<Marker> markersSet = {};
@@ -47,6 +47,13 @@ class FireStoreMarkerCloudStorage {
       "type": marker.type,
       "name": marker.name
     });
+  }
+
+
+  void delMarker({
+    required MarkerModel marker,
+  }) async {
+    await markers.doc(marker.documentId).delete();
   }
 
 

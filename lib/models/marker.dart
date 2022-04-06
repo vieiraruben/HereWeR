@@ -24,6 +24,15 @@ class MarkerModel {
         type = snapshot.data()["type"],
         markerPosition = snapshot.data()["position"],
         name = snapshot.data()["name"];
+
+
+  @override
+  String toString() {
+    // TODO: implement toString
+    double lat = markerPosition.longitude;
+    double lng = markerPosition.latitude;
+    return "marker identified by $documentId named $name of type $type located at ($lat , $lng)";
+  }
 }
 
 
