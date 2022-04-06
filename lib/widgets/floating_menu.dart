@@ -29,7 +29,8 @@ enum MenuAction {
 Widget getMenu(BuildContext context, StreamController _controller) {
   return Padding(
     padding: const EdgeInsets.only(left: 30, top: 60, right: 10),
-    child: Column(
+    child: 
+    Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Row(
@@ -155,8 +156,8 @@ Widget getMenu(BuildContext context, StreamController _controller) {
           ],
         ),
       ],
-    ),
-  );
+    
+  ));
 }
 
 const textStyle = TextStyle(color: Colors.white, fontWeight: FontWeight.bold);

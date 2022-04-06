@@ -12,10 +12,23 @@ Map<String, List<String>> rightnow = {
     "Sebastian North",
     
   ],
-  "rollers.jpg": [
-    "The Rollers"
-  ],
   "femalepop.jpg": [
     "Sandra Spears"
+  ],
+  "dj.jpg": [
+    'DJ Smiley',
+  ]
+};
+
+Map<String, List<String>> comingup = {
+  "rollers.jpg": [
+    "The Rollers",
+    
+  ],
+  "singer2.jpg": [
+    "Roxanne"
+  ],
+  "blonde.jpg": [
+    "Cindy Nash"
   ]
 };

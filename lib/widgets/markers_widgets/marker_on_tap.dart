@@ -43,7 +43,7 @@ markerOnTapWidget(MarkerModel marker, Location location, BuildContext context) {
                             color:
                                 Theme.of(context).textTheme.bodyMedium!.color,
                             height: 25),
-                        SizedBox(
+                        const SizedBox(
                           width: 10,
                         ),
                         Row(

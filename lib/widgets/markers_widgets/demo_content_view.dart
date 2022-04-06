@@ -22,14 +22,15 @@ class DemoContentViewState extends State<DemoContentView> {
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: Text(headerText,
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
+                  style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.bodyMedium?.color ?? Colors.white)),
             )),
       ),
     );
   }
 
   static saladMenu() {
-    return Column(children: const [
+    return Padding(padding: EdgeInsets.symmetric(vertical: 20),
+      child: Column(children: const [
       Text("Salads:"),
       Text("Chicken Caesar - £12"),
       Text("Shrimp Caesar - £15"),
@@ -40,7 +41,7 @@ class DemoContentViewState extends State<DemoContentView> {
       Text("Sandwiches:"),
       Text("Tuna roll - £9"),
       Text("French Dip - £12")
-    ]);
+    ]));
   }
 
   @override
@@ -56,8 +57,10 @@ class DemoContentViewState extends State<DemoContentView> {
           items: foodImgList
               .map((item) => Container(
                     child: Center(
-                        child:
-                            Image.asset(item, fit: BoxFit.cover, height: 300)),
+                        child: 
+                            Image.asset(
+                              item,
+                              fit: BoxFit.cover, height: 300)),
                   ))
               .toList(),
         )),

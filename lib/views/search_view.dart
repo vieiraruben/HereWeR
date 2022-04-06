@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:mapview/constants/routes.dart';
 import 'package:mapview/constants/search.dart';
 import 'package:mapview/utilities/here_we_r_icons_icons.dart';
-import 'package:mapview/views/google_map_view.dart';
 import 'dart:math' as math;
 
 import 'package:mapview/views/search_results_view.dart';
@@ -65,7 +63,7 @@ class _SearchViewState extends State<SearchView> {
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: Text(headerText,
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
+                  style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.bodyMedium?.color ?? Colors.white)),
             )),
       ),
     );
@@ -139,12 +137,14 @@ class _SearchViewState extends State<SearchView> {
                             children: [
                               CircleAvatar(
                                   backgroundColor:
-                                      const Color.fromARGB(255, 228, 228, 249),
+                                      Theme.of(context)
+                                              .primaryColorLight
+                                              ,
                                   radius: 20,
                                   child: CircleAvatar(
                                       radius: 12,
-                                      backgroundColor: const Color.fromARGB(
-                                          255, 228, 228, 249),
+                                      backgroundColor: Theme.of(context)
+                                              .primaryColorLight,
                                       foregroundImage:
                                           Image.asset('assets/images/' + key)
                                               .image)),
@@ -166,9 +166,8 @@ class _SearchViewState extends State<SearchView> {
         SliverList(
             delegate: SliverChildListDelegate([
           SizedBox(
-              height: 700,
               child: Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.only(top: 20, left: 20, right:20),
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: rightnow.keys.map((key) {
@@ -196,8 +195,83 @@ class _SearchViewState extends State<SearchView> {
                                   left: 5,
                                   child: Text(rightnow[key]!.first,
                                       textScaleFactor: 1.2,
-                                      style: TextStyle(
+                                      style: const TextStyle(
+                                        color:  Colors.white,
+                                      ))),
+                              Positioned(
+                                  bottom: 5,
+                                  right: 5,
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                          color: Theme.of(context)
+                                              .primaryColorLight
+                                              .withOpacity(0.8)),
+                                      child: IconButton(
+                                        icon: const Icon(
+                                          HereWeRIcons.icons8_place_marker_64,
+                                        ),
                                         color: Colors.white,
+                                        onPressed: () {
+                                          Navigator.pop(
+                                              context, const CameraPosition(
+                                                        target: LatLng(
+                                                            51.509520181121914,
+                                                            -0.17187260091304776),
+                                                        zoom: 18,
+                                                      )
+                                              // MaterialPageRoute(
+                                              //     builder: (context, "hello") 
+                                                  // =>
+                                                  //     MapView(
+                                                  //         eventPosition:
+                                                              
+                                                      );
+                                        },
+                                      )))
+                            ]),
+                            const SizedBox(
+                              height: 20,
+                            )
+                          ],
+                        );
+                      }).toList())))
+        ])), makeHeader(context, "COMING UP"),
+        SliverList(
+            delegate: SliverChildListDelegate([
+          SizedBox(
+              child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: comingup.keys.map((key) {
+                        return Column(
+                          children: [
+                            Stack(children: [
+                              ClipRRect(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(10)),
+                                  child: Container(
+                                      foregroundDecoration: const BoxDecoration(
+                                        gradient: LinearGradient(colors: [
+                                          Colors.black,
+                                          Colors.transparent
+                                        ], begin: Alignment.bottomRight),
+                                      ),
+                                      child: Image.asset(
+                                        'assets/images/sample/' + key,
+                                        width: 500,
+                                        height: 150,
+                                        fit: BoxFit.cover,
+                                      ))),
+                              Positioned(
+                                  bottom: 5,
+                                  left: 5,
+                                  child: Text(comingup[key]!.first,
+                                      textScaleFactor: 1.2,
+                                      style: const TextStyle(
+                                        color:  Colors.white,
                                       ))),
                               Positioned(
                                   bottom: 5,
@@ -247,8 +321,8 @@ class _SearchViewState extends State<SearchView> {
         sliverSearchBar(),
         SliverList(
             delegate: SliverChildListDelegate([
-          SizedBox(
-            height: 700,
+          SingleChildScrollView(
+            // height: 700,
             child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: SearchResultsView(

@@ -29,7 +29,10 @@ class _UserProfileViewState extends State<UserProfileView> {
                 future: FirebaseCloudDatabase().getUser(widget.username),
                 builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                   if (snapshot.hasData) {
-                    return Column(children: [CircleAvatar(
+                    return Column(
+                      children: [Center(
+                        child:
+                      CircleAvatar(
                         radius: 75,
                         backgroundColor:
                             const Color.fromARGB(255, 192, 229, 228),
@@ -41,22 +44,24 @@ class _UserProfileViewState extends State<UserProfileView> {
                                   "?alt=media")
                           : Image.asset('assets/images/defaultprofile.png')
                               .image),
-                              const SizedBox(height: 50),
-                              ]);
+                             
+                    ), const SizedBox(height: 50),]);
                   } else {
-                    return const CircleAvatar(
+                    return const Center(child: CircleAvatar(
                       radius: 75,
                       backgroundColor: Color.fromARGB(255, 192, 229, 228),
-                    );
+                    ));
                   }
                 }),
-                Positioned(
-                      child: Image.asset("assets/images/profileborder.png"),
-                      width: 150,
+                Center(
+                      child: Image.asset("assets/images/profileborder.png", height: 150, width: 150,),
+                       
                     ),
                   ],
                 ),
                 const SizedBox(height: 50),
+                Text("Music is life ✌🏻",),
+
                 
                 
               ],

@@ -19,13 +19,16 @@ void main() async {
   runApp(
     MaterialApp(
         theme: ThemeData(
+          primaryColorLight: Color.fromARGB(255, 154, 189, 253),
           colorScheme:
+          
               ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 0, 49, 141)),
           // colorScheme: ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 0, 6, 126)),
           // primarySwatch: Colors.yellow,
           brightness: Brightness.light,
         ),
         darkTheme: ThemeData(
+          primaryColorLight: Color.fromARGB(255, 9, 45, 116),
           brightness: Brightness.dark,
           // primarySwatch: Colors.indigo,
           colorScheme: ColorScheme.fromSeed(
