@@ -5,13 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:mapview/services/marker.dart';
+import 'package:mapview/models/marker.dart';
 import 'package:mapview/utilities/geo_to_latlng.dart';
 import '../widgets/markers_widgets/marker_on_tap.dart';
 
 //Maps avec pour clef des nom d'icon et comme valeures des paths vers les assets correspondants
 Map<String, String> iconPaths = {};
 Map<String, String> stageIconsPaths = {};
+MarkerModel selectedMarker = const MarkerModel( type: "add",name: "This is a placeholder", documentId: "", markerPosition: GeoPoint(0,0));
 
 //List des markers à afficher sur la mapview
 Set<Marker> markersSet = {};
@@ -36,6 +37,25 @@ class FireStoreMarkerCloudStorage {
       "name": marker.name
     });
   }
+
+
+  void editMarker({
+    required MarkerModel marker,
+  }) async {
+    await markers.doc(marker.documentId).update({
+      "position": marker.markerPosition,
+      "type": marker.type,
+      "name": marker.name
+    });
+  }
+
+
+  void delMarker({
+    required MarkerModel marker,
+  }) async {
+    await markers.doc(marker.documentId).delete();
+  }
+
 
   //Fonction qui convertie une image en Uint8List pour pouvoir l'utiliser en temps qu'icon de Marker google map.
   getBytesFromAsset(String path, int width) async {

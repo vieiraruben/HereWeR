@@ -1,6 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:mapview/services/marker.dart';
+import 'package:mapview/models/marker.dart';
 import '../../constants/restaurant_carousel.dart';
 
 class DemoContentView extends StatefulWidget {

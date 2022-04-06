@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:mapview/services/circle.dart';
+import 'package:mapview/models/circle.dart';
 
 import '../utilities/geo_to_latlng.dart';
 

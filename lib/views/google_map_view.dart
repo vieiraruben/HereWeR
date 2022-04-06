@@ -6,14 +6,14 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:mapview/constants/icon_imgs_paths.dart';
 import 'package:mapview/geolocation/user_location_permission.dart';
-import 'package:mapview/services/circle.dart';
+import 'package:mapview/models/circle.dart';
 import 'package:mapview/services/circle_service.dart';
 import 'package:mapview/utilities/geo_to_latlng.dart';
 import 'package:mapview/utilities/poi_loader.dart';
 import 'package:mapview/views/chat_manager_view.dart';
 import 'package:mapview/widgets/admin_widgets/marker_creation_form.dart';
 import 'package:mapview/widgets/floating_menu.dart';
-import '../services/marker.dart';
+import '../models/marker.dart';
 import '../services/marker_service.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
@@ -24,8 +24,17 @@ late double radius;
 late bool chatVisible;
 late bool isOpaque;
 
+//Booléens qui gèrent les fonctionnalités lièes à l'ajout de marqueurs sur la carte.
+bool isAdmin = false;
+bool isMarker = false;
+bool isInteract = true;
+bool isPolygon = false;
+bool isCircle = false;
+bool isEdit = false;
+
 class MapView extends StatefulWidget {
   const MapView({Key? key}) : super(key: key);
+
   @override
   State<MapView> createState() => MapViewState();
 }
@@ -35,6 +44,7 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
   late final String _lightStyle;
   late final StreamController<MenuAction> _actionController;
   final PoiLoader _poiLoader = PoiLoader();
+
 //instances des class permettant la gestion des Markers et des Cercles vis à vis de fireStore
   late FireStoreMarkerCloudStorage _markersService;
   final FireStoreCircleCloudStorage _circlesService =
@@ -170,20 +180,16 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
   int tempCircleIdCounter = 1;
   int tempMarkerIdCounter = 1;
 
-  //Booléens qui gèrent les fonctionnalités lièes à l'ajout de marqueurs sur la carte.
-  bool isAdmin = false;
-  bool isPolygon = false;
-  bool isCircle = false;
-  bool isMarker = false;
-  bool isInteract = false;
-
   //Booléens qui gèrent la caméra
   //centrage de la caméra sur l'utilisateur
   bool isUserCentered = false;
+
   //L'utilisateur est il dans le perimêtre d'une scène?
   bool isLocalScene = false;
+
   //L'utilisateur a -t-il activivé le mode local dans ce cas?
   bool isLocalSceneActivated = false;
+
   //Sur quelle scène/ dans quel cercle l'utilisateur est il?
   late Circle? currentScene;
 
@@ -288,9 +294,9 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: () async => false, child:
-    Scaffold(
-      body: Stack(
+      onWillPop: () async => false,
+      child: Scaffold(
+          body: Stack(
         children: <Widget>[
           //On Build la map
           GoogleMap(
@@ -323,6 +329,8 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
                 setState(() {
                   _setMarkers(point, markerType, markerName);
                 });
+                isMarker = false;
+                isInteract = true;
               } else if (isCircle) {
                 setState(() {
                   // _setCircles(point);
@@ -476,21 +484,6 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
           ),
 
           //         //Passe en mode polygon
-          RawMaterialButton(
-            constraints: BoxConstraints.tight(const Size(66, 36)),
-            fillColor: isPolygon ? Colors.blue : Colors.grey,
-            onPressed: () {
-              setState(() {
-                isPolygon = true;
-                isCircle = false;
-                isMarker = false;
-                isInteract = false;
-              });
-            },
-            child: const Text(
-              'polygon',
-            ),
-          ),
 
           //         //Passe en mode marker
           RawMaterialButton(
@@ -522,11 +515,163 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
                       ));
             },
             child: const Text(
-              'marker',
+              'add',
             ),
           ),
 
+          RawMaterialButton(
+            constraints: BoxConstraints.tight(const Size(66, 36)),
+            fillColor: Colors.grey,
+            onPressed: () {
+              if (selectedMarker.documentId != "") {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) => AlertDialog(
+                          title: const Text('Edit marker',
+                              textAlign: TextAlign.center),
+                          contentPadding: const EdgeInsets.all(8),
+                          content: (
+                              //appel un formulaire de création qui permet de définir l'icon et le nom du nouveau Marker
+                              const MarkersCreationForm()),
+                          actions: [
+                            TextButton(
+                                onPressed: () async {
+                                  selectedMarker = MarkerModel(
+                                      type: markerType,
+                                      name: markerName,
+                                      documentId: selectedMarker.documentId,
+                                      markerPosition:
+                                          selectedMarker.markerPosition);
+                                  _markersService.editMarker(
+                                      marker: selectedMarker);
+                                  markersSet.removeWhere((element) =>
+                                      element.markerId ==
+                                      MarkerId(selectedMarker.documentId));
+                                  tempMarkers.removeWhere((element) =>
+                                      element.documentId ==
+                                      selectedMarker.documentId);
+                                  tempMarkers.add(selectedMarker);
+                                  markersSet.add(await _markersService
+                                      .initMarker(selectedMarker, 70));
+                                  circlesSet.removeWhere((element) =>
+                                      element.circleId ==
+                                      CircleId(selectedMarker.documentId));
+                                  Navigator.pop(context);
+                                  setState(() {});
+                                },
+                                child: const Text("Save changes")),
+                            TextButton(
+                                onPressed: () async {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text("cancel"))
+                          ],
+                        ));
+              }
+            },
+            child: const Text(
+              'edit',
+            ),
+          ),
+
+          RawMaterialButton(
+            constraints: BoxConstraints.tight(const Size(66, 36)),
+            fillColor: Colors.grey,
+            onPressed: () {
+              if (selectedMarker.documentId != "") {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) => AlertDialog(
+                          title: const Text(
+                              'Are you sure you want to delete the following marker?',
+                              textAlign: TextAlign.center),
+                          contentPadding: const EdgeInsets.all(8),
+                          content:
+                              (Text("marker name : " + selectedMarker.toString())),
+                          actions: [
+                            TextButton(
+                                onPressed: () async {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text("Cancel")),
+                            TextButton(
+                                onPressed: () async {
+                                  _markersService.delMarker(marker: selectedMarker);
+                                  markersSet.removeWhere((element) =>
+                                      element.markerId ==
+                                      MarkerId(selectedMarker.documentId));
+                                  tempMarkers.removeWhere((element) =>
+                                      element.documentId ==
+                                      selectedMarker.documentId);
+                                  circlesSet.removeWhere((element) =>
+                                  element.circleId ==
+                                      CircleId(selectedMarker.documentId));
+                                  Navigator.pop(context);
+                                  setState(() {});
+                                },
+                                child: const Text("Validate"))
+                          ],
+                        ));
+              }
+            },
+            child: const Text(
+              'Delete',
+            ),
+          ),
+
+          //Bouton qui permet de sauvegarder dans fireStore les éléments ajoutés
+          RawMaterialButton(
+            padding: EdgeInsets.all(4.0),
+            constraints: BoxConstraints.tight(const Size(66, 36)),
+
+            //Si il y a des nouveaux éléments le bouton est bleu ce qui indique qu'il y a des éléments à sauvegarder
+            fillColor: tempMarkers.isNotEmpty || tempCircles.isNotEmpty
+                ? Colors.blue
+                : Colors.grey,
+            onPressed: () {
+              setState(() {
+                //Pour chaque éléments dans les Listes temporaires de markers et de cercles on les ajoute à fireStore
+                for (MarkerModel marker in tempMarkers) {
+                  _markersService.addMarker(marker: marker);
+                }
+                for (Circle circle in tempCircles) {
+                  double lat = circle.center.latitude;
+                  double lng = circle.center.longitude;
+                  GeoPoint centerGeo = GeoPoint(lat, lng);
+                  CircleModel myCircle = CircleModel(
+                      documentId: circle.circleId.toString(),
+                      center: centerGeo,
+                      radius: circle.radius);
+                  _circlesService.addCircle(circle: myCircle);
+                }
+
+                //On vide les Listes temporaires après la sauvegarde pour ne pas les ajoutés plusieurs fois
+                tempMarkers.clear();
+                tempCircles.clear();
+              });
+            },
+            child: const Text(
+              'save',
+            ),
+          ),
           //         //Passe en mode marker
+          /*
+          RawMaterialButton(
+            constraints: BoxConstraints.tight(const Size(66, 36)),
+            fillColor: isPolygon ? Colors.blue : Colors.grey,
+            onPressed: () {
+              setState(() {
+                isPolygon = true;
+                isCircle = false;
+                isMarker = false;
+                isInteract = false;
+              });
+            },
+            child: const Text(
+              'polygon',
+            ),
+          ),
+
           RawMaterialButton(
             constraints: BoxConstraints.tight(const Size(66, 36)),
             fillColor: isCircle ? Colors.blue : Colors.grey,
@@ -565,43 +710,7 @@ class MapViewState extends State<MapView> with WidgetsBindingObserver {
             child: const Text(
               'circle',
             ),
-          ),
-
-          //         //Bouton qui permet de sauvegarder dans fireStore les éléments ajoutés
-          RawMaterialButton(
-            padding: EdgeInsets.all(4.0),
-            constraints: BoxConstraints.tight(const Size(66, 36)),
-
-            //Si il y a des nouveaux éléments le bouton est bleu ce qui indique qu'il y a des éléments à sauvegarder
-            fillColor: tempMarkers.isNotEmpty || tempCircles.isNotEmpty
-                ? Colors.blue
-                : Colors.grey,
-            onPressed: () {
-              setState(() {
-                //Pour chaque éléments dans les Listes temporaires de markers et de cercles on les ajoute à fireStore
-                for (MarkerModel marker in tempMarkers) {
-                  _markersService.addMarker(marker: marker);
-                }
-                for (Circle circle in tempCircles) {
-                  double lat = circle.center.latitude;
-                  double lng = circle.center.longitude;
-                  GeoPoint centerGeo = GeoPoint(lat, lng);
-                  CircleModel myCircle = CircleModel(
-                      documentId: circle.circleId.toString(),
-                      center: centerGeo,
-                      radius: circle.radius);
-                  _circlesService.addCircle(circle: myCircle);
-                }
-
-                //On vide les Listes temporaires après la sauvegarde pour ne pas les ajoutés plusieurs fois
-                tempMarkers.clear();
-                tempCircles.clear();
-              });
-            },
-            child: const Text(
-              'save',
-            ),
-          ),
+          ),*/
         ],
       ),
     );
