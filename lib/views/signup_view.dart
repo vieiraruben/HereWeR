@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:developer';
+import 'package:mapview/widgets/loading_overlay.dart';
 import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -56,7 +57,7 @@ class _SignUpViewState extends State<SignUpView> {
         showErrorDialog(context, "Sign Up Failed",
             "An account already exists for this email address. Please log in.");
       } on InvalidEmailAuthException {
-        showErrorDialog(context, "Sign Up Failed",
+        showErrorDialog(context, "Invalid Email",
             "The email address you entered is invalid. Please try again.");
       } catch (e) {
         log(e.toString());
@@ -236,10 +237,12 @@ class _NewProfileViewState extends State<NewProfileView> {
                   onFieldSubmitted: (v) => nextButtonAction(),
                   // autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) {
+                    final regex = RegExp(
+                        r"^(?=.{4,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$");
                     if (value == null || value.isEmpty) {
                       return 'Please choose your username';
-                    } else if (value.length < 3) {
-                      return 'Please choose a longer username';
+                    } else if (!regex.hasMatch(value)) {
+                      return 'Please choose a valid username. Letters, numbers, . and _ only.';
                     }
                     return null;
                   },

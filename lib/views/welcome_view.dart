@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:mapview/constants/carousel.dart';
 import 'package:mapview/constants/routes.dart';
+import 'package:mapview/utilities/here_we_r_icons_icons.dart';
 
 
 class Welcome extends StatefulWidget {
@@ -146,6 +147,11 @@ class _WelcomeState extends State<Welcome> {
                       );
                     },
                     child: const Text("I Already Have an Account")),
+
+
+
+
+                    
               ],
             ),
           ),
@@ -155,7 +161,7 @@ class _WelcomeState extends State<Welcome> {
                 height: 50,
                 child: Column(children: [
                   GestureDetector(
-                    child: const Text("Powered by HereWeR © 2022 MAP HERE!"),
+                    child: const Text("Powered by HereWeR © 2022"),
                     onTap: () async {
                       Navigator.of(context).pushNamed(mapRoute);
                     },

@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mapview/services/chat_message.dart';
-import 'package:mapview/utilities/profile_pic_loader.dart';
 import 'package:mapview/services/firebase_database.dart';
 
 class ChatView extends StatefulWidget {
@@ -20,9 +19,8 @@ class ChatView extends StatefulWidget {
 class _ChatViewState extends State<ChatView> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: const BoxConstraints(maxHeight: 600),
-      child: ListView.builder(
+    return ListView.builder(
+      padding: EdgeInsets.zero,
         itemCount: widget.messages.length,
         reverse: true,
         itemBuilder: (context, index) {
@@ -52,33 +50,16 @@ class _ChatViewState extends State<ChatView> {
                     );
                   }
                 }),
-
-            //       FutureBuilder(
-            // future: downloadPic(widget.messages.elementAt(index).senderId),
-            // builder: (context, AsyncSnapshot<ImageProvider?> snapshot) {
-            //   if (snapshot.hasData) {
-            //     return CircleAvatar(
-            //         radius: 20,
-            //         backgroundColor: const Color.fromARGB(255, 192, 229, 228),
-            //         foregroundImage: snapshot.data);
-            //   } else {
-            //     return const CircleAvatar(
-            //       radius: 20,
-            //       backgroundColor:  Color.fromARGB(255, 192, 229, 228),
-
-            //     );
-            //   }
-            // }) ,
-
             title: Text(
               widget.messages.elementAt(index).text,
               softWrap: true,
               overflow: TextOverflow.visible,
             ),
-            subtitle: Text(widget.messages.elementAt(index).senderId),
+             subtitle: Text(widget.messages.elementAt(index).senderId),
+            
           );
         },
-      ),
+      
     );
   }
 }

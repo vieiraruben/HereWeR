@@ -1,8 +1,32 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mapview/constants/routes.dart';
 import 'package:mapview/utilities/here_we_r_icons_icons.dart';
+import 'package:mapview/views/search_view.dart';
 
-Widget getMenu(BuildContext context) {
+bool isFiltered = false;
+CameraPosition? eventPositional;
+
+enum MenuAction {
+  userProfile,
+  chat,
+  search,
+  didPopFromSearch,
+  filter,
+  cleanFilter,
+  locate,
+  food,
+  stage,
+  camping,
+  necessities,
+  medical,
+  drinks,
+  fun,
+  toilets,
+}
+
+Widget getMenu(BuildContext context, StreamController _controller) {
   return Padding(
     padding: const EdgeInsets.only(left: 30, top: 60, right: 10),
     child: Column(
@@ -34,7 +58,9 @@ Widget getMenu(BuildContext context) {
                     child: Column(
                       children: [
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            _controller.add(MenuAction.userProfile);
+                          },
                           icon: const Icon(HereWeRIcons.icons8_customer_64),
                           color: Colors.white,
                           iconSize: 35,
@@ -44,7 +70,7 @@ Widget getMenu(BuildContext context) {
                         ),
                         IconButton(
                             onPressed: () {
-                              Navigator.of(context).pushNamed(chatRoute);
+                              _controller.add(MenuAction.chat);
                             },
                             icon: const Icon(
                                 HereWeRIcons.icons8_communication_64),
@@ -54,8 +80,14 @@ Widget getMenu(BuildContext context) {
                           height: 5,
                         ),
                         IconButton(
-                            onPressed: () {
-                              Navigator.of(context).pushNamed(searchRoute);
+                            onPressed: () async {
+                              eventPositional = null;
+                              eventPositional = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const SearchView()),
+                              );
+                              _controller.add(MenuAction.didPopFromSearch);
                             },
                             icon: const Icon(HereWeRIcons.icons8_search_64),
                             color: Colors.white,
@@ -73,13 +105,47 @@ Widget getMenu(BuildContext context) {
                         borderRadius: BorderRadius.circular(50),
                         color: Colors.black.withOpacity(0.3)),
                     child: Padding(
+                      padding: const EdgeInsets.all(3.0),
+                      child: (!isFiltered)
+                          ? PopupMenuButton(
+                              elevation: 0,
+                              color: Colors.black.withOpacity(0.3),
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10))),
+                              itemBuilder: (context) => list,
+                              onSelected: (v) {
+                                _controller.add(v);
+                                isFiltered = true;
+                              },
+                              icon: const Icon(HereWeRIcons.icons8_filter_64,
+                                  color: Colors.white),
+                              iconSize: 35,
+                            )
+                          : IconButton(
+                              onPressed: () {
+                                _controller.add(MenuAction.cleanFilter);
+                                isFiltered = false;
+                              },
+                              icon: const Icon(
+                                  HereWeRIcons.icons8_clear_filters_64),
+                              color: Colors.white,
+                              iconSize: 35),
+                    )),
+                const SizedBox(height: 10),
+                Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        color: Colors.black.withOpacity(0.3)),
+                    child: Padding(
                         padding: const EdgeInsets.all(3.0),
                         child: Column(children: [
                           IconButton(
                             onPressed: () {
-                              showPopupMenu(context);
+                              _controller.add(MenuAction.locate);
                             },
-                            icon: const Icon(HereWeRIcons.icons8_filter_64),
+                            icon:
+                                const Icon(HereWeRIcons.icons8_my_location_64),
                             color: Colors.white,
                             iconSize: 35,
                           ),
@@ -93,37 +159,61 @@ Widget getMenu(BuildContext context) {
   );
 }
 
-showPopupMenu(BuildContext context) {
+const textStyle = TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
 
-  const textStyle = TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
-
-  showMenu<String>(
-    
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-    elevation: 0,
-    color: Colors.black.withOpacity(0.3),
-    context: context,
-    position: RelativeRect.fromLTRB(
-        55, 100, 45, 0), //position where you want to show the menu on screen
-    items: [
-      const PopupMenuItem<String>(child: ListTile(leading: Icon(HereWeRIcons.icons8_stage_64, color: Colors.white, size:35),
-        title: Text('Stages', style: textStyle)), value: '1'),
-      const PopupMenuItem<String>(child: ListTile(leading: Icon(HereWeRIcons.icons8_toilet_64, color: Colors.white, size:35),
-        title: Text('Restrooms', style: textStyle)), value: '2'),
-      const PopupMenuItem<String>(child: ListTile(leading: Icon(HereWeRIcons.icons8_about_64, color: Colors.white, size:35),
-        title: Text('Info', style: textStyle)), value: '2'),
-      const PopupMenuItem<String>(child: ListTile(leading: Icon(HereWeRIcons.icons8_cocktail_64, color: Colors.white, size:35),
-        title: Text('Bars', style: textStyle)), value: '3'),
-      const PopupMenuItem<String>(child: ListTile(leading: Icon(HereWeRIcons.icons8_restaurant_64, color: Colors.white, size:35),
-        title: Text('Food', style: textStyle)), value: '4'),
-      const PopupMenuItem<String>(child: ListTile(leading: Icon(HereWeRIcons.icons8_clothes_64, color: Colors.white, size:35),
-        title: Text('Merch Store', style: textStyle)), value: '2'),
-      const PopupMenuItem<String>(child: ListTile(leading: Icon(HereWeRIcons.icons8_medical_bag_64, color: Colors.white, size:35),
-        title: Text('Medical', style: textStyle)), value: '2'),
-      const PopupMenuItem<String>(child: ListTile(leading: Icon(HereWeRIcons.icons8_atm_64, color: Colors.white, size:35),
-        title: Text('ATM', style: textStyle)), value: '2'),
-      const PopupMenuItem<String>(child: ListTile(leading: Icon(HereWeRIcons.icons8_camping_tent_64, color: Colors.white, size:35),
-        title: Text('Camping', style: textStyle)), value: '2'),
-    ],
-  );
-}
+List<PopupMenuEntry> list = [
+  const PopupMenuItem<MenuAction>(
+      child: ListTile(
+          leading:
+              Icon(HereWeRIcons.icons8_stage_64, color: Colors.white, size: 35),
+          title: Text('Stages', style: textStyle)),
+      value: MenuAction.stage),
+  const PopupMenuItem<MenuAction>(
+      child: ListTile(
+          leading: Icon(HereWeRIcons.icons8_toilet_64,
+              color: Colors.white, size: 35),
+          title: Text('Restrooms', style: textStyle)),
+      value: MenuAction.toilets),
+  const PopupMenuItem<MenuAction>(
+      child: ListTile(
+          leading:
+              Icon(HereWeRIcons.icons8_about_64, color: Colors.white, size: 35),
+          title: Text('Info', style: textStyle)),
+      value: MenuAction.medical),
+  const PopupMenuItem<MenuAction>(
+      child: ListTile(
+          leading: Icon(HereWeRIcons.icons8_cocktail_64,
+              color: Colors.white, size: 35),
+          title: Text('Bars', style: textStyle)),
+      value: MenuAction.drinks),
+  const PopupMenuItem<MenuAction>(
+      child: ListTile(
+          leading: Icon(HereWeRIcons.icons8_restaurant_64,
+              color: Colors.white, size: 35),
+          title: Text('Food', style: textStyle)),
+      value: MenuAction.food),
+  const PopupMenuItem<MenuAction>(
+      child: ListTile(
+          leading: Icon(HereWeRIcons.icons8_clothes_64,
+              color: Colors.white, size: 35),
+          title: Text('Merch Store', style: textStyle)),
+      value: MenuAction.necessities),
+  const PopupMenuItem<MenuAction>(
+      child: ListTile(
+          leading: Icon(HereWeRIcons.icons8_medical_bag_64,
+              color: Colors.white, size: 35),
+          title: Text('Medical', style: textStyle)),
+      value: MenuAction.medical),
+  const PopupMenuItem<MenuAction>(
+      child: ListTile(
+          leading:
+              Icon(HereWeRIcons.icons8_atm_64, color: Colors.white, size: 35),
+          title: Text('ATM', style: textStyle)),
+      value: MenuAction.necessities),
+  const PopupMenuItem<MenuAction>(
+      child: ListTile(
+          leading: Icon(HereWeRIcons.icons8_camping_tent_64,
+              color: Colors.white, size: 35),
+          title: Text('Camping', style: textStyle)),
+      value: MenuAction.camping),
+];

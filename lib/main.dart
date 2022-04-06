@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:mapview/constants/routes.dart';
 import 'package:mapview/services/auth/auth_service.dart';
 import 'package:mapview/views/chat_manager_view.dart';
-import 'package:mapview/views/google_map_view.dart';
+import 'package:mapview/views/google_map_view2.dart';
 import 'package:flutter/services.dart';
 import 'package:mapview/views/search_view.dart';
 import 'package:mapview/views/verify_email.dart';
+import 'package:mapview/widgets/loading_overlay.dart';
 import 'views/welcome_view.dart';
 import 'views/login_view.dart';
 import 'views/signup_view.dart';
@@ -19,16 +20,20 @@ void main() async {
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(
     MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.indigo,
-        brightness: Brightness.light,
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        primarySwatch: Colors.indigo,
-        scaffoldBackgroundColor: Colors.black,
-        appBarTheme: const AppBarTheme(backgroundColor: Colors.indigo)
-      ),
+        theme: ThemeData(
+         colorScheme: ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 0, 49, 141)),
+          // colorScheme: ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 0, 6, 126)),
+          // primarySwatch: Colors.yellow,
+          brightness: Brightness.light,
+        ),
+        darkTheme: ThemeData(
+            brightness: Brightness.dark,
+            // primarySwatch: Colors.indigo,
+            colorScheme: ColorScheme.fromSeed(brightness: Brightness.dark,
+            seedColor: Color.fromARGB(255, 0, 49, 141)),
+            scaffoldBackgroundColor: Colors.black,
+            // appBarTheme: const AppBarTheme(backgroundColor: Colors.indigo)
+            ),
         debugShowCheckedModeBanner: false,
         title: 'Hyde Park Fest',
         builder: BotToastInit(),
@@ -38,10 +43,10 @@ void main() async {
           welcomeRoute: (context) => const Welcome(),
           loginRoute: (context) => const LoginView(),
           signupRoute: (context) => const SignUpView(),
-          mapRoute: (context) => const MapSample(),
+          mapRoute: (context) => const MapView(),
           newProfileRoute: (context) => const NewProfileView(),
           verifyEmailRoute: (context) => const VerifyEmailView(),
-          chatRoute: (context) => const ChatManagerView(),
+          chatRoute: (context) => const ChatManagerView(fullScreen: true),
           searchRoute: (context) => const SearchView(),
         }),
   );
@@ -59,14 +64,19 @@ class HomePage extends StatelessWidget {
             case ConnectionState.done:
               final user = AuthService.firebase().currentUser;
               if (user != null && user.isEmailVerified) {
+                // return LoadingOverlay();
                 return Welcome();
                 // return MapView();
               } else {
+                // return LoadingOverlay();
                 return const Welcome();
               }
             default:
-              return const CircularProgressIndicator();
+              return const LoadingOverlay();
           }
-        });
+        }, 
+        );
   }
 }
+
+

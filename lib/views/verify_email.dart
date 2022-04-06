@@ -82,13 +82,13 @@ class _VerifyEmailViewState extends State<VerifyEmailView>
                     }
                   },
                   child: const Text("Open Mail")),
-              ElevatedButton(
+              TextButton(
                   onPressed: () {
                     Navigator.of(context).pushNamed(
                       mapRoute,
                     );
                   },
-                  child: const Text("Skip, go to map"))
+                  child: const Text("."))
             ],
           ),
         ),

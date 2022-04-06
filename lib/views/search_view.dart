@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:mapview/constants/routes.dart';
 import 'package:mapview/constants/search.dart';
 import 'package:mapview/utilities/here_we_r_icons_icons.dart';
+import 'package:mapview/views/google_map_view2.dart';
 import 'dart:math' as math;
 
 import 'package:mapview/views/search_results_view.dart';
@@ -58,7 +61,7 @@ class _SearchViewState extends State<SearchView> {
         minHeight: 40.0,
         maxHeight: 40.0,
         child: Container(
-            color: Theme.of(context).backgroundColor,
+            color: Theme.of(context).primaryColorLight,
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: Text(headerText,
@@ -76,6 +79,7 @@ class _SearchViewState extends State<SearchView> {
       snap: false,
       floating: false,
       toolbarHeight: 90,
+      backgroundColor: Color.fromARGB(255, 56, 89, 180),
       expandedHeight: 240.0,
       flexibleSpace: FlexibleSpaceBar(
         centerTitle: true,
@@ -122,43 +126,41 @@ class _SearchViewState extends State<SearchView> {
         makeHeader(context, "ANNOUNCEMENTS"),
         SliverList(
             delegate: SliverChildListDelegate([
-          SizedBox(
-              height: 250,
-              child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Column(
-                            children: announcements.keys.map((key) {
-                          return SizedBox(
-                              width: 400,
-                              child: Row(
-                                children: [
-                                  CircleAvatar(
+          Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                        children: announcements.keys.map((key) {
+                      return SizedBox(
+                          width: 400,
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                  backgroundColor:
+                                      const Color.fromARGB(255, 228, 228, 249),
+                                  radius: 20,
+                                  child: CircleAvatar(
+                                      radius: 12,
                                       backgroundColor: const Color.fromARGB(
                                           255, 228, 228, 249),
-                                      radius: 20,
-                                      child: CircleAvatar(
-                                          radius: 12,
-                                          backgroundColor: const Color.fromARGB(
-                                              255, 228, 228, 249),
-                                          foregroundImage: Image.asset(
-                                                  'assets/images/' + key)
+                                      foregroundImage:
+                                          Image.asset('assets/images/' + key)
                                               .image)),
-                                  const SizedBox(width: 10),
-                                  Flexible(
-                                      child: Text(
-                                    announcements[key]!,
-                                    softWrap: true,
-                                  )),
-                                  const SizedBox(
-                                    height: 60,
-                                  )
-                                ],
-                              ));
-                        }).toList())
-                      ])))
+                              const SizedBox(width: 10),
+                              Flexible(
+                                  child: Text(
+                                announcements[key]!,
+                                softWrap: true,
+                              )),
+                              const SizedBox(
+                                height: 60,
+                              )
+                            ],
+                          ));
+                    }).toList())
+                  ]))
         ])),
         makeHeader(context, "RIGHT NOW"),
         SliverList(
@@ -166,43 +168,76 @@ class _SearchViewState extends State<SearchView> {
           SizedBox(
               height: 700,
               child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-
-
-
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: rightnow.keys.map((key) {
-                      return Column(
-                        children: [Stack(children: [
-                          ClipRRect(
-                            borderRadius: const BorderRadius.all(Radius.circular(10)),
-                            child: Container(foregroundDecoration: BoxDecoration(gradient:
-                            LinearGradient(colors:
-                            [Colors.black, Colors.transparent], begin: Alignment.bottomRight),
-                            ), child:
-                            Image.asset(
-                              'assets/images/sample/' + key,
-                              width: 500, height: 150, fit: BoxFit.cover,
-                            ))), Positioned(
-                              bottom: 5, left: 5,
-                              child: Text(rightnow[key]!.first, textScaleFactor: 1.2,
-                              style: TextStyle( color: Colors.white,))),
-                                Positioned(bottom: 5, right: 5,
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: rightnow.keys.map((key) {
+                        return Column(
+                          children: [
+                            Stack(children: [
+                              ClipRRect(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(10)),
                                   child: Container(
-                                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                      color: const Color.fromARGB(255, 160, 167, 211).withOpacity(0.9)), child:
-                                IconButton(icon: Icon(HereWeRIcons.icons8_place_marker_64,), color: Colors.white,
-                                onPressed: () {  },)))]),
-                                const SizedBox(height: 20,)], );
-
-                        }).toList()
-                          
-                      )
-                    )
-                    
-              )
+                                      foregroundDecoration: const BoxDecoration(
+                                        gradient: LinearGradient(colors: [
+                                          Colors.black,
+                                          Colors.transparent
+                                        ], begin: Alignment.bottomRight),
+                                      ),
+                                      child: Image.asset(
+                                        'assets/images/sample/' + key,
+                                        width: 500,
+                                        height: 150,
+                                        fit: BoxFit.cover,
+                                      ))),
+                              Positioned(
+                                  bottom: 5,
+                                  left: 5,
+                                  child: Text(rightnow[key]!.first,
+                                      textScaleFactor: 1.2,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ))),
+                              Positioned(
+                                  bottom: 5,
+                                  right: 5,
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                          color: Theme.of(context)
+                                              .primaryColorLight
+                                              .withOpacity(0.8)),
+                                      child: IconButton(
+                                        icon: const Icon(
+                                          HereWeRIcons.icons8_place_marker_64,
+                                        ),
+                                        color: Colors.white,
+                                        onPressed: () {
+                                          Navigator.pop(
+                                              context, const CameraPosition(
+                                                        target: LatLng(
+                                                            51.509520181121914,
+                                                            -0.17187260091304776),
+                                                        zoom: 18,
+                                                      )
+                                              // MaterialPageRoute(
+                                              //     builder: (context, "hello") 
+                                                  // =>
+                                                  //     MapView(
+                                                  //         eventPosition:
+                                                              
+                                                      );
+                                        },
+                                      )))
+                            ]),
+                            const SizedBox(
+                              height: 20,
+                            )
+                          ],
+                        );
+                      }).toList())))
         ]))
       ]));
     } else {
