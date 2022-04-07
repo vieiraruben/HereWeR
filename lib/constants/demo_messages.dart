@@ -7,7 +7,7 @@ List<String> demoMessages = [
 'Curabitur faucibus ex sed ipsum tincidunt finibus',
 'Nullam pellentesque mi 🥁🎸 vitae leo gravida',
 'Integer id orci et metus bibendum vestibulum',
-'Suspendisse sed lectus sit 🥹🦄',
+'Suspendisse sed lectus sit 🦄',
 'Etiam pulvinar justo 🎹 quis lacus eleifend',
 'Duis a ante nec dui interdum 👯‍♀️ congue vitae ac est',
 'Duis placerat purus vitae malesuada 🎸 luctus',

@@ -90,14 +90,6 @@ flutter:
     - assets/dark_map.txt
     - assets/light_map.txt
 
-flutter_icons:
-  image_path: "assets/images/logo.png"
-  android: true
-  ios: true
-  remove_alpha_ios: true
-
-
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
